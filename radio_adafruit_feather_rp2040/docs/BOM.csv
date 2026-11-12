@@ -7,10 +7,9 @@
 6,"JST PH 2-pin cable, female connector 100 mm (#261) - battery lead",Adafruit,1,0.75,https://www.adafruit.com/product/261,"adafruit.com product page, 2026-11-11"
 7,"Thumbwheel encoder with push, Mitsumi SIQ-02FVS3 (bought loose, glued into the frame cradle)",LCSC C2925423,1,3.18,https://www.lcsc.com/product-detail/C2925423.html,"JLC/LCSC parts API, 2026-11-11 (first price tier)"
 8,"Slide switch SS-12F16 SPDT (1P2T) panel mount, G4 (4 mm knob) default; G6 works (set SW_L=6); LCSC stocks only G050 (set SW_L=5)",LCSC C2876006 (G050) or any SS-12F16-G4/G6,1,0.08,https://www.lcsc.com/product-detail/C2876006.html,"JLC/LCSC parts API, 2026-11-11, G050 price; G4/G6 not price-checked"
-9,"M2 x 3 pan-head screws (switch, from outside into its tapped ears; M2 x 4 also fits)",any,2,,https://www.amazon.com/s?k=M2+x+3mm+pan+head+screws,not price-checked
-10,M2 x 12 mm screws (socket or pan head),any,4,,https://www.amazon.com/s?k=M2+x+12mm+socket+head+screws,not price-checked
-11,"M2 brass heat-set inserts, OD 3.2-3.5 x L <= 4.5 mm",any,4,,https://www.amazon.com/s?k=M2+heat+set+inserts,not price-checked
-12,"Battery divider (needed for the battery gauge): 2x 220 k + 1x 100 nF, through-hole or 0603/0805 on wires, in heat-shrink",any,1 set,,,not price-checked
-13,"Optional dock-visible charge LEDs: 3 mm THT red + 3 mm THT green (diffused), 2x 1.5 k resistors",any,1 set,,,not price-checked
-14,"Hookup wire: 28-30 AWG silicone, ~8 colours, ~1.5 m total (about 12 leads of ~120 mm) + 32-36 AWG enamel/wire-wrap for the optional STAT tap; heat-shrink 1.5-2 mm; medium CA or 5-min epoxy; double-sided foam tape",any,—,,,not price-checked
-15,"Filament (PLA/PETG): top 10.8 + bottom 18.1 + frame 2.9 cm^3 = ~32 cm^3 (~40 g)",—,—,,,—
+9,M2 x 12 mm screws (socket or pan head),any,4,,https://www.amazon.com/s?k=M2+x+12mm+socket+head+screws,not price-checked
+10,"M2 brass heat-set inserts, OD 3.2-3.5 x L <= 4.5 mm",any,4,,https://www.amazon.com/s?k=M2+heat+set+inserts,not price-checked
+11,"Battery divider (needed for the battery gauge): 2x 220 k + 1x 100 nF, through-hole or 0603/0805 on wires, in heat-shrink",any,1 set,,,not price-checked
+12,"Optional dock-visible charge LEDs: 3 mm THT red + 3 mm THT green (diffused), 2x 1.5 k resistors",any,1 set,,,not price-checked
+13,"Hookup wire: 28-30 AWG silicone, ~8 colours, ~1.5 m total (about 12 leads of ~120 mm) + 32-36 AWG enamel/wire-wrap for the optional STAT tap; heat-shrink 1.5-2 mm; medium CA or 5-min epoxy; thin double-sided tape (<=0.2 mm, not foam) or glue dots for the holder",any,—,,,not price-checked
+14,"Filament (PLA/PETG): top 10.8 + bottom 17.7 + frame 2.4 cm^3 = ~31 cm^3 (~39 g)",—,—,,,—

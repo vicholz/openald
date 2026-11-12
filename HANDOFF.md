@@ -58,6 +58,7 @@ Dates are 2026, America/Los_Angeles. "rev" names are the pre-release names; the 
 | Dock + LED move | For the dock the **level bar moved to a vertical column near the jack end**: D1/D5/D6 at x = 24.0, y = 15.4/12.4/9.4 mm (KiCad coords from top-left; D1 lowest, D6 nearest the jack, 3 mm pitch) ≈ 20 mm above the dock rim. Re-routed; nothing else moved; case thickness unchanged. TP4056 LEDs D3/D4 stay beside the USB-C (hidden when docked → firmware shows charging on the bar). **OpenALD Dock v1.0** designed in `charging_dock/`. |
 | Feather variant | `radio_adafruit_feather_rp2040/` designed (see §5). |
 | **Feather: direct-mount controls** (2026-11-11, still v1.0) | Victor: "add a case frame … where I can mount a SS-12F16 1P2T G4/G6 switch directly into the case, and glue the wheel into. I will solder wires from the wheel and the switch to the feather." The **controls PCB is retired** (moved to `radio_adafruit_feather_rp2040/archive/controls_board_pcb/`). **SS-12F16** SPDT panel switch: plate in a 0.6 mm pocket on the inside of the right wall (bottom half, centre Y 75, Z −5), 2 × M2 × 3 screws from outside into its tapped ears, knob slot 6.6 × 3.6, `SW_L` = 4 (G4, 2.6 mm proud; G6 = 4.6 mm). **SIQ-02FVS3** bought loose and glued into a frame cradle (1.6 mm platform, boss holes, side walls with tab notches; a tenon on the bottom-half post under it takes the push); dial moved 0.6 mm outward → **0.95 mm proud of the side / 1.95 mm above the thumb-pocket floor** (was 0.35 / 1.35). Top-half wheel slot now runs to the split with a bottom-half tab under the dial (the old Feather case could not be closed over the protruding dial — the new check found 30 mm³ of top half in that path). Divider and charge-mirror LEDs become optional hand-wired parts (inline resistors; two 3 mm LEDs in top-half sockets). Same GPIOs (A D24, B D25, push D4, C GND, switch common EN). Backup: `/workspace/openald-feather-pre-directmount-backup` on the build box (not in git). |
+| **Feather: screwless switch + clamped frame** (2026-11-11, still v1.0) | Victor: "Can the switch have enough of a cut out to not require screws? Can the frame also be sandwiched between the top and bottom case parts so it does not move up and down in case the battery holder is not exactly the same?" **Switch moved to the LEFT wall** (bottom half, Y 72, Z −4; the right wall has no room above the wheel tab for a top-open groove) and is **screwless**: 1.2 mm outer skin + 0.7 mm groove (open to the top) + 0.8 mm ribs behind the ears with 0.25 mm crush bumps (plates 0.4–0.6), body in an 11.3 mm window between the ribs (takes the knob force in Y), knob drops down a channel in the skin; the frame's long left tab covers it (0.15 mm play) and a top-half tongue fills the channel. M2 holes/screws removed from CAD, BOM, docs. G4 now 2.8 mm proud (G6 4.8). **Frame clamped by the halves:** six deck tabs (L25, L72, R25, R42, R79, T33) sit in parting-line notches in the bottom half (floor Z −1) under top-half plugs (Z 0; `clamp_crush` to add squeeze); holder in a 0.2 mm floor pocket + 0.4 mm deck relief → **holder-to-deck gap 0.7 mm** (was 0.1), thin tape / glue dots instead of foam. New checks: switch drop-in path, frame-tab insertion path, top-half lowering path vs all parts, plug over each tab, holder gap. Backup: `/workspace/openald-feather-pre-screwless-backup` (not in git). |
 | Repo | This GitHub repo created 2026-11-11; scripts made path-independent (no `/workspace` paths); `tools/` added; CC0 chosen. |
 | **Wheel press = battery check; bar centred** (2026-11-11, still v1.0) | Victor: remove the separate battery-check button and use the wheel press; centre the level bar and move it up for the dock. **SW2 EVQ-P7A01P (C79167) removed** (footprint, 3D model, case hole, printed plunger). The wheel's push switch S now drives the gate of new **P-FET Q4 AO3401A (C15127)** with **R25 1M (C22935)** pull-up to VBAT; Q4 replaces SW2 between VBAT and VBTN, so D2/D10/R6/R7 work as before (switch off: hold the wheel in → MCU powered → bar shows level). S left PD4 (it now sits at VBAT); the press is read as **BTN_SENSE high on PC1** (wake PCINT9); PD4 spare. Mapping: short press = battery check 3 s, hold = seek, push-and-turn = tune. **Bar: D6/D5/D1 at x = 19.0 (centreline), y = 6.1/8.9/14.0**, windows evenly spaced at y = 6.1/8.9/11.7 (D1 tunnel slanted, it has to skip the holder peg hole at (19, 11.34)); window centres 32.6/29.8/27.0 mm above the dock rim. FB1/FB2 moved to (24.0, 10.4/12.4). Re-routed. −$0.10/board parts, one fewer extended-part fee. Backup of the pre-change folder: `/workspace/openald-pre-button-removal-backup` on the build box (not in git; the previous commit 9509ac4 has it too). |
 
@@ -109,7 +110,8 @@ PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC
   GND, SDA, SCL; runs 3.3–5 V, ~20 mA; use 3.3 V — not 5 V tolerant; drives 32 Ω headphones; headphone cable antenna),
   MPD BH-18650-PC holder + protected 18650 (Feather has no reverse-polarity protection), JST PH lead (#261), STEMMA QT
   cable (#4210). **No PCB:** Mitsumi SIQ-02FVS3 wheel (LCSC C2925423, loose) glued into a printed frame cradle and an
-  SS-12F16 SPDT panel slide switch (G4 default, `SW_L` in `layout.py`) screwed into the right case wall, both hand-wired
+  SS-12F16 SPDT panel slide switch (G4 default, `SW_L` in `layout.py`) pressed into a screwless groove in the left case
+  wall (frame tab + top-half tongue close it in), both hand-wired
   to the Feather (A D24, B D25, push D4, C GND; switch common EN, OFF-end lug GND). Optional hand-wired 220k/220k divider
   on A0 and two 3 mm charge LEDs (VBUS/STAT, top-half sockets, visible while docked). Old controls PCB: `archive/`.
 * Case: bottom 52.8 mm identical to the single-board case (43 × 33.4 mm), tapers to 45.5 mm wide above; 92 mm long.
@@ -119,9 +121,10 @@ PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC
 * **Risks/TODO:** FM-module hole/jack positions are **estimates** (photo could not be measured) — measure and edit
   `scripts/layout.py` (table in its README) before printing; charging is only **200 mA (≈ 18–20 h)**; off-state drain
   ~0.4 mA via the Feather EN pull-up (~9 %/month; swap that resistor to 100k → ~50 µA total); battery change means
-  lifting the frame; top end held by the lip only; STAT tap is a fine-wire joint; holder-to-deck margin 0.1 mm relies on
-  the datasheet height 21.31 mm; wheel has no RC debounce; wheel push travel (1.0 mm assumed) and glue strength
-  untested; SS-12F16 clone dimensions vary and the OFF lug must be found with a meter.
+  lifting the frame; top end held by the lip only; STAT tap is a fine-wire joint; frame is clamped at the parting line by
+  six tabs (zero nominal clearance) and clears the holder by 0.7 mm; wheel has no RC debounce; wheel push travel (1.0 mm
+  assumed) and glue strength untested; screwless switch grip (groove/crush bumps/1.2 mm skin) depends on print
+  tolerance and is untested; SS-12F16 clone dimensions vary and the OFF lug must be found with a meter.
 
 ## 6. Charging dock — key facts and risks
 * **Power:** rear USB-C (HRO TYPE-C-31-M-12) → **HUSB238** PD sink (C7471904; requests the highest PDO ≤ 20 V with
@@ -203,9 +206,9 @@ repeatedly; check alignment tolerance (~0.5 mm). 14. **Thermal**: six radios cha
 plug temperatures; per-slot current limit trips at ~1.1–1.8 A.
 
 Feather variant: 15. **Measure the FM module** (outline, thickness, holes, jack position/height, bottom pin length,
-tallest part) and update `scripts/layout.py` before printing. 16. Verify the 0.1 mm holder-to-deck gap with a real
-cell. 17. Optional 3 mm charge LEDs behaviour; off-state drain; 200 mA charge time. 18. **Print and fit the direct-mount
-controls:** switch plate in its pocket, M2 threads, knob travel/feel, OFF lug with a meter; wheel in the cradle (boss holes,
+tallest part) and update `scripts/layout.py` before printing. 16. Verify the 0.7 mm holder-to-deck gap with a real
+cell and that the frame tabs clamp without rattle (`clamp_crush`). 17. Optional 3 mm charge LEDs behaviour; off-state drain; 200 mA charge time. 18. **Print and fit the direct-mount
+controls:** switch press-fit in its groove (0.4–0.6 plates), knob travel/feel, OFF lug with a meter; wheel in the cradle (boss holes,
 side walls), push travel and click with the case closed, glue joint after many pushes, top half closing over the dial.
 
 ## 9. Open decisions / TODOs

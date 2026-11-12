@@ -89,7 +89,7 @@
 <path d="M1000,280 L1180,280" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
 <rect x="1180" y="370" width="400" height="200" rx="10" fill="#e6eefb" stroke="#333" stroke-width="2" />
 <text x="1380.0" y="398" font-size="19" font-weight="bold" text-anchor="middle">SS-12F16 slide switch (SPDT)</text>
-<text x="1380.0" y="420" font-size="13" fill="#333" text-anchor="middle">screwed to the inside of the right wall (2x M2 x 3)</text>
+<text x="1380.0" y="420" font-size="13" fill="#333" text-anchor="middle">in a groove in the LEFT wall, no screws</text>
 <text x="1380.0" y="438" font-size="13" fill="#333" text-anchor="middle">knob toward the USB end = OFF</text>
 <circle cx="1180" cy="450" r="6" fill="#d4a017" stroke="#333"/>
 <text x="1192" y="455" font-size="14">lug at the OFF end (USB side)</text>
@@ -101,6 +101,7 @@
 <path d="M520,405 L480,405 L480,120 L1100,120 L1100,490 L1180,490" fill="none" stroke="#f80" stroke-width="4" stroke-linejoin="round" />
 <text x="1180" y="592" font-size="13" fill="#222" text-anchor="start">Check with a meter before soldering: with the knob at the OFF end,</text>
 <text x="1180" y="610" font-size="13" fill="#222" text-anchor="start">the OFF-end lug must connect to the middle lug.</text>
+<text x="1180" y="356" font-size="12" fill="#222" text-anchor="start">OFF lug GND: splice to battery (-) lead (same net)</text>
 <rect x="1180" y="640" width="400" height="170" rx="10" fill="#f3f3f3" stroke="#333" stroke-width="2" />
 <text x="1380.0" y="668" font-size="19" font-weight="bold" text-anchor="middle">Battery divider (inline, heat-shrink)</text>
 <text x="1380.0" y="690" font-size="13" fill="#333" text-anchor="middle">BAT - 220k - A0 - 220k - GND, 100 nF A0 to GND</text>

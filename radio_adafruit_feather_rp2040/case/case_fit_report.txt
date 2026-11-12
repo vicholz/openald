@@ -1,24 +1,38 @@
-case top     watertight=True volume=10.77 cm^3 bounds x -3.75..41.75 y -2.50..89.50 z 0.00..9.80
-case bottom  watertight=True volume=18.08 cm^3 bounds x -3.75..41.75 y -2.50..89.50 z -23.61..2.95
-frame        watertight=True volume=2.94 cm^3 bounds x -1.40..39.40 y -0.15..87.15 z -1.00..3.20
+case top     watertight=True volume=10.84 cm^3 bounds x -3.75..41.75 y -2.50..89.50 z -2.20..9.80
+case bottom  watertight=True volume=17.66 cm^3 bounds x -3.75..41.75 y -2.50..89.50 z -23.61..2.95
+frame        watertight=True volume=2.44 cm^3 bounds x -2.60..40.60 y -0.15..88.35 z -1.00..3.20
 parts (case frame):
   Feather PCB                x   7.57.. 30.43  y   1.21.. 52.01  z   0.00..  1.60
   Feather parts              x   7.93.. 26.80  y   0.00.. 52.84  z   1.60..  7.10
-  18650 holder               x   8.55.. 29.45  y   3.00.. 80.70  z -22.41.. -1.10
+  18650 holder               x   8.55.. 29.45  y   3.00.. 80.70  z -22.61.. -1.30
   FM board                   x  -1.25.. 25.65  y  60.10.. 87.00  z   0.60..  2.20
   FM jack                    x   9.20.. 15.20  y  75.00.. 87.00  z   2.20..  7.20
   SIQ-02FVS3 wheel (WRL)     x  28.20.. 42.70  y  55.25.. 69.75  z   1.60..  5.62
   wheel dial + push sweep    x  27.20.. 42.70  y  55.25.. 69.75  z   3.60..  5.60
   wheel solder joints/wires keepout x  26.45.. 28.40  y  57.50.. 67.50  z   0.20..  2.60
-  SS-12F16-G040 switch       x  31.85.. 40.35  y  65.15.. 84.85  z  -7.85.. -2.15
-  switch knob, full travel   x  40.35.. 44.35  y  72.00.. 78.00  z  -6.50.. -3.50
-  switch lug solder/wire keepout x  30.35.. 34.84  y  70.80.. 79.20  z  -6.20.. -3.80
-  M2x3 switch screws (shank) x  38.75.. 41.75  y  66.55.. 83.45  z  -5.95.. -4.05
+  SS-12F16-G040 switch       x  -2.55..  5.90  y  62.15.. 81.85  z  -6.85.. -1.15
+  switch knob, full travel   x  -6.55.. -2.55  y  69.00.. 75.00  z  -5.50.. -2.50
+  switch lug solder/wire keepout x   2.91..  7.40  y  67.80.. 76.20  z  -5.20.. -2.80
   3 mm LEDs (flange, body, leads) x  28.10.. 31.90  y  72.10.. 80.40  z   1.80..  9.75
   case top x case bottom: no overlap
   case top x frame: no overlap
   case bottom x frame: no overlap
   top half can be lowered straight over the protruding dial: OK
+  switch drops straight into its groove from above (no screws): OK
+  switch cap: frame tab over the plate/body from Z -1.00 (plate/body top -1.15) -> 0.15 mm vertical play
+    plate 0.4: free in groove, play 0.05
+    plate 0.5: crush bumps squeezed 0.05
+    plate 0.6: crush bumps squeezed 0.15
+    tab L25 w6: top-half plug over it: yes
+    tab L72 w20.4: top-half plug over it: yes
+    tab R25 w6: top-half plug over it: yes
+    tab R42 w6: top-half plug over it: yes
+    tab R79 w6: top-half plug over it: yes
+    tab T33 w6: top-half plug over it: yes
+  frame drops in from above; 6 tabs sit on the notch floors (Z -1.0) under top-half plugs (Z 0.0): clamped
+  top half below Z 0: 14.42 mm^3 at x -3.75..-2.70 y 68.85..75.15 z -2.20..-0.02 (knob top -2.50)
+  top half lowers straight down without passing through any part: OK
+  holder top Z -1.30 (in a 0.2 floor pocket), frame underside over it Z -0.60 -> gap 0.70 mm
   wheel: dial edge X 42.70, outer face X 41.75 -> protrudes 0.95 mm past the case side, 1.95 mm past the 1 mm-deep thumb pocket floor; body front 39.30 vs inner wall 39.75
-  switch: knob tip X 44.35 -> protrudes 2.60 mm past the case side (SW_L=4; G4 2.60 / G5 3.60 / G6 4.60); wall under the plate 1.40 mm
+  switch (left side): knob tip X -6.55 -> protrudes 2.80 mm past the case side (SW_L=4; G4 2.80 / G5 3.80 / G6 4.80); skin in front of the plate 1.20 mm
 RESULT: PASS (0 interferences)

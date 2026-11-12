@@ -31,8 +31,11 @@ openscad $P --render --camera=75,43,10,45,0,200,260 -D 'part="print"' -o $R/case
 wait
 openscad $P --camera=19,-2,4,80,0,0,50    -D 'part="closed"' -o $R/closeup_usb_end.png $S 2>/dev/null &
 openscad $P --camera=19,20,9,10,0,0,70    -D 'part="closed"' -o $R/closeup_top_led_windows.png $S 2>/dev/null &
-openscad $P --camera=42,69,0,80,0,70,75   -D 'part="closed"' -o $R/closeup_wheel_switch.png $S 2>/dev/null &
-openscad $P --camera=36,70,-6,70,0,270,70 -D 'part="inside_right"' -o $R/inside_right_wall_switch_wheel.png $S 2>/dev/null &
+openscad $P --camera=42,63,0,80,0,70,60   -D 'part="closed"' -o $R/closeup_wheel.png $S 2>/dev/null &
+openscad $P --camera=-4,72,-3,80,0,290,60 -D 'part="closed"' -o $R/closeup_switch_left.png $S 2>/dev/null &
+openscad $P --camera=36,63,-6,70,0,270,60 -D 'part="inside_right"' -o $R/inside_right_wall_wheel.png $S 2>/dev/null &
+openscad $P --camera=0,72,-4,60,0,60,60   -D 'part="inside_left"' -o $R/inside_left_wall_switch.png $S 2>/dev/null &
+openscad $P --camera=2,72,-4,35,0,60,55   -D 'part="bottom_switch"' -o $R/switch_groove_bottom_half.png $S 2>/dev/null &
 openscad $P --camera=33,62,2,45,0,300,48  -D 'part="cradle"' -o $R/wheel_cradle.png $S 2>/dev/null &
 openscad $P --camera=12,90,4,80,0,180,55  -D 'part="closed"' -o $R/closeup_jack_end.png $S 2>/dev/null &
 openscad $P --camera=19,43,0,0,0,0,200   -D 'part="frame"' -o $R/frame_top_view.png $S 2>/dev/null &
@@ -40,6 +43,8 @@ openscad $P --camera=19,30,-7,90,0,0,95   -D 'part="section"' -D 'sec_y=30' -o $
 openscad $P --camera=19,70,-7,90,0,0,95   -D 'part="section"' -D 'sec_y=70' -o $R/section_y70.png $S 2>/dev/null &
 O="--imgsize=1200,900 --colorscheme=Tomorrow --projection=o"
 openscad $O --camera=28,62.5,-6,90,0,0,75 -D 'part="section"' -D 'sec_y=62.5' -o $R/section_wheel_y62.png $S 2>/dev/null &
-openscad $O --camera=28,75,-6,90,0,0,75   -D 'part="section"' -D 'sec_y=75' -o $R/section_switch_y75.png $S 2>/dev/null &
+openscad $O --camera=6,72,-6,90,0,0,80    -D 'part="section"' -D 'sec_y=72' -o $R/section_switch_y72.png $S 2>/dev/null &
+openscad $O --camera=6,77,-6,90,0,0,80    -D 'part="section"' -D 'sec_y=77' -o $R/section_switch_rib_y77.png $S 2>/dev/null &
+openscad $O --camera=36,42,-2,90,0,0,50   -D 'part="section"' -D 'sec_y=42' -o $R/section_frame_tab_y42.png $S 2>/dev/null &
 wait
 echo done

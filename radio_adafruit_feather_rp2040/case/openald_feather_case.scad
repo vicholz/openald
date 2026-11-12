@@ -4,8 +4,10 @@
 // (43.0 x 33.41 section, R5.5 plan corners, R2 edges, same USB-C opening and plug-body recess) so it fits the dock.
 // Above that the body tapers out by 1.25 mm per side (Y 50.3 .. 54.3) to 45.5 mm wide.
 // All positions come from case_params.scad (generated from scripts/layout.py).
-// Direct-mount controls (no controls PCB): the SS-12F16 power switch screws to the inside of the right wall (bottom
-// half), the SIQ-02FVS3 thumbwheel is glued into a cradle on the frame, optional 3 mm charge LEDs push into the top.
+// Direct-mount controls (no controls PCB, no screws): the SS-12F16 power switch drops into a groove inside the left wall
+// of the bottom half and is closed in by the frame tab and a top-half tongue; the SIQ-02FVS3 thumbwheel is glued into a
+// cradle on the frame; optional 3 mm charge LEDs push into the top. The frame is clamped at the parting line by tabs
+// (bottom-half notches below, top-half plugs above), so its height no longer depends on the battery holder.
 include <case_params.scad>
 
 part = "assembly";  // top | bottom | frame | assembly | print | closed | top_raw | bottom_raw | frame_raw | section
@@ -25,8 +27,9 @@ wheel_pocket_d = 1.0; wheel_pocket_h = 6.0;
 wheel_tab_fit = 0.15;                              // bottom-half tab under the wheel slot (lets the top half drop over the dial)
 cradle_wall = 1.5; cradle_wall_h = 1.6;            // wheel cradle side walls (Z 1.6 .. 3.2, 0.4 under the dial)
 peg_hole_d = 1.75;                                 // for the wheel's D1.55 locating bosses
-sw_fit = 0.15;                                     // plate pocket clearance
-sw_screws = true; sw_screw_d = 2.3;                // M2 x 3 (or x4) pan-head screws from outside into the switch's tapped plate
+sw_fit = 0.15;                                     // switch groove / body-window / knob-channel clearance
+tab_depth = 0.9; tab_fit = 0.15;                   // frame clamp tabs: notch depth into the wall, side clearance
+clamp_crush = 0.0;                                 // >0 lowers the top-half plugs into the tabs (mm of squeeze) if the frame rattles
 mirror_leds = true;                                // optional dock-visible 3 mm CHG/FULL LEDs in the top half
 led3_bore = 3.15; led3_boss_d = 5.4;
 $fn = 40;
@@ -89,11 +92,6 @@ module cutouts() {
   wz = zc+(wheel_z0+wheel_z1)/2;
   translate([IN_X1U+WALL, wheel_xy[1], wz]) rotate([0,90,0]) rotate([0,0,90]) filleted_pocket(2*ch+5.0, wheel_pocket_h, 2.6, wheel_pocket_d);
   translate([IN_X1U, wheel_xy[1], wz]) rotate([0,90,0]) rotate([0,0,90]) filleted_hole(2*ch+1.2, wheel_z1-wheel_z0+1.0, 1.0, WALL-wheel_pocket_d, 0.5, 0.3);
-  // SS-12F16 power switch (right side, bottom half): plate pocket in the inner wall face, actuator slot, 2 M2 holes
-  translate([IN_X1U-0.01, SW_Y-sw_plate[0]/2-sw_fit, SW_Z-sw_plate[1]/2-sw_fit]) cube([SW_POCKET+0.01, sw_plate[0]+2*sw_fit, sw_plate[1]+2*sw_fit]);
-  translate([IN_X1U+SW_POCKET-0.01, SW_Y, SW_Z]) rotate([0,90,0]) rotate([0,0,90])
-    filleted_hole(sw_act[0]+SW_TRAVEL+0.6, sw_act[1]+0.6, 0.8, WALL-SW_POCKET+0.01, 0.6, 0);
-  if (sw_screws) for (dy=[-SW_HOLE_P/2, SW_HOLE_P/2]) translate([IN_X1U-1, SW_Y+dy, SW_Z]) rotate([0,90,0]) cylinder(d=sw_screw_d, h=WALL+2);
 }
 function wheel_ch() = sqrt(pow(WHEEL_R,2)-pow(IN_X1U-wheel_xy[0],2));   // half-chord of the dial at the inner wall
 module wheel_notch(grow=0) {  // top half: the wheel slot continues down to the split so the top half drops over the dial
@@ -105,12 +103,44 @@ module wheel_tab() {          // bottom half: fills the notch up to just under t
   intersection() { shell();
     translate([IN_X1U, wheel_xy[1]-ch-0.6+wheel_tab_fit, -0.01]) cube([WALL+1, 2*ch+1.2-2*wheel_tab_fit, top+0.01]); }
 }
-module switch_labels() {   // engraved under the two ends of the switch slot (right side, bottom half); knob toward +Y = ON
+// ---------------- SS-12F16 switch, screwless, left wall of the bottom half ----------------
+// wall-local helper: n = distance inward from the left OUTER face (x = X0OU + n), y, z absolute
+module lw(n,y,z) { translate([X0OU+n, y, z]) children(); }
+sw_g0 = SW_SKIN; sw_g1 = SW_SKIN+SW_GROOVE;            // groove (plate) between n 1.2 and 1.9
+sw_gl = sw_plate[0]+0.4;                               // groove length (19.5-19.7 plates)
+sw_gz0 = SW_Z-sw_plate[1]/2-sw_fit;                    // groove bottom
+sw_win = sw_body[0]/2+sw_fit;                          // half-length of the body window between the ribs
+sw_kh = sw_act[0]+SW_TRAVEL+0.6;                       // knob slot length (Y)
+sw_kz = sw_act[1]+0.6;                                 // knob slot height (Z)
+module switch_cuts() {   // bottom half only
+  difference() {         // plate groove, open to the top so the switch drops in; crush bumps left standing
+    lw(sw_g0, SW_Y-sw_gl/2, sw_gz0) cube([SW_GROOVE, sw_gl, -sw_gz0+lip_h+0.5]);
+    for (s=[-1,1]) for (k=[0,1]) lw(sw_g1-SW_CRUSH, SW_Y+s*(sw_win+1.2+k*2.2)-0.4, sw_gz0-1) cube([SW_CRUSH+0.1, 0.8, -sw_gz0+1-1.05]);
+  }
+  lw(sw_g1-0.05, SW_Y-sw_win, sw_gz0) cube([2*WALL, 2*sw_win, -sw_gz0+lip_h+0.5]);          // body window (wall skin behind the groove)
+  lw(-0.01, SW_Y-sw_kh/2, SW_Z-sw_kz/2) cube([sw_g0+0.02, sw_kh, -SW_Z+sw_kz/2+lip_h+0.5]); // knob slot + channel up to the split
+}
+module switch_ribs() {   // bottom half: ribs behind the ears (tops at Z -1.0 also support the frame tab)
+  for (s=[-1,1]) lw(sw_g1-0.01, s>0 ? SW_Y+sw_win : SW_Y-sw_gl/2, sw_gz0) cube([SW_RIB+0.01, sw_gl/2-sw_win, DECK_Z0-sw_gz0]);
+}
+module switch_tongue() { // top half: fills the knob channel above the slot (closes the slot top, stops the switch rising)
+  intersection() { shell(); lw(-0.5, SW_Y-sw_kh/2+sw_fit, SW_Z+sw_kz/2) cube([sw_g0-0.15+0.5, sw_kh-2*sw_fit, -SW_Z-sw_kz/2+0.01]); }
+}
+module switch_labels() {   // engraved under the knob slot on the left side; knob toward the top end (+Y) = ON
   for (L=[["ON",SW_Y+2.6],["OFF",SW_Y-2.6]])
-    translate([IN_X1U+WALL-label_depth, L[1], SW_Z-sw_act[1]/2-2.6]) rotate([90,0,90]) linear_extrude(label_depth+1)
+    lw(label_depth, L[1], SW_Z-sw_kz/2-1.6) rotate([90,0,-90]) linear_extrude(label_depth+1)
       text(L[0], size=1.5, font="DejaVu Sans:style=Bold", halign="center", valign="center");
 }
-
+// ---------------- frame clamp tabs (parting line) ----------------
+// d = distance inward from the inner wall (negative = into the wall); a tab is [side 0=L 1=R 2=T, position, width]
+module tab_box(t, d0, d1, w, z0, z1) {
+  if (t[0]==0) { xi=in_x0_at(t[1]); translate([xi+d0, t[1]-w/2, z0]) cube([d1-d0, w, z1-z0]); }
+  else if (t[0]==1) { xi=in_x1_at(t[1]); translate([xi-d1, t[1]-w/2, z0]) cube([d1-d0, w, z1-z0]); }
+  else translate([t[1]-w/2, Y_IN1-d1, z0]) cube([w, d1-d0, z1-z0]);
+}
+module tab_notches() { for (t=frame_tabs) tab_box(t, -tab_depth, 0.01, t[2]+2*tab_fit, DECK_Z0, lip_h+0.5); }        // bottom half
+module tab_plugs()   { for (t=frame_tabs) tab_box(t, -tab_depth+tab_fit, 0, t[2], DECK_Z1-clamp_crush, lip_h+0.3); } // top half
+module frame_tabs_solid() { for (t=frame_tabs) tab_box(t, -tab_depth+0.05, deck_clr+0.5, t[2], DECK_Z0, DECK_Z1); }  // frame
 // ---------------- LEDs: tunnels + windows ----------------
 // [x, y, bore_x, bore_y]; Feather CHG (amber, MCP73831), Feather red D13, Feather NeoPixel (all inside the dock pocket)
 leds = [[f_led_chg[0],f_led_chg[1],2.0,1.4], [f_led_red[0],f_led_red[1],1.4,2.0], [f_led_neo[0],f_led_neo[1],2.6,2.6]];
@@ -164,6 +194,7 @@ module top_half() {
     translate([f_btn_reset[0],f_btn_reset[1],TOP_OUT-0.4]) cylinder(d1=reset_d,d2=reset_d+0.9,h=0.45);
     cutouts(); wheel_notch(); led_windows(); led3_bores();
   }
+  tab_plugs(); switch_tongue();
 }
 
 // ---------------- bottom half ----------------
@@ -185,18 +216,21 @@ module bottom_half() {
       // tenon on the leg under the wheel cradle: engages the frame so the wheel push (3-6 N, -X) goes into the case
       translate([tenon_leg[0]-tenon_w[0]/2,tenon_leg[1]-tenon_w[1]/2,DECK_Z0-0.06]) cube([tenon_w[0],tenon_w[1],tenon_h+0.06]);
       wheel_tab();
+      switch_ribs();
     }
     for (s=screws) { translate([s[0],s[1],head_seat-0.01]) cylinder(d=screw_d,h=-head_seat+1);
                      translate([s[0],s[1],BOT_OUT-1]) cylinder(d=head_d,h=head_seat-BOT_OUT+1); }
     // grooves for the holder's PC pins, bent flat under the holder toward its ends (wire soldered past the end)
     for (i=[0,1]) { p=holder_pins[i]; y0 = i==0 ? holder_box[2]-1.8 : p[1]-0.8; y1 = i==0 ? p[1]+0.8 : holder_box[3]+1.8;
-      translate([p[0]-1.0, y0, FLOOR_Z-0.6]) cube([2.0, y1-y0, 0.61]); }
-    cutouts(); switch_labels();
+      translate([p[0]-1.0, y0, FLOOR_Z-HOLDER_POCKET-0.6]) cube([2.0, y1-y0, 0.61]); }
+    // holder seat: shallow floor pocket (holder height / tape no longer reach the frame: 0.7 mm gap)
+    hb=holder_box; translate([hb[0]-0.3, hb[2]-0.3, FLOOR_Z-HOLDER_POCKET]) cube([hb[1]-hb[0]+0.6, hb[3]-hb[2]+0.6, HOLDER_POCKET+0.01]);
+    cutouts(); switch_cuts(); switch_labels(); tab_notches();
   }
 }
 
 // deck-support posts (bottom half) and the internal frame (print 1x, deck down)
-legs = [[7.0,7.0],[7.0,40],[-0.5,72],[7.0,85.8], [36.6,8.0],[36.6,40],[36.6,62.5],[36.6,85.2]];
+legs = [[7.0,7.0],[7.0,40],[-0.5,58.5],[7.0,85.8], [36.6,8.0],[36.6,40],[36.6,62.5],[36.6,85.2]];
 leg_w = [1.3, 3.0];
 tenon_leg = [36.6,62.5]; tenon_w = [0.9, 2.4]; tenon_h = 0.7;   // tenon on that leg's top, into a mortise in the deck underside
 // wheel-local helper: u along +X (toward the wall) and v along +Y from the dial centre, z absolute
@@ -234,11 +268,14 @@ module frame() {
       // Feather locating pegs (in its 2.5 mm holes)
       for (h=feather_holes) translate([h[0],h[1],-0.01]) cylinder(d=2.2,h=1.4);
       wheel_cradle();
+      frame_tabs_solid();
     }
+    // underside relief over the battery holder (deck 0.6 thick there)
+    hb=holder_box; translate([hb[0]-0.5, hb[2]-0.5, DECK_Z0-0.01]) cube([hb[1]-hb[0]+1.0, hb[3]-hb[2]+1.0, DECK_RELIEF+0.01]);
     for (s=screws) hull() { translate([s[0],s[1],-5]) cylinder(r=3.2+0.4,h=10); c=side_cube(s); translate([c[0]-0.5,c[1]-0.5,-5]) cube([3,3,10]); }
     translate([0.0,8.0,-5]) cube([6.2,9.0,10]);                  // battery wires up to the JST (left channel)
     translate([31.2,12.0,-5]) cube([3.8,36.0,10]);              // Feather JP1/JP3 wires down to the right channel
-    translate([30.4,69.6,-5]) cube([3.6,10.9,10]);              // wheel / LED wires down to the right channel (switch is there)
+    translate([30.4,69.6,-5]) cube([3.6,10.9,10]);              // wheel / LED wires down to the right channel
     translate([tenon_leg[0]-tenon_w[0]/2-0.15, tenon_leg[1]-tenon_w[1]/2-0.15, DECK_Z0-0.01]) cube([tenon_w[0]+0.3, tenon_w[1]+0.3, tenon_h+0.25]);
     for (x=[14.68,23.32]) for (y=[2.60,6.78]) translate([x,y,-5]) cylinder(d=1.8,h=10);      // Feather USB-C shell legs
     translate([fm_box[0]+fm_ledge,fm_box[2]+fm_ledge,-5]) cube([fm_box[1]-fm_box[0]-2*fm_ledge,fm_box[3]-fm_box[2]-2*fm_ledge,10]);  // under the FM board
@@ -259,13 +296,11 @@ module ghost_wheel() {   // SIQ-02FVS3 (simplified): body, dial, 4 terminals
   color("#333") translate([wheel_xy[0],wheel_xy[1],WHEEL_SEAT_Z+wheel_z0]) cylinder(r=WHEEL_R,h=wheel_z1-wheel_z0,$fn=60);
   color("silver") for (v=[-4,-1.475,1.475,4]) wl(-8.0,v-0.35,WHEEL_SEAT_Z) cube([0.8,0.7,0.3]);
 }
-module ghost_switch() {  // SS-12F16 (knob at the ON end): plate, body, lugs, actuator, screws
-  px = IN_X1U+SW_POCKET-sw_plate[2];
-  color("#bbb") translate([px, SW_Y-sw_plate[0]/2, SW_Z-sw_plate[1]/2]) cube([sw_plate[2], sw_plate[0], sw_plate[1]]);
-  color("#222") translate([px-sw_body[2], SW_Y-sw_body[0]/2, SW_Z-sw_body[1]/2]) cube([sw_body[2], sw_body[0], sw_body[1]]);
-  color("silver") for (k=[-1,0,1]) translate([px-sw_body[2]-SW_LUG_L, SW_Y+k*SW_LUG_P-0.8, SW_Z-0.25]) cube([SW_LUG_L,1.6,0.5]);
-  color("#111") translate([px+sw_plate[2], SW_Y+SW_TRAVEL/2-sw_act[0]/2, SW_Z-sw_act[1]/2]) cube([SW_L, sw_act[0], sw_act[1]]);
-  if (sw_screws) color("#999") for (dy=[-SW_HOLE_P/2, SW_HOLE_P/2]) translate([IN_X1U+WALL, SW_Y+dy, SW_Z]) rotate([0,90,0]) cylinder(d=3.8,h=1.3);
+module ghost_switch() {  // SS-12F16 (knob at the ON end): plate (pressed to the skin), body, lugs, knob
+  color("#bbb") lw(sw_g0, SW_Y-sw_plate[0]/2, SW_Z-sw_plate[1]/2) cube([sw_plate[2], sw_plate[0], sw_plate[1]]);
+  color("#222") lw(sw_g0+sw_plate[2], SW_Y-sw_body[0]/2, SW_Z-sw_body[1]/2) cube([sw_body[2], sw_body[0], sw_body[1]]);
+  color("silver") for (k=[-1,0,1]) lw(sw_g0+sw_plate[2]+sw_body[2], SW_Y+k*SW_LUG_P-0.8, SW_Z-0.25) cube([SW_LUG_L,1.6,0.5]);
+  color("#111") lw(sw_g0-SW_L, SW_Y+SW_TRAVEL/2-sw_act[0]/2, SW_Z-sw_act[1]/2) cube([SW_L, sw_act[0], sw_act[1]]);
 }
 module ghost_leds() { if (mirror_leds) for (i=[0:len(led3)-1]) { p=led3[i];
   color(i==0?"red":"limegreen") { translate([p[0],p[1],led3_seat-1]) cylinder(d=3.8,h=1); translate([p[0],p[1],led3_seat]) cylinder(d=3,h=LED3_ABOVE_FLANGE-1.5);
@@ -283,6 +318,9 @@ else if (part=="closed") { color("lightgray") bottom_half(); color("lightsteelbl
 else if (part=="section") {   // closed case cut at Y = sec_y, looking from the USB-C end (cut faces keep each part's colour)
   clipc("lightgray") bottom_half(); clipc("lightsteelblue") top_half(); clipc("tan") frame(); clipc("#555") ghosts();
   clipc("#222") ghost_switch(); clipc("red") ghost_leds(); }
+else if (part=="inside_left") {   // bottom half + frame + switch, cut at X = 9 (looking at the left wall from inside)
+  intersection() { union() { color("lightgray") bottom_half(); color("tan") frame(); ghost_switch(); } translate([-10,52,-40]) cube([19,60,80]); } }
+else if (part=="bottom_switch") { color("lightgray") bottom_half(); ghost_switch(); }
 else if (part=="inside_right") {   // bottom half + frame + parts, top half removed, cut at X = 30.6, Y > 52 (looking at the right wall from inside)
   intersection() { union() { color("lightgray") bottom_half(); color("tan") frame(); ghosts(); ghost_switch(); } translate([30.6,52,-40]) cube([30,60,80]); } }
 else if (part=="cradle") { color("tan") frame(); ghost_wheel(); }

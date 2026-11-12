@@ -62,7 +62,7 @@ for i,(sig,fp,col) in enumerate([("A","D24 (GP24)","#7a3"),("B","D25 (GP25)","#3
 wire([(GX,wp["C (common)"]),(WX_,wp["C (common)"])],"#111")
 # switch (right middle)
 SX,SY,SW,SH=1180,370,400,200
-box(SX,SY,SW,SH,"SS-12F16 slide switch (SPDT)",["screwed to the inside of the right wall (2x M2 x 3)","knob toward the USB end = OFF"],"#e6eefb")
+box(SX,SY,SW,SH,"SS-12F16 slide switch (SPDT)",["in a groove in the LEFT wall, no screws","knob toward the USB end = OFF"],"#e6eefb")
 sp={"lug at the OFF end (USB side)":450,"middle lug (common)":490,"lug at the ON end: unused":530}
 for k,y in sp.items(): pin(SX,y,k,"l")
 wire([(GX,sp["lug at the OFF end (USB side)"]),(SX,sp["lug at the OFF end (USB side)"])],"#111")
@@ -70,6 +70,7 @@ yt=FY-30; xl=FX-40
 wire([(FX,FY+fl["EN"]),(xl,FY+fl["EN"]),(xl,yt),(1100,yt),(1100,sp["middle lug (common)"]),(SX,sp["middle lug (common)"])],"#f80")
 txt(SX,SY+SH+22,"Check with a meter before soldering: with the knob at the OFF end,",13)
 txt(SX,SY+SH+40,"the OFF-end lug must connect to the middle lug.",13)
+txt(SX,SY-14,"OFF lug GND: splice to battery (-) lead (same net)",12)
 # optional divider + LEDs
 DX,DY,DW,DH=1180,640,400,170
 box(DX,DY,DW,DH,"Battery divider (inline, heat-shrink)",["BAT - 220k - A0 - 220k - GND, 100 nF A0 to GND","needed for the battery gauge (Feather has none)"],"#f3f3f3")

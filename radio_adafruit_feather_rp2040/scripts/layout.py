@@ -48,23 +48,35 @@ WHEEL_R = 7.25               # dial radius
 WHEEL_SEAT_Z = 1.6           # encoder body bottom (cradle top) = old PCB top, so the dial height (Z 3.6..5.6) is unchanged
 WHEEL_DIAL_Z = (2.0, 4.0)    # dial above the seat
 WHEEL_PUSH = 1.0             # assumed push travel (datasheet gives none); everything behind the dial clears >= 1.5 mm
-# Power switch: SS-12F16 SPDT (1P2T) panel slide switch, plate screwed to the inside of the right wall (bottom half).
+# Power switch: SS-12F16 SPDT (1P2T) panel slide switch, SCREWLESS: its plate drops into a groove inside the LEFT wall
+# of the bottom half (ears trapped between the outer skin and printed ribs), the frame tab above it and a top-half
+# tongue in the knob channel close it in. (The right wall has no room: the wheel slot occupies it.)
 # Datasheets: G-Switch SS-12F16-GXXX https://xonstorage.z8.web.core.windows.net/pdf/gswitch_ss12f16g050_apr22_xonlink.pdf
 #             Light Country SS12F16 (SS-001B) https://yibeiic-shop.oss-cn-hangzhou.aliyuncs.com/media/collection/ss12d02-9bziHfGW-yoDg9ny3q.pdf
-#   mounting plate 19.5-19.7 x 5.6-5.7 x 0.4-0.5, 2x M2x0.4 tapped holes 15 apart, body 11 x ~5.7 x 5 deep below the plate,
-#   3 solder lugs (D0.8-1 holes) 3 mm pitch, 3 mm more, actuator 3 x 3, travel 3 mm, actuator height L above the plate:
-#   G040/"G4" = 4.0, G050 = 5.0, G060/"G6" = 6.0.
-SW_L = 4.0                   # actuator height above the plate (G4 default; set 6.0 for G6, 5.0 for LCSC's G050)
-SW_Y, SW_Z = 75.0, -5.0      # switch centre on the right wall (bottom half, above the dock line, ~mid-thickness)
-SW_PLATE = (19.7, 5.7, 0.5)  # length (Y) x width (Z) x thickness (worst case of both datasheets)
-SW_BODY = (11.0, 5.7, 5.0)   # length (Y) x width (Z) x depth (X, into the case)
+#   mounting plate 19.5-19.7 x 5.6-5.7 x 0.4-0.5 (cheap copies up to 0.6), 2x M2 holes 15 apart (not used), body 11 x
+#   ~5.7 x 5 deep below the plate, 3 solder lugs 3 mm pitch, 3 mm long, knob 3 x 3, travel 3 mm,
+#   knob height L above the plate: G040/"G4" = 4.0, G050 = 5.0, G060/"G6" = 6.0.
+SW_L = 4.0                   # knob height above the plate (G4 default; 6.0 for G6, 5.0 for LCSC's G050)
+SW_Y, SW_Z = 72.0, -4.0      # switch centre on the LEFT wall (bottom half, above the dock line, under the FM module)
+SW_PLATE = (19.7, 5.7, 0.5)  # length (Y) x width (Z) x thickness used for the fit model
+SW_BODY = (11.0, 5.7, 5.0)   # length (Y) x width (Z) x depth (into the case)
 SW_LUG_L, SW_LUG_P = 3.0, 3.0
-SW_ACT = (3.0, 3.0)          # actuator Y x Z
+SW_ACT = (3.0, 3.0)          # knob Y x Z
 SW_TRAVEL = 3.0
-SW_HOLE_P = 15.0             # M2 screw pitch (screws from outside into the tapped plate)
-SW_POCKET = 0.6              # plate pocket in the inner wall face -> wall left under the plate = WALL - SW_POCKET
+SW_SKIN = 1.2                # outer skin in front of the plate -> G4 knob 2.8 mm proud (same as the original radio)
+SW_GROOVE = 0.7              # plate groove width (fits 0.4-0.6 plates; crush ribs take up the slack)
+SW_RIB = 0.8                 # printed ribs behind the plate ears
+SW_CRUSH = 0.25              # crush bumps on the ribs (effective groove 0.45)
 # Optional dock-visible charge LEDs: two 3 mm THT LEDs pushed into sockets in the top half, wired with inline resistors.
 LED3 = [("red","CHG",30.0,74.0),("green","FULL",30.0,78.5)]
 LED3_ABOVE_FLANGE = 4.6      # 3 mm LED length from the flange top to the dome tip (measure yours; typical 4.3-4.8)
+# frame clamp tabs: the deck's tabs sit in notches at the parting line (bottom half below, top-half plugs above)
+# (side, position along that wall, width); "L"/"R" = left/right wall at Y, "T" = top end wall at X
+FRAME_TABS = [("L",25.0,6.0),("L",SW_Y,20.4),("R",25.0,6.0),("R",42.0,6.0),("R",79.0,6.0),("T",33.0,6.0)]
+# battery-holder seat: floor pocket + deck underside relief so a taller holder (or tape) cannot lift the frame
+HOLDER_POCKET = 0.2          # floor pocket depth under the holder
+DECK_RELIEF = 0.4            # deck underside relief over the holder -> holder-to-deck gap 0.1 + 0.2 + 0.4 = 0.7 mm
 # case screws (M2, from the back into heat-set inserts in the top half)
 SCREWS = [(1.8,1.8),(36.2,1.8),(0.0,51.8),(38.0,51.8)]
+# the holder sits in its floor pocket
+HOLDER["z0"] -= HOLDER_POCKET; HOLDER["z1"] -= HOLDER_POCKET

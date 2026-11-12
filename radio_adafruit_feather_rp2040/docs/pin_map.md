@@ -9,8 +9,8 @@ Nothing here has been hardware-validated yet. There is no controls PCB: the whee
 | **D24** | GP24 | Wheel **A** | 30 AWG | Use the internal pull-up. Debounce in firmware: no RC filter. |
 | **D25** | GP25 | Wheel **B** | 30 AWG | Use the internal pull-up. |
 | **D4** | GP6 | Wheel **S** (push switch) | 30 AWG | Use the internal pull-up. Active low. |
-| **GND** (JP1.13, the only GND pin) | — | GND splice → wheel **C**, switch OFF-end lug, divider bottom, green LED cathode | 28 AWG to the splice | Heat-shrunk splice in the right channel. |
-| **EN** | — (enables the AP2112 3.3 V regulator) | Switch **middle lug** (common) | 28–30 AWG | Knob at the OFF (USB) end ties EN to GND: the 3.3 V rail, the RP2040 and the FM module turn off. Knob at the ON end leaves EN open (the Feather's own pull-up turns it on). |
+| **GND** (JP1.13, the only GND pin) | — | GND splice → wheel **C**, divider bottom, green LED cathode | 28 AWG to the splice | Heat-shrunk splice in the right channel. The switch OFF-end lug is on the same net via the battery black (−) lead (see below). |
+| **EN** | — (enables the AP2112 3.3 V regulator) | Switch **middle lug** (common); wire runs down the left channel and up the battery-wire deck slot to JP3 | 28–30 AWG | Knob at the OFF (USB) end ties EN to GND: the 3.3 V rail, the RP2040 and the FM module turn off. Knob at the ON end leaves EN open (the Feather's own pull-up turns it on). |
 | **BAT** (VBAT) | — | Divider top (220 k) | 28–30 AWG | Optional battery gauge. |
 | **A0** | GP26 / ADC0 | Divider middle (220 k / 220 k junction, 100 nF to GND) | 30 AWG | VBAT/2. |
 | **USB** (VBUS) | — | Optional: 1.5 k → red 3 mm LED anode | 30 AWG | About 2 mA while charging. |
@@ -34,10 +34,10 @@ The four solder tabs are on the body edge facing into the case (toward the FM mo
 
 Check the A/B/S/C markings printed on your part's datasheet drawing ("A PUSH COM B" in the land pattern) before soldering. If A and B are swapped, the wheel just counts the other way; swap `PIN_A` / `PIN_B` in firmware.
 
-## SS-12F16 switch lugs (as mounted, knob toward the top end = ON)
+## SS-12F16 switch lugs (left wall, screwless groove; knob toward the top end = ON)
 | Lug | To |
 |---|---|
-| Outer lug that connects to the middle when the knob is at the **OFF (USB) end** — normally the USB-side lug, **check with a meter** | GND |
+| Outer lug that connects to the middle when the knob is at the **OFF (USB) end** — normally the USB-side lug, **check with a meter** | GND: splice to the battery black (−) lead in the left channel (same net as Feather GND; the switch is on the opposite side from the Feather's only GND pin) |
 | Middle lug (common) | EN |
 | Other outer lug | not connected |
 

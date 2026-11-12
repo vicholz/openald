@@ -3,7 +3,7 @@
 Parts (assembly pose, case frame): Feather RP2040 (board with holes + every component envelope from Adafruit's
 Eagle file), 18650 holder box, FM module (board + jack box, ESTIMATED), SIQ-02FVS3 wheel (Mitsumi-datasheet WRL model)
 plus its dial swept over the push travel and a solder/wire keepout at its terminals, SS-12F16 switch (datasheet
-boxes) with the knob swept over its travel, M2 screw shanks, lug keepout, optional 3 mm LEDs.
+boxes) with the knob swept over its travel, lug keepout, optional 3 mm LEDs.
 Checked against case top, case bottom and frame, part-to-part, and the top half's vertical assembly path over the dial.
 usage: check_fit.py top.stl bottom.stl frame.stl"""
 import sys,os,re,math,json,numpy as np,trimesh
@@ -54,21 +54,18 @@ dial=trimesh.creation.cylinder(radius=R,height=DZ1-DZ0,sections=96); dial.apply_
 d2=dial.copy(); d2.apply_translation([-L.WHEEL_PUSH,0,0])
 parts["wheel dial + push sweep"]=[trimesh.util.concatenate([dial,d2]).convex_hull]
 parts["wheel solder joints/wires keepout"]=[wl(-9.0,-7.05,-5.0,5.0,0.2,2.6)]
-# SS-12F16 switch (plate in the wall pocket, knob swept over its full travel), M2 screw shanks
-pw,pz,pt=L.SW_PLATE; bl,bz,bd=L.SW_BODY; px1=L.IN_X1U+L.SW_POCKET; px0=px1-pt
+# SS-12F16 switch, screwless, left wall: plate pressed to the outer skin (n = SW_SKIN from the outer face), body inward,
+# knob outward through the slot, swept over its full travel. The fit model uses a 0.45 plate (the crush bumps' free gap);
+# 0.5-0.6 plates squeeze the 0.25 bumps by 0.05-0.15 (reported below, intended).
+X0OU=L.IN_X0U-L.WALL
+pw,pz,_pt=L.SW_PLATE; pt=L.SW_GROOVE-L.SW_CRUSH; bl,bz,bd=L.SW_BODY; px0=X0OU+L.SW_SKIN; px1=px0+pt
 sw=[box(px0,px1,L.SW_Y-pw/2,L.SW_Y+pw/2,L.SW_Z-pz/2,L.SW_Z+pz/2),
-    box(px0-bd,px0,L.SW_Y-bl/2,L.SW_Y+bl/2,L.SW_Z-bz/2,L.SW_Z+bz/2)]
-sw+=[box(px0-bd-L.SW_LUG_L,px0-bd,L.SW_Y+k*L.SW_LUG_P-0.8,L.SW_Y+k*L.SW_LUG_P+0.8,L.SW_Z-0.25,L.SW_Z+0.25) for k in (-1,0,1)]
+    box(px1,px1+bd,L.SW_Y-bl/2,L.SW_Y+bl/2,L.SW_Z-bz/2,L.SW_Z+bz/2)]
+sw+=[box(px1+bd,px1+bd+L.SW_LUG_L,L.SW_Y+k*L.SW_LUG_P-0.8,L.SW_Y+k*L.SW_LUG_P+0.8,L.SW_Z-0.25,L.SW_Z+0.25) for k in (-1,0,1)]
 parts[f"SS-12F16-G0{int(L.SW_L*10)} switch"]=sw
 ax,az=L.SW_ACT
-parts["switch knob, full travel"]=[box(px1,px1+L.SW_L,L.SW_Y-L.SW_TRAVEL/2-ax/2,L.SW_Y+L.SW_TRAVEL/2+ax/2,L.SW_Z-az/2,L.SW_Z+az/2)]
-parts["switch lug solder/wire keepout"]=[box(px0-bd-L.SW_LUG_L-1.5,px0-bd-0.01,L.SW_Y-L.SW_LUG_P-1.2,L.SW_Y+L.SW_LUG_P+1.2,L.SW_Z-1.2,L.SW_Z+1.2)]
-SCREWS_ON = "sw_screws = true" in open(os.path.join(ROOT,"case","openald_feather_case.scad")).read()
-if SCREWS_ON:   # M2 x 3 pan head from outside: shank from the outer face 3 mm in (head outside the case)
-    ox=L.IN_X1U+L.WALL
-    for dy in (-L.SW_HOLE_P/2,L.SW_HOLE_P/2):
-        c=trimesh.creation.cylinder(radius=0.95,height=3.0,sections=24); c.apply_transform(trimesh.transformations.rotation_matrix(math.pi/2,[0,1,0]))
-        c.apply_translation([ox-1.5,L.SW_Y+dy,L.SW_Z]); parts.setdefault("M2x3 switch screws (shank)",[]).append(c)
+parts["switch knob, full travel"]=[box(px0-L.SW_L,px0,L.SW_Y-L.SW_TRAVEL/2-ax/2,L.SW_Y+L.SW_TRAVEL/2+ax/2,L.SW_Z-az/2,L.SW_Z+az/2)]
+parts["switch lug solder/wire keepout"]=[box(px1+bd+0.01,px1+bd+L.SW_LUG_L+1.5,L.SW_Y-L.SW_LUG_P-1.2,L.SW_Y+L.SW_LUG_P+1.2,L.SW_Z-1.2,L.SW_Z+1.2)]
 # optional 3 mm LEDs (top half sockets)
 TOP_OUT=L.TOP_IN+L.TOP_T; seat=TOP_OUT-L.LED3_ABOVE_FLANGE
 for (_c,_l,x,y) in L.LED3:
@@ -89,11 +86,10 @@ for pn,ms in parts.items():
     lo=np.min([m.bounds[0] for m in ms],axis=0); hi_=np.max([m.bounds[1] for m in ms],axis=0)
     rows.append(f"  {pn:26s} x {lo[0]:6.2f}..{hi_[0]:6.2f}  y {lo[1]:6.2f}..{hi_[1]:6.2f}  z {lo[2]:6.2f}..{hi_[2]:6.2f}")
 print("parts (case frame):"); print("\n".join(rows))
-# part-to-part (expected overlaps: the dial sweep contains the dial; screws thread into the switch plate)
+# part-to-part (expected overlaps: the dial sweep contains the dial)
 def ok_pair(a,b):
     p={a,b}
     if any(n.startswith("wheel dial") for n in p) and any(n.startswith("SIQ") for n in p): return True
-    if any(n.startswith("M2x3") for n in p) and any(n.startswith("SS-12F16") for n in p): return True
     if any(n.startswith("switch") for n in p) and any(n.startswith("SS-12F16") for n in p): return True
     if any(n.startswith("wheel solder") for n in p) and any(n.startswith("SIQ") for n in p): return True
     return False
@@ -125,11 +121,55 @@ path=trimesh.boolean.intersection([col,box(L.IN_X1U,L.IN_X1U+10,WY-10,WY+10,-1,D
 v=trimesh.boolean.intersection([path,cases["case top"]],engine="manifold").volume
 if v>0.01: bad+=1; print(f"  INTERFERENCE top-half assembly path over the dial: {v:.3f} mm^3")
 else: print("  top half can be lowered straight over the protruding dial: OK")
+# switch drop-in path: the switch goes into the bottom half from above (plate in the groove, knob down the channel)
+def up(m,z1=3.0):
+    lo,hi=m.bounds; return box(lo[0],hi[0],lo[1],hi[1],lo[2],z1)
+v=sum(trimesh.boolean.intersection([up(m),cases["case bottom"]],engine="manifold").volume for m in parts[f"SS-12F16-G0{int(L.SW_L*10)} switch"])
+# the knob is checked at the travel position where it sits while dropping: centred in the channel (any position fits)
+kn=box(px0-L.SW_L,px0,L.SW_Y-ax/2,L.SW_Y+ax/2,L.SW_Z-az/2,L.SW_Z+az/2); v+=trimesh.boolean.intersection([up(kn),cases["case bottom"]],engine="manifold").volume
+if v>0.01: bad+=1; print(f"  INTERFERENCE switch drop-in path (bottom half): {v:.3f} mm^3")
+else: print("  switch drops straight into its groove from above (no screws): OK")
+# switch retention: what closes it in once the frame and the top half are on
+fr=cases["frame"]; top=cases["case top"]
+cap=trimesh.boolean.intersection([fr,box(px0-0.1,px1+bd,L.SW_Y-pw/2,L.SW_Y+pw/2,L.SW_Z+pz/2,L.SW_Z+pz/2+1.5)],engine="manifold")
+print(f"  switch cap: frame tab over the plate/body from Z {cap.bounds[0][2]:.2f} (plate/body top {L.SW_Z+pz/2:.2f}) -> {cap.bounds[0][2]-(L.SW_Z+pz/2):.2f} mm vertical play")
+for t in (0.4,0.5,0.6): print(f"    plate {t:.1f}: {'free in groove, play %.2f' % (pt-t) if t<=pt else 'crush bumps squeezed %.2f' % (t-pt)}")
+# frame: vertical insertion into the bottom half (tabs into the parting-line notches), and the clamp
+tabs=[]
+for (sd,pos,w) in json.loads(re.search(r"frame_tabs\s*=\s*(\[.*?\]);",open(os.path.join(ROOT,"case","case_params.scad")).read(),re.S).group(1)):
+    tabs.append((sd,pos,w))
+v=0
+for (sd,pos,w) in tabs:
+    if sd==0:   xi=L.IN_X0U if pos>54.3 else L.IN_X0; m=box(xi-0.85,xi+0.85,pos-w/2,pos+w/2,L.DECK_Z0,L.DECK_Z1)
+    elif sd==1: xi=L.IN_X1U if pos>54.3 else L.IN_X1; m=box(xi-0.85,xi+0.85,pos-w/2,pos+w/2,L.DECK_Z0,L.DECK_Z1)
+    else:       m=box(pos-w/2,pos+w/2,L.Y_IN1-0.85,L.Y_IN1+0.85,L.DECK_Z0,L.DECK_Z1)
+    v+=trimesh.boolean.intersection([up(m,6),cases["case bottom"]],engine="manifold").volume
+    under=trimesh.boolean.intersection([box(m.bounds[0][0],m.bounds[1][0],m.bounds[0][1],m.bounds[1][1],L.DECK_Z1-0.05,L.DECK_Z1+0.3),top],engine="manifold")
+    print(f"    tab {'LRT'[sd]}{pos:g} w{w:g}: top-half plug over it: {'yes' if under.volume>0.01 else 'NO'}")
+if v>0.01: bad+=1; print(f"  INTERFERENCE frame tab insertion path: {v:.3f} mm^3")
+else: print(f"  frame drops in from above; {len(tabs)} tabs sit on the notch floors (Z {L.DECK_Z0}) under top-half plugs (Z {L.DECK_Z1}): clamped")
+# top half below the parting line (must be only the switch-channel tongue, which closes over the knob, not through it)
+lowt=trimesh.boolean.intersection([top,box(-60,100,-60,150,-30,-0.02)],engine="manifold")
+if lowt.volume>0.01: print(f"  top half below Z 0: {lowt.volume:.2f} mm^3 at x {lowt.bounds[0][0]:.2f}..{lowt.bounds[1][0]:.2f} y {lowt.bounds[0][1]:.2f}..{lowt.bounds[1][1]:.2f} z {lowt.bounds[0][2]:.2f}..{lowt.bounds[1][2]:.2f} (knob top {L.SW_Z+az/2:.2f})")
+def down(m):   # swept volume of a part moved down 30 mm (= the space top-half material must pass through to get under it)
+    h=m if m.is_watertight else m.convex_hull; h2=h.copy(); h2.apply_translation([0,0,-30])
+    return trimesh.util.concatenate([h,h2]).convex_hull   # (convex: conservative)
+v=0
+for k in parts:
+    if k.startswith("3 mm LED") or k.startswith("Feather"): continue   # LEDs live in the top half; Feather is checked by its clamp posts
+    vk=sum(trimesh.boolean.intersection([down(m),top],engine="manifold").volume for m in parts[k])
+    if vk>0.01: print(f"    lowering path through {k}: {vk:.3f} mm^3")
+    v+=vk
+if v>0.01: bad+=1; print(f"  INTERFERENCE top-half lowering path through a part: {v:.3f} mm^3")
+else: print("  top half lowers straight down without passing through any part: OK")
+# battery holder vs frame: the holder cannot lift the frame
+H=L.HOLDER; hf=trimesh.boolean.intersection([fr,box(H["x0"],H["x1"],H["y0"],H["y1"],-30,5)],engine="manifold")
+print(f"  holder top Z {H['z1']:.2f} (in a {L.HOLDER_POCKET} floor pocket), frame underside over it Z {hf.bounds[0][2]:.2f} -> gap {hf.bounds[0][2]-H['z1']:.2f} mm")
 # protrusions
 OUT_X=L.IN_X1U+L.WALL
 print(f"  wheel: dial edge X {WX+R:.2f}, outer face X {OUT_X:.2f} -> protrudes {WX+R-OUT_X:.2f} mm past the case side, "
       f"{WX+R-(OUT_X-1.0):.2f} mm past the 1 mm-deep thumb pocket floor; body front {WX+3.85:.2f} vs inner wall {L.IN_X1U:.2f}")
-print(f"  switch: knob tip X {px1+L.SW_L:.2f} -> protrudes {px1+L.SW_L-OUT_X:.2f} mm past the case side (SW_L={L.SW_L:g}; "
-      f"G4 {px1+4-OUT_X:.2f} / G5 {px1+5-OUT_X:.2f} / G6 {px1+6-OUT_X:.2f}); wall under the plate {L.WALL-L.SW_POCKET:.2f} mm")
+print(f"  switch (left side): knob tip X {px0-L.SW_L:.2f} -> protrudes {X0OU-(px0-L.SW_L):.2f} mm past the case side (SW_L={L.SW_L:g}; "
+      f"G4 {4-L.SW_SKIN:.2f} / G5 {5-L.SW_SKIN:.2f} / G6 {6-L.SW_SKIN:.2f}); skin in front of the plate {L.SW_SKIN:.2f} mm")
 print("RESULT:", "PASS (0 interferences)" if bad==0 else f"FAIL ({bad} interferences)")
 allm=[m for ms in parts.values() for m in ms]; trimesh.util.concatenate(allm).export("/tmp/feather_assembly.stl")
