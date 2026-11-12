@@ -132,7 +132,7 @@ PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC
 Tool versions used: KiCad **9.0.2** (Debian `kicad 9.0.2+dfsg-1`), OpenSCAD **2021.01**, Python **3.13.5**, packages in
 `requirements.txt`, Freerouting (build 2026-10-05) on OpenJDK 25 (re-routing only). Stock KiCad 3D models are needed
 for the case fit checks: `tools/fetch_kicad3d.sh && export KICAD9_3DMODEL_DIR=$PWD/tools/kicad3d` (or install
-`kicad-packages3d`). Without them the radio fit check silently checks only the project's own models.
+`kicad-packages3d`). Without them the radio fit check silently checks only the project's own models — a complete `case/case_fit_report.txt` has 82 part lines starting with `BT1` (the 18650 holder).
 
 **Quick check (non-destructive):** `tools/check_all.sh` → expected:
 ```
