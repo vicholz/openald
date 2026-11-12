@@ -1,0 +1,30 @@
+OpenALD v1.0 — estimated JLC cost for 5 boards, MINIMAL (hotplate) assembly
+ESTIMATE ONLY. Fees from JLCPCB's published Economic PCBA table (setup $8.18, stencil $1.53,
+extended feeder $3.07 / type, SMT $0.0016 / joint, confirm-placement $0.45). PCB $2 is the
+earlier project estimate for 5 pcs of this 38x87 mm 2-layer 1.6 mm board, not a live quote.
+Shipping, tax and any US tariff are NOT included. Prices drift.
+
+Parts JLC places: J1 USB-C (C165948), U1 TP4056 (C16581, Preferred ext.), U3 ATmega328PB-AU
+(C132230), U7 CH340K (C968586).
+
+Parts:
+  J1  C165948  USB-C (power + USB 2.0 data)  x5  $0.1868 ea  $0.93  [Extended]
+  U1  C16581  TP4056  x5  $0.1852 ea  $0.93  [Preferred ext.]
+  U3  C132230  ATmega328PB-AU  x5  $1.8630 ea  $9.31  [Extended]
+  U7  C968586  CH340K  x5  $0.6363 ea  $3.18  [Extended]
+  Parts subtotal (5 boards, qty-1 unit prices): $14.36
+
+Fees (Economic PCBA, one order):
+  PCB, 5 pcs (estimate)                         $2.00
+  Setup                                         $8.18
+  Stencil (kept by JLC, not shipped)            $1.53
+  Extended feeder loading  3 x $3.07           $9.21
+    fee-bearing: C165948, C132230, C968586
+    no fee (Preferred ext.): C16581
+  SMT assembly  73 joints x 5 x $0.0016          $0.58
+  Confirm parts placement                       $0.45
+  ------------------------------------------------
+  Estimated order total, before ship/tariff     $36.31
+
+Notes: J1 is mid-mount and has 6 extra mechanical pads; JLC may quote some of those as manual
+joints (~$0.0164 each). That would add at most a couple of dollars. This is not a live cart quote.

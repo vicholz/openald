@@ -1,0 +1,9 @@
+Designator(s),Qty/board,Value / description,Manufacturer part,LCSC #,JLC library,LCSC stock (live),Unit price USD (qty 10),Assembly,Link
+SW2,1,SIQ-02FVS3 (Mitsumi_SIQ-02FVS3),Mitsumi SIQ-02FVS3,C2925423,Extended,1289,3.0374,JLCPCB SMT,https://www.lcsc.com/product-detail/C2925423.html
+"R1,R2",2,220k (R_0603_1608Metric),UNI-ROYAL 0603WAF2203T5E,C22961,Basic,993287,0.0015,JLCPCB SMT,https://www.lcsc.com/product-detail/C22961.html
+C1,1,100nF (C_0603_1608Metric),Samsung CC0603KRX7R9BB104,C14663,Basic,37436318,0.006,JLCPCB SMT,https://www.lcsc.com/product-detail/C14663.html
+"R3,R4",2,1.5k (R_0603_1608Metric),UNI-ROYAL 0603WAF1501T5E,C22843,Basic,3046768,0.002,JLCPCB SMT,https://www.lcsc.com/product-detail/C22843.html
+D1,1,RED CHG (LED_0603_1608Metric),Hubei KENTO KT-0603R,C2286,Basic,6041987,0.0077,JLCPCB SMT,https://www.lcsc.com/product-detail/C2286.html
+D2,1,GREEN FULL (LED_0603_1608Metric),Hubei KENTO KT-0603G,C12624,Extended,296248,0.0119,JLCPCB SMT,https://www.lcsc.com/product-detail/C12624.html
+SW1,1,POWER (SK-12E12-G5),HRO SK-12E12-G5,C136720,Extended,15487,0.1132,Hand solder (THT) - or add to JLC THT assembly with JLC_CORR above,https://www.lcsc.com/product-detail/C136720.html
+J1,1,9 wire pads to the Feather (no part),,,,,,Wires soldered by hand,

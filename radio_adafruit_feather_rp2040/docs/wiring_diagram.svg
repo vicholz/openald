@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1010" viewBox="0 0 1560 1010" font-family="DejaVu Sans, Arial, sans-serif">
+<rect width="1560" height="1010" fill="white"/>
+<text x="30" y="42" font-size="26" font-weight="bold">OpenALD Feather RP2040 v1.0 - wiring</text>
+<text x="30" y="70" font-size="15" fill="#555">All wires are hand-soldered. Not hardware-validated. Wire colours are suggestions. FM module pin order: check the silkscreen on yours.</text>
+<rect x="520" y="160" width="330" height="600" rx="10" fill="#e8f4ea" stroke="#333" stroke-width="2"/>
+<text x="685.0" y="188" font-size="19" font-weight="bold" text-anchor="middle">Adafruit Feather RP2040</text>
+<text x="685.0" y="210" font-size="13" fill="#333" text-anchor="middle">(#4884, mounted components-up,</text>
+<text x="685.0" y="228" font-size="13" fill="#333" text-anchor="middle">USB-C at the dock end)</text>
+<circle cx="520" cy="375" r="6" fill="#d4a017" stroke="#333"/>
+<text x="532" y="380" font-size="14">VBAT</text>
+<circle cx="520" cy="415" r="6" fill="#d4a017" stroke="#333"/>
+<text x="532" y="420" font-size="14">EN</text>
+<circle cx="520" cy="455" r="6" fill="#d4a017" stroke="#333"/>
+<text x="532" y="460" font-size="14">USB (VBUS)</text>
+<circle cx="520" cy="495" r="6" fill="#d4a017" stroke="#333"/>
+<text x="532" y="500" font-size="14">STAT tap: R2 pad (STAT side)</text>
+<circle cx="520" cy="580" r="6" fill="#d4a017" stroke="#333"/>
+<text x="532" y="585" font-size="14">JST PH battery +</text>
+<circle cx="520" cy="620" r="6" fill="#d4a017" stroke="#333"/>
+<text x="532" y="625" font-size="14">JST PH battery -</text>
+<circle cx="850" cy="375" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="380" font-size="14" text-anchor="end">GND</text>
+<circle cx="850" cy="415" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="420" font-size="14" text-anchor="end">A0 (GP26)</text>
+<circle cx="850" cy="455" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="460" font-size="14" text-anchor="end">D24 (GP24)</text>
+<circle cx="850" cy="495" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="500" font-size="14" text-anchor="end">D25 (GP25)</text>
+<circle cx="850" cy="535" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="540" font-size="14" text-anchor="end">D4 (GP6)</text>
+<circle cx="850" cy="630" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="635" font-size="14" text-anchor="end">STEMMA QT 3V3</text>
+<circle cx="850" cy="670" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="675" font-size="14" text-anchor="end">STEMMA QT GND</text>
+<circle cx="850" cy="710" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="715" font-size="14" text-anchor="end">STEMMA QT SDA (GP2)</text>
+<circle cx="850" cy="750" r="6" fill="#d4a017" stroke="#333"/>
+<text x="838" y="755" font-size="14" text-anchor="end">STEMMA QT SCL (GP3)</text>
+<text x="685.0" y="252" font-size="13" text-anchor="middle" fill="#333">On-board: MCP73831 charger 200 mA, CHG LED (amber),</text>
+<text x="685.0" y="270" font-size="13" text-anchor="middle" fill="#333">red LED D13, NeoPixel - all seen through top windows.</text>
+<text x="685.0" y="288" font-size="13" text-anchor="middle" fill="#333">EN low = 3.3 V regulator off (radio off).</text>
+<rect x="1110" y="190" width="380" height="520" rx="10" fill="#e6eefb" stroke="#333" stroke-width="2"/>
+<text x="1300.0" y="218" font-size="19" font-weight="bold" text-anchor="middle">Controls board (KiCad, JLC)</text>
+<text x="1300.0" y="240" font-size="13" fill="#333" text-anchor="middle">SIQ-02FVS3 wheel + push, SK-12E12 switch,</text>
+<text x="1300.0" y="258" font-size="13" fill="#333" text-anchor="middle">220k/220k divider, CHG/FULL mirror LEDs</text>
+<circle cx="1110" cy="310" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="315" font-size="14">J1.1 ENCA</text>
+<circle cx="1110" cy="350" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="355" font-size="14">J1.2 ENCB</text>
+<circle cx="1110" cy="390" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="395" font-size="14">J1.3 ENCSW</text>
+<circle cx="1110" cy="430" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="435" font-size="14">J1.4 EN</text>
+<circle cx="1110" cy="470" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="475" font-size="14">J1.5 GND</text>
+<circle cx="1110" cy="510" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="515" font-size="14">J1.6 VBUS</text>
+<circle cx="1110" cy="550" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="555" font-size="14">J1.7 STAT</text>
+<circle cx="1110" cy="590" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="595" font-size="14">J1.8 VBAT</text>
+<circle cx="1110" cy="630" r="6" fill="#d4a017" stroke="#333"/>
+<text x="1122" y="635" font-size="14">J1.9 BSNS</text>
+<rect x="60" y="460" width="300" height="170" rx="10" fill="#f6eee0" stroke="#333" stroke-width="2"/>
+<text x="210.0" y="488" font-size="19" font-weight="bold" text-anchor="middle">18650 holder MPD BH-18650-PC</text>
+<text x="210.0" y="510" font-size="13" fill="#333" text-anchor="middle">protected button-top cell</text>
+<text x="210.0" y="528" font-size="13" fill="#333" text-anchor="middle">+ pin at the USB end, - at the jack end</text>
+<circle cx="360" cy="550" r="6" fill="#d4a017" stroke="#333"/>
+<text x="348" y="555" font-size="14" text-anchor="end">+ (red)</text>
+<circle cx="360" cy="590" r="6" fill="#d4a017" stroke="#333"/>
+<text x="348" y="595" font-size="14" text-anchor="end">- (black)</text>
+<rect x="60" y="190" width="300" height="200" rx="10" fill="#eef" stroke="#333" stroke-width="2"/>
+<text x="210.0" y="218" font-size="19" font-weight="bold" text-anchor="middle">RDA5807M FM module</text>
+<text x="210.0" y="240" font-size="13" fill="#333" text-anchor="middle">26.9 x 26.9, 3.5 mm jack on board</text>
+<text x="210.0" y="258" font-size="13" fill="#333" text-anchor="middle">I2C 0x10 / 0x11, 3.3 V</text>
+<circle cx="360" cy="280" r="6" fill="#d4a017" stroke="#333"/>
+<text x="348" y="285" font-size="14" text-anchor="end">VCC</text>
+<circle cx="360" cy="310" r="6" fill="#d4a017" stroke="#333"/>
+<text x="348" y="315" font-size="14" text-anchor="end">GND</text>
+<circle cx="360" cy="340" r="6" fill="#d4a017" stroke="#333"/>
+<text x="348" y="345" font-size="14" text-anchor="end">SDA</text>
+<circle cx="360" cy="370" r="6" fill="#d4a017" stroke="#333"/>
+<text x="348" y="375" font-size="14" text-anchor="end">SCL</text>
+<path d="M360,550 L470,550 L470,580 L520,580" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" />
+<text x="372" y="542" font-size="12" fill="#222">JST PH cable (#261) red</text>
+<path d="M360,590 L490,590 L490,620 L520,620" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
+<text x="372" y="610" font-size="12" fill="#222">black</text>
+<path d="M850,630 L880,630 L880,800 L400,800 L400,280 L360,280" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" />
+<path d="M850,670 L894,670 L894,814 L414,814 L414,310 L360,310" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
+<path d="M850,710 L908,710 L908,828 L428,828 L428,340 L360,340" fill="none" stroke="#27c" stroke-width="4" stroke-linejoin="round" />
+<path d="M850,750 L922,750 L922,842 L442,842 L442,370 L360,370" fill="none" stroke="#cc0" stroke-width="4" stroke-linejoin="round" />
+<text x="685.0" y="880" font-size="13" text-anchor="middle">STEMMA QT cable (Adafruit #4210, one end cut and soldered to the FM module): red 3V3, black GND, blue SDA, yellow SCL</text>
+<path d="M850,455 L960,455 L960,310 L1110,310" fill="none" stroke="#7a3" stroke-width="4" stroke-linejoin="round" />
+<path d="M850,495 L976,495 L976,350 L1110,350" fill="none" stroke="#3a7" stroke-width="4" stroke-linejoin="round" />
+<path d="M850,535 L992,535 L992,390 L1110,390" fill="none" stroke="#a73" stroke-width="4" stroke-linejoin="round" />
+<path d="M850,375 L1008,375 L1008,470 L1110,470" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
+<path d="M850,415 L1024,415 L1024,630 L1110,630" fill="none" stroke="#888" stroke-width="4" stroke-linejoin="round" />
+<path d="M520,415 L496,415 L496,136 L1080,136 L1080,430 L1110,430" fill="none" stroke="#f80" stroke-width="4" stroke-linejoin="round" />
+<path d="M520,455 L484,455 L484,122 L1066,122 L1066,510 L1110,510" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" />
+<path d="M520,495 L472,495 L472,108 L1052,108 L1052,550 L1110,550" fill="none" stroke="#a0a" stroke-width="4" stroke-linejoin="round" stroke-dasharray='10,6'/>
+<path d="M520,375 L460,375 L460,94 L1038,94 L1038,590 L1110,590" fill="none" stroke="#c55" stroke-width="4" stroke-linejoin="round" />
+<text x="1100" y="740" font-size="13">J1: 9 THT pads, 1.8 mm pitch; wires come up through the frame slot.</text>
+<text x="1100" y="760" font-size="13">SW1 common = EN; knob toward the USB end = EN to GND = OFF.</text>
+<text x="1100" y="780" font-size="13">STAT (dashed) is a fine wire to the STAT end of Feather R2 (10k,</text>
+<text x="1100" y="798" font-size="13">CHG LED resistor). Optional: skip it and fit no D1/D2.</text>
+</svg>

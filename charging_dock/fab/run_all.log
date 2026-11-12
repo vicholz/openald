@@ -1,0 +1,18 @@
+symbols: 92 labels: 278
+ ** ERC messages: 0  Errors 0  Warnings 0
+saved; footprints: 104 nets: 96
+pocket keep-out violations: 0
+pro updated
+2026-11-11 20:49:34.668 INFO   [2140EC\C62447] Auto-routing stage completed: started with 232 unrouted nets, completed in 18.70 seconds, final score: 998.22 (0 unrouted and 14 violations), using 17.77 total CPU seconds, 10.52 GB total allocated, and 229.4 MB peak heap usage.
+SES import: True
+removed dangling vias: 0
+removed dangling track stubs: 0
+tracks: 851 vias: 83
+widened segments: 167 of 321
+GND stitching vias: 610
+** Found 77 DRC violations **
+** Found 0 unconnected pads **
+** Found 0 Footprint errors **
+      4 [silk_edge_clearance]
+     39 [silk_over_copper]
+     34 [silk_overlap]

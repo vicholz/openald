@@ -1,0 +1,5 @@
+Comment,Designator,Footprint,LCSC Part #
+USB-C (power + USB 2.0 data),J1,USB_C_Receptacle_HRO_TYPE-C-31-M-12,C165948
+TP4056,U1,SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm,C16581
+ATmega328PB-AU,U3,TQFP-32_7x7mm_P0.8mm,C132230
+CH340K,U7,SSOP-10-1EP_3.9x4.9mm_P1mm_EP2.1x3.3mm,C968586

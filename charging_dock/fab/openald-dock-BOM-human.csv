@@ -1,0 +1,42 @@
+Designator(s),Qty/board,Value / description,Manufacturer part,LCSC #,JLC library,LCSC stock (live),Unit price USD (qty 10),Assembly,Link
+J1,1,USB-C IN (PD sink) (USB_C_Receptacle_HRO_TYPE-C-31-M-12),HRO TYPE-C-31-M-12,C165948,Extended,281647,0.1868,JLCPCB SMT,https://www.lcsc.com/product-detail/C165948.html
+F1,1,4A 32V fast (Fuse_1206_3216Metric),Littelfuse 0466004.NRHF,C187596,Extended,14764,0.0848,JLCPCB SMT,https://www.lcsc.com/product-detail/C187596.html
+D1,1,"SMBJ22A (TVS, uni) (D_SMB)",SMBJ22A,C151920,Extended,7664,0.0684,JLCPCB SMT,https://www.lcsc.com/product-detail/C151920.html
+"C1,C11,C12,C31,C32",5,10uF 50V (C_1206_3216Metric),CL31A106KBHNNNE,C13585,Basic,3495621,0.127,JLCPCB SMT,https://www.lcsc.com/product-detail/C13585.html
+U1,1,HUSB238_002DD (DFN-10-1EP_3x3mm_P0.5mm_EP1.55x2.48mm),Hynetek HUSB238_002DD,C7471904,Extended,17771,0.4695,JLCPCB SMT,https://www.lcsc.com/product-detail/C7471904.html
+R1,1,13.7k (R_0603_1608Metric),0603WAF1372T5E,C22793,Extended,156335,0.0022,JLCPCB SMT,https://www.lcsc.com/product-detail/C22793.html
+"C2,C14,C34,C51,C52,C53,C54,C55,C56",9,1uF 50V / 1uF (C_0603_1608Metric),CL10A105KB8NNNC,C15849,Basic,14039417,0.0113,JLCPCB SMT,https://www.lcsc.com/product-detail/C15849.html
+Q1,1,AO4407A (SOIC-8_3.9x4.9mm_P1.27mm),AOS AO4407A,C16072,Extended,19166,0.3312,JLCPCB SMT,https://www.lcsc.com/product-detail/C16072.html
+"R2,R6,R13,R33",4,100k (R_0603_1608Metric),0603WAF1003T5E,C25803,Basic,15176547,0.0029,JLCPCB SMT,https://www.lcsc.com/product-detail/C25803.html
+R3,1,47k (R_0603_1608Metric),0603WAF4702T5E,C25819,Basic,2904329,0.0016,JLCPCB SMT,https://www.lcsc.com/product-detail/C25819.html
+C3,1,4.7nF 50V (C_0603_1608Metric),0603B472K500NT,C53987,Basic,809197,0.0052,JLCPCB SMT,https://www.lcsc.com/product-detail/C53987.html
+C4,1,100uF 35V (CP_Elec_8x10),RVE100UF35V67RV0161,C2895269,Extended,5149,0.1155,JLCPCB SMT,https://www.lcsc.com/product-detail/C2895269.html
+"U2,U3",2,SY8205FCC (SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3mm),Silergy SY8205FCC,C111875,Extended,10557,0.3354,JLCPCB SMT,https://www.lcsc.com/product-detail/C111875.html
+"C13,C33",2,100nF (C_0603_1608Metric),CC0603KRX7R9BB104,C14663,Basic,37431294,0.006,JLCPCB SMT,https://www.lcsc.com/product-detail/C14663.html
+"C15,C35",2,22nF (C_0603_1608Metric),CL10B223KB8NNNC,C21122,Basic,993844,0.0056,JLCPCB SMT,https://www.lcsc.com/product-detail/C21122.html
+"L1,L2",2,4.7uH 7A (L_Sunlord_MWSA0604S),Sunlord MWSA0604S-4R7MT,C408457,Extended,8136,0.1687,JLCPCB SMT,https://www.lcsc.com/product-detail/C408457.html
+"C16,C17,C18,C36,C37,C38",6,22uF 25V (C_0805_2012Metric),CL21A226MAQNNNE,C45783,Basic,4148770,0.1055,JLCPCB SMT,https://www.lcsc.com/product-detail/C45783.html
+"C19,C39",2,470uF 10V (CP_Elec_6.3x7.7),RVT470UF10V67RV0159,C2858856,Extended,138705,0.0457,JLCPCB SMT,https://www.lcsc.com/product-detail/C2858856.html
+"C20,C40",2,100pF (C_0603_1608Metric),CL10C101JB8NNNC,C14858,Basic,3620383,0.0082,JLCPCB SMT,https://www.lcsc.com/product-detail/C14858.html
+"R11,R31",2,75k (R_0603_1608Metric),0603WAF7502T5E,C23242,Basic,725304,0.0021,JLCPCB SMT,https://www.lcsc.com/product-detail/C23242.html
+"R12,R32",2,10k (R_0603_1608Metric),0603WAF1002T5E,C25804,Basic,43350791,0.0022,JLCPCB SMT,https://www.lcsc.com/product-detail/C25804.html
+"R14,R34",2,12k (R_0603_1608Metric),0603WAF1202T5E,C22790,Basic,1063579,0.0031,JLCPCB SMT,https://www.lcsc.com/product-detail/C22790.html
+"U4,U5,U6,U7,U8,U9",6,SY6280AAC (SOT-23-5),Silergy SY6280AAC,C55136,Extended,97877,0.089,JLCPCB SMT,https://www.lcsc.com/product-detail/C55136.html
+"R51,R52,R53,R54,R55,R56",6,4.7k (R_0603_1608Metric),0603WAF4701T5E,C23162,Basic,14761704,0.0028,JLCPCB SMT,https://www.lcsc.com/product-detail/C23162.html
+"C61,C62,C63,C64,C65,C66",6,10uF 25V (C_0805_2012Metric),CL21A106KAYNNNE,C15850,Basic,8632978,0.0315,JLCPCB SMT,https://www.lcsc.com/product-detail/C15850.html
+"R61,R62,R63,R64,R65,R66",6,22k (R_0603_1608Metric),0603WAF2202T5E,C31850,Basic,2498475,0.0042,JLCPCB SMT,https://www.lcsc.com/product-detail/C31850.html
+D2,1,Green (5 V on) (LED_0603_1608Metric),KT-0603G,C12624,Extended,296248,0.0119,JLCPCB SMT,https://www.lcsc.com/product-detail/C12624.html
+R4,1,1k (R_0603_1608Metric),0603WAF1001T5E,C21190,Basic,25734337,0.0017,JLCPCB SMT,https://www.lcsc.com/product-detail/C21190.html
+D3,1,Red (no PD) (LED_0603_1608Metric),KT-0603R,C2286,Basic,6051313,0.0077,JLCPCB SMT,https://www.lcsc.com/product-detail/C2286.html
+R5,1,4.7k (R_0805_2012Metric),0805W8F4701T5E,C17673,Basic,4083321,0.0034,JLCPCB SMT,https://www.lcsc.com/product-detail/C17673.html
+Q2,1,AO3400A (SOT-23),AOS AO3400A,C20917,Basic,918248,0.0802,JLCPCB SMT,https://www.lcsc.com/product-detail/C20917.html
+J2,1,"HX TYPE C-M 16P V-SMT vertical USB-C plug (slot 1) - hand solder, see README",HX TYPE C-M 16P V-SMT,C55200592,Extended,782,0.5431,Hand solder,https://www.lcsc.com/product-detail/C55200592.html
+J3,1,"HX TYPE C-M 16P V-SMT vertical USB-C plug (slot 2) - hand solder, see README",HX TYPE C-M 16P V-SMT,C55200592,Extended,782,0.5431,Hand solder,https://www.lcsc.com/product-detail/C55200592.html
+J4,1,"HX TYPE C-M 16P V-SMT vertical USB-C plug (slot 3) - hand solder, see README",HX TYPE C-M 16P V-SMT,C55200592,Extended,782,0.5431,Hand solder,https://www.lcsc.com/product-detail/C55200592.html
+J5,1,"HX TYPE C-M 16P V-SMT vertical USB-C plug (slot 4) - hand solder, see README",HX TYPE C-M 16P V-SMT,C55200592,Extended,782,0.5431,Hand solder,https://www.lcsc.com/product-detail/C55200592.html
+J6,1,"HX TYPE C-M 16P V-SMT vertical USB-C plug (slot 5) - hand solder, see README",HX TYPE C-M 16P V-SMT,C55200592,Extended,782,0.5431,Hand solder,https://www.lcsc.com/product-detail/C55200592.html
+J7,1,"HX TYPE C-M 16P V-SMT vertical USB-C plug (slot 6) - hand solder, see README",HX TYPE C-M 16P V-SMT,C55200592,Extended,782,0.5431,Hand solder,https://www.lcsc.com/product-detail/C55200592.html
+—,6,"M3 x 12 mm screws, socket or pan head (from below, heads in 3 mm counterbores)",,,,,~$0.05,Off-board,https://www.amazon.com/s?k=M3+x+12mm+socket+head+screws
+—,6,"M3 brass heat-set inserts, OD 4.0-4.6 mm x L 4-5.7 mm",,,,,~$0.06,Off-board,https://www.amazon.com/s?k=M3+heat+set+inserts
+—,4,10 mm round rubber bumper feet (optional),,,,,~$0.05,Off-board,https://www.amazon.com/s?k=10mm+rubber+bumper+feet
+—,1,"USB-C PD charger, 45 W or more (must offer 20 V >= 2.25 A or 15 V >= 3 A) + USB-C cable",,,,,~$15-25,Off-board,https://www.amazon.com/s?k=45W+USB+C+PD+charger

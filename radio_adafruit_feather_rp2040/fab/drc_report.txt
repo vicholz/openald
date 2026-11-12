@@ -1,0 +1,10 @@
+** Drc report for openald-feather-controls.kicad_pcb **
+** Created on 2026-11-11T20:54:51-0800 **
+
+** Found 0 DRC violations **
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **

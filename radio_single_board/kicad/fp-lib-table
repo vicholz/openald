@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "openald")(type "KiCad")(uri "${KIPRJMOD}/openald.pretty")(options "")(descr "OpenALD project footprints"))
+)

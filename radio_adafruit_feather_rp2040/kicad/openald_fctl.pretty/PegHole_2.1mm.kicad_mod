@@ -1,0 +1,8 @@
+(footprint "PegHole_2.1mm" (version 20240108) (generator "openald_gen") (layer "F.Cu")
+  (descr "NPTH 2.1 mm for a printed 1.9 mm locating peg")
+  (attr through_hole)
+  (property "Reference" "REF**" (at 0 -2.2 0) (layer "F.SilkS") (uuid "f3f7a002-7add-4694-9a28-7468817c0094") (effects (font (size 0.8 0.8) (thickness 0.12))))
+  (property "Value" "PegHole_2.1mm" (at 0 2.2 0) (layer "F.Fab") (uuid "b576fb3f-2285-43ad-833f-e8c5df7ae24e") (effects (font (size 0.8 0.8) (thickness 0.12))))
+  (pad "" np_thru_hole circle (at 0 0) (size 2.1 2.1) (drill 2.1) (layers "*.Cu" "*.Mask") (uuid "7ba61043-1bc3-45d2-889d-699d34ab42b4"))
+  (fp_circle (center 0 0) (end 1.1 0) (stroke (width 0.05) (type solid)) (fill no) (layer "F.CrtYd") (uuid "f9044ed0-2a54-458b-828c-c35dc13efb71"))
+)

@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "openald")(type "KiCad")(uri "${KIPRJMOD}/openald.kicad_sym")(options "")(descr "OpenALD project symbols"))
+)

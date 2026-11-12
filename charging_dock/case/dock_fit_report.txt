@@ -1,0 +1,18 @@
+ok   radios x shell_raw                             0.000 mm^3
+ok   plugs x shell_raw                              0.000 mm^3
+ok   PCB x shell_raw                                0.000 mm^3
+ok   radios x base_raw                              0.000 mm^3
+ok   plugs x base_raw                               0.000 mm^3
+ok   PCB x base_raw                                 0.000 mm^3
+ok   radios x pads_raw                              0.000 mm^3
+ok   plugs x pads_raw                               0.000 mm^3
+ok   PCB x pads_raw                                 0.000 mm^3
+ok   plugs x radios (plug inside USB-C cavity)      0.000 mm^3
+ok   shell x pads                                   0.000 mm^3
+ok   shell x base                                   0.000 mm^3
+ok   pads x base                                    0.000 mm^3
+closest PCB part to the top shell: D3 at 0.19 mm (part boxes)
+insertion past the receptacle mouth: 6.00 mm (plug top Z 20.20, radio floor Z 11.70)
+radio-to-guide clearance 0.35/side for 12 mm, 0.60/side above; pocket depth 50.8
+outer size 191.8 x 111.72 x 62.5 mm; radio gap 25.4 mm
+INTERFERENCES: 0

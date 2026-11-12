@@ -1,0 +1,14 @@
+{
+ "jlc_parts_cost_per_board_qty10": 3.07,
+ "hand_solder_lcsc_parts": 0.113,
+ "extended": [
+  "C12624",
+  "C2925423"
+ ],
+ "fee_bearing_extended": [
+  "C12624",
+  "C2925423"
+ ],
+ "extended_setup_fee_estimate_usd": 6,
+ "prices_fetched": "2026-11-11 20:55 PST"
+}

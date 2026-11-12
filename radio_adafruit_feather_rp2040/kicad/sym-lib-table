@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "openald_fctl")(type "KiCad")(uri "${KIPRJMOD}/openald_fctl.kicad_sym")(options "")(descr ""))
+)

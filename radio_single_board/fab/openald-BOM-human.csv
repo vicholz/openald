@@ -1,0 +1,42 @@
+Designator(s),Qty/board,Value / description,Manufacturer part,LCSC #,JLC library,LCSC stock (live),Unit price USD (qty 10),Assembly,Link
+J1,1,USB-C (power + USB 2.0 data) (USB_C_Receptacle_HRO_TYPE-C-31-M-12),HRO TYPE-C-31-M-12,C165948,Extended,281632,0.1868,JLCPCB SMT,https://www.lcsc.com/product-detail/C165948.html
+"R1,R2",2,5.1k (R_0603_1608Metric),0603WAF5101T5E,C23186,Basic,19705142,0.0015,JLCPCB SMT,https://www.lcsc.com/product-detail/C23186.html
+"C1,C2",2,10uF 25V (C_0805_2012Metric),CL21A106KAYNNNE,C15850,Basic,8635577,0.0315,JLCPCB SMT,https://www.lcsc.com/product-detail/C15850.html
+U1,1,TP4056 (SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm),TP4056-42-ESOP8,C16581,Preferred ext.,89499,0.1852,JLCPCB SMT,https://www.lcsc.com/product-detail/C16581.html
+R3,1,1.2k (R_0603_1608Metric),0603WAF1201T5E,C22765,Basic,2122275,0.0034,JLCPCB SMT,https://www.lcsc.com/product-detail/C22765.html
+"R5,R11,R12,R13,R16,R17,R20,R21,R22",9,1k (R_0603_1608Metric),0603WAF1001T5E,C21190,Basic,25689733,0.0017,JLCPCB SMT,https://www.lcsc.com/product-detail/C21190.html
+D3,1,Red (charging) (LED_0603_1608Metric),KT-0603R,C2286,Basic,6046029,0.0077,JLCPCB SMT,https://www.lcsc.com/product-detail/C2286.html
+"D1,D4,D5,D6",4,Green (charged) / Green (level bar) (LED_0603_1608Metric),KT-0603G,C12624,Extended,296191,0.0119,JLCPCB SMT,https://www.lcsc.com/product-detail/C12624.html
+Q2,1,AO3401A (SOT-23),AOS AO3401A,C15127,Basic,1606758,0.0813,JLCPCB SMT,https://www.lcsc.com/product-detail/C15127.html
+Q3,1,AO3400A (SOT-23),AOS AO3400A,C20917,Basic,916553,0.0802,JLCPCB SMT,https://www.lcsc.com/product-detail/C20917.html
+"R7,R10,R19,R23",4,10k (R_0603_1608Metric),0603WAF1002T5E,C25804,Basic,43282059,0.0022,JLCPCB SMT,https://www.lcsc.com/product-detail/C25804.html
+R24,1,1M (R_0603_1608Metric),0603WAF1004T5E,C22935,Basic,3921133,0.0018,JLCPCB SMT,https://www.lcsc.com/product-detail/C22935.html
+U2,1,DW01A (SOT-23-6),DW01A (PUOLOP),C351410,Extended,92420,0.0532,JLCPCB SMT,https://www.lcsc.com/product-detail/C351410.html
+Q1,1,FS8205A (SOT-23-6),FS8205A (TECH PUBLIC),C2830320,Extended,185458,0.0499,JLCPCB SMT,https://www.lcsc.com/product-detail/C2830320.html
+R4,1,100 (R_0603_1608Metric),0603WAF1000T5E,C22775,Basic,9994733,0.002,JLCPCB SMT,https://www.lcsc.com/product-detail/C22775.html
+"C3,C6,C7,C9,C13,C14,C15,C16,C19",9,100nF (C_0603_1608Metric),CC0603KRX7R9BB104,C14663,Basic,37482941,0.006,JLCPCB SMT,https://www.lcsc.com/product-detail/C14663.html
+SW1,1,POWER (SK-12E12-G5) (SW_Slide_SPDT_Angled_HRO_SK-12E12-G5),HRO SK-12E12-G5,C136720,Extended,15487,0.1132,JLCPCB THT (Standard PCBA) - or delete the BOM line and hand-solder,https://www.lcsc.com/product-detail/C136720.html
+SW2,1,BATT CHECK (EVQP7A01P) (SW_SPST_EVQP7A),Panasonic EVQ-P7A01P,C79167,Extended,3425,0.1867,JLCPCB SMT,https://www.lcsc.com/product-detail/C79167.html
+"D2,D7,D8,D9,D10",5,B5819W (D_SOD-123),B5819W SL,C8598,Basic,377359,0.0262,JLCPCB SMT,https://www.lcsc.com/product-detail/C8598.html
+"R6,R14,R15",3,4.7k (R_0603_1608Metric),0603WAF4701T5E,C23162,Basic,14768971,0.0028,JLCPCB SMT,https://www.lcsc.com/product-detail/C23162.html
+"U5,U6",2,XC6206P332MR (SOT-23-3),XC6206P332MR-G,C5446,Basic,479522,0.1262,JLCPCB SMT,https://www.lcsc.com/product-detail/C5446.html
+"C4,C17",2,1uF (C_0603_1608Metric),CL10A105KB8NNNC,C15849,Basic,12249102,0.0113,JLCPCB SMT,https://www.lcsc.com/product-detail/C15849.html
+"C5,C18",2,10uF (C_0603_1608Metric),CL10A106KP8NNNC,C19702,Basic,9405851,0.0233,JLCPCB SMT,https://www.lcsc.com/product-detail/C19702.html
+R8,1,47k (R_0603_1608Metric),0603WAF4702T5E,C25819,Basic,2902592,0.0016,JLCPCB SMT,https://www.lcsc.com/product-detail/C25819.html
+R9,1,12k (R_0603_1608Metric),0603WAF1202T5E,C22790,Basic,1062704,0.0031,JLCPCB SMT,https://www.lcsc.com/product-detail/C22790.html
+U3,1,ATmega328PB-AU (TQFP-32_7x7mm_P0.8mm),ATMEGA328PB-AU,C132230,Extended,565,1.5882,JLCPCB SMT,https://www.lcsc.com/product-detail/C132230.html
+U8,1,USBLC6-2SC6 (SOT-23-6),ST USBLC6-2SC6,C7519,Extended,22712,0.1559,JLCPCB SMT,https://www.lcsc.com/product-detail/C7519.html
+U7,1,CH340K (SSOP-10-1EP_3.9x4.9mm_P1mm_EP2.1x3.3mm),WCH CH340K,C968586,Extended,30951,0.5464,JLCPCB SMT,https://www.lcsc.com/product-detail/C968586.html
+SW3,1,SIQ-02FVS3 (Mitsumi_SIQ-02FVS3),Mitsumi SIQ-02FVS3,C2925423,Extended,1290,3.0374,JLCPCB SMT,https://www.lcsc.com/product-detail/C2925423.html
+R18,1,10 (R_0603_1608Metric),0603WAF100JT5E,C22859,Basic,5524270,0.002,JLCPCB SMT,https://www.lcsc.com/product-detail/C22859.html
+C8,1,22uF (C_0805_2012Metric),CL21A226MAQNNNE,C45783,Basic,4143825,0.1055,JLCPCB SMT,https://www.lcsc.com/product-detail/C45783.html
+"C10,C11",2,100uF 6.3V (C_1206_3216Metric),CL31A107MQHNNNE,C15008,Basic,1561175,0.109,JLCPCB SMT,https://www.lcsc.com/product-detail/C15008.html
+"FB1,FB2,FB3",3,600R@100MHz (L_0603_1608Metric),GZ1608D601TF,C1002,Basic,403719,0.0115,JLCPCB SMT,https://www.lcsc.com/product-detail/C1002.html
+C12,1,1nF (C_0603_1608Metric),CL10B102KB8NNNC,C1588,Basic,5973452,0.0082,JLCPCB SMT,https://www.lcsc.com/product-detail/C1588.html
+J2,1,3.5mm jack PJ-320D-4A (Jack_3.5mm_KoreanHropartsElec_PJ-320D-4A_Horizontal),HRO PJ-320D-4A,C95562,Extended,973,0.1216,JLCPCB SMT,https://www.lcsc.com/product-detail/C95562.html
+U4,1,RRD-102V2.0 RDA5807M FM module (11x11mm castellated),RRD-102V2.0 RDA5807M module,,—,—,~$1-2 ea (often sold in 5-10 packs),Hand solder,https://www.amazon.com/s?k=RDA5807M+RRD-102+FM+module
+BT1,1,"MPD BH-18650-PC 18650 PCB holder (THT, 2 pins 72.9mm)",MPD BH-18650-PC,,—,—,~$3,Hand solder,https://www.digikey.com/en/products/result?keywords=BH-18650-PC
+J3,1,"2x3 2.54mm AVR-ISP pogo pads (ATmega328PB MISO/SCK/MOSI/RESET, 3.3 V) - bootloader burn only; do not leave a header fitted",2x3 2.54mm header / pogo (DNP),,—,—,~$0.10 (or a 2x3 pogo clip),DNP,https://www.digikey.com/en/products/result?keywords=2x3%20pin%20header%202.54mm
+—,1,18650 Li-ion cell (flat or button top; protected cells up to ~69mm fit the MPD holder),,,,,~$5,Off-board,https://www.amazon.com/s?k=18650+battery
+—,4,"M2 x 12 mm screws, pan or socket head (M2 x 16 if using the hex-nut case option)",,,,,~$0.05,Off-board,https://www.amazon.com/s?k=M2+x+12mm+socket+head+screws
+—,4,"M2 brass heat-set inserts, OD 3.2-3.5 mm x L 3-4 mm (or M2 hex nuts)",,,,,~$0.05,Off-board,https://www.amazon.com/s?k=M2+heat+set+inserts

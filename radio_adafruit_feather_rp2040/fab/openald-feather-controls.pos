@@ -1,0 +1,15 @@
+### Footprint positions - created on 2026-11-11T20:54:52-0800 (JLC_CORR applied to JLC-assembled refs; SW1 = KiCad origin) ###
+## Unit = mm, Angle = deg.
+## Side : All
+# Ref     Val                     Package                                       PosX       PosY       Rot  Side
+C1        100nF                   C_0603_1608Metric                               2.1500   30.7000   0.0000  top
+D1        RED_CHG                 LED_0603_1608Metric                             2.1500   18.0000   0.0000  top
+D2        GREEN_FULL              LED_0603_1608Metric                             2.1500   21.0000   0.0000  top
+J1        FEATHER_WIRES           WirePads_1x09_P1.80mm                           5.5500   16.4500 180.0000  top
+R1        220k                    R_0603_1608Metric                               2.1500   27.3000 180.0000  top
+R2        220k                    R_0603_1608Metric                               2.1500   29.0000   0.0000  top
+R3        1.5k                    R_0603_1608Metric                               2.1500   23.7000   0.0000  top
+R4        1.5k                    R_0603_1608Metric                               2.1500   25.4000   0.0000  top
+SW1       POWER_(SK-12E12-G5)     SW_Slide_SPDT_Angled_HRO_SK-12E12-G5           10.7000   21.8000  90.0000  top
+SW2       SIQ-02FVS3              Mitsumi_SIQ-02FVS3                              6.3640    7.6000 270.0000  top
+## End

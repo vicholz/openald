@@ -1,0 +1,10 @@
+### Footprint positions - created on 2026-11-11T19:58:40-0800 ###
+### Unit = mm, Angle = deg. Positions match fab/minimal/openald-centroid-minimal.csv and fab/minimal/openald-CPL-jlcpcb-minimal.csv
+## Unit = mm, Angle = deg.
+## Side : All
+# Ref     Val                     Package                                                   PosX       PosY       Rot  Side
+J1        USB-C_(power_+_USB_2.0_data) USB_C_Receptacle_HRO_TYPE-C-31-M-12                        19.0000    5.0640   0.0000  top
+U1        TP4056                  SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm                   8.0000   15.5000 270.0000  top
+U3        ATmega328PB-AU          TQFP-32_7x7mm_P0.8mm                                       11.5000   41.5000 270.0000  top
+U7        CH340K                  SSOP-10-1EP_3.9x4.9mm_P1mm_EP2.1x3.3mm                     29.4000   13.0000   0.0000  top
+## End

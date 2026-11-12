@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+# KiCad backups / caches / locks
+*-backups/
+*.lck
+\#auto_saved_files#
+_autosave-*
+fp-info-cache
+*.kicad_prl.bak
+# Release packages (built by tools/make_packages.sh, attached to GitHub Releases)
+*-package.zip
+# Freerouting jar (64 MB, download separately, see README)
+tools/freerouting.jar
+# Scratch
+/tmp/
+.DS_Store
+tools/kicad3d/
+dist/
