@@ -3,28 +3,30 @@
 This is a variant of the OpenALD pocket FM radio built around an **Adafruit Feather RP2040**. It has:
 * an RDA5807M FM module with its own 3.5 mm jack,
 * an 18650 cell in an MPD BH-18650-PC holder (the same holder as the single-board radio),
-* a small custom **controls board** with the thumbwheel (volume/tune + push), the power switch, a battery divider and two charge-mirror LEDs,
+* a **Mitsumi SIQ-02FVS3 thumbwheel** (volume/tune + push), bought loose and **glued into a printed cradle** on the frame,
+* an **SS-12F16 slide switch** (SPDT, "G4" 4 mm knob by default) **screwed straight into the case wall**,
+* hand-soldered wires from the wheel and the switch to the Feather. **There is no custom PCB** in this variant.
 * a thin 3D-printed **internal frame** that locates everything.
 
 The bottom 2 in of the case is a copy of the single-board radio's case, so it fits the same **OpenALD charging dock**.
 
-> **Status: design only. Nothing here has been built or tested on hardware.**
+> **Status: design only. Nothing here has been printed, built or tested.**
 > - The FM-module mounting-hole and jack positions are **estimates**. The module photo could not be measured. See "Measure and edit" below.
 > - Feather part heights are datasheet estimates. Board outline, holes, LEDs, buttons, pads and connectors come from Adafruit's own Eagle file.
+> - Wheel and switch geometry come from their datasheets (links below), not from measured parts.
 
 ![exploded](previews/case_exploded.png)
 
 ## Folder contents
 | Path | What |
 |---|---|
-| `kicad/` | Controls board: schematic, PCB (routed, GND pours), project libraries (`openald_fctl`) |
-| `fab/` | Gerber + drill zip, JLC BOM/CPL (with JLC_CORR rotation/offset corrections), centroid, .pos, human BOM with live LCSC prices, ERC/DRC reports |
 | `case/` | OpenSCAD source (`openald_feather_case.scad`) and generated parameters. `stl/` holds `case_top.stl`, `case_bottom.stl` and `frame.stl` in print orientation, plus fit and dock reports |
-| `previews/` | Renders: exploded, closed, back, print layout, close-ups, sections |
+| `previews/` | Renders: exploded, closed, back, print layout, close-ups (incl. `closeup_wheel_switch.png`, `inside_right_wall_switch_wheel.png`, `wheel_cradle.png`), sections (incl. `section_wheel_y62.png`, `section_switch_y75.png`) |
 | `docs/` | `wiring_diagram.svg/.png`, `pin_map.md`, `firmware_notes.md`, `BOM.md/.csv` |
-| `scripts/` | Generators. `layout.py` is the single source of truth for the mechanical layout |
-| `ref/` | Adafruit Feather RP2040 Eagle board (CC BY-SA, from github.com/adafruit/Adafruit-Feather-RP2040-PCB) and the parsed mechanical data |
-| `make_all.sh` | Rebuilds everything: footprints → schematic → ERC → PCB → route → DRC → fab → wiring → case STLs → checks → renders |
+| `scripts/` | `layout.py` (single source of truth for the mechanical layout), `feather_data.py`, `gen_case_params.py`, `check_fit.py`, `check_dock.py`, `make_wiring.py` |
+| `ref/` | Adafruit Feather RP2040 Eagle board (CC BY-SA, from github.com/adafruit/Adafruit-Feather-RP2040-PCB), the parsed mechanical data, and `models/SIQ-02FVS3.wrl` (wheel model for the fit check) |
+| `archive/controls_board_pcb/` | The **retired** controls PCB (KiCad, Gerbers, JLC BOM/CPL, generators) from before the direct-mount change. Not used, not maintained; see its README |
+| `make_all.sh` | Rebuilds everything: Feather data → wiring diagram → case params → STLs → fit + dock checks → renders |
 
 ## Size and the dock interface
 | | Width × thickness | Y range (from the bottom face) |
@@ -42,42 +44,67 @@ The bottom 2 in of the case is a copy of the single-board radio's case, so it fi
 * The current Feather revision has the receptacle 1.21 mm past its board edge. Putting the board edge 1.21 mm from the inner wall puts the receptacle mouth **2.50 mm inside the bottom face**, the same as the single board.
 * Four frame pegs locate the Feather in its mounting holes, and four top-half posts clamp it. **Older Feathers (rev B and before) have 2.48 mm overhang**: run `python3 scripts/feather_data.py --usb-overhang 2.48`, then `case/build_case.sh`.
 
+## Controls: how the wheel and the switch mount (no PCB)
+
+### Thumbwheel — Mitsumi SIQ-02FVS3, glued into the frame cradle
+Datasheet: [Mitsumi SIQ series (LCSC copy)](https://datasheet.lcsc.com/datasheet/pdf/7bff72617d5a3503f5ed21ab02a77dea.pdf?productCode=C2925423).
+Body 10.3 × 11.1 mm, dial Ø14.5 × 2 mm, 4.0 mm overall, two Ø1.55 locating bosses, four solder tabs (A, S, C, B) on the edge away from the dial, push (slide) force 3–6 N.
+
+* **Where:** right side, dial centre 62.5 mm from the USB face (65 mm above the dock bottom face), the same place and height as before. The dial is at Z 3.6–5.6 (in the top half).
+* **Cradle** (part of `frame.stl`): a 1.6 mm platform on the deck (the same height the old PCB gave), with
+  * two Ø1.75 holes for the wheel's locating bosses — these and the glue take the push,
+  * 1.5 mm side walls hugging the body (0.15 mm clearance, 0.4 mm below the dial) with notches/reliefs for the metal side tabs and the two front tabs,
+  * the platform stops 0.35 mm short of the solder tabs, so the tabs overhang with free space underneath for the solder joints and wires.
+* **Push reaction:** pushing the wheel loads the cradle toward the inside (−X). The bosses-in-holes and glue carry it into the frame, and a **tenon on the bottom-half post right under the cradle** fits a mortise in the deck, so the force goes into the case, not just into the frame's 0.35 mm side clearance.
+* **Push travel:** the datasheet gives none; the fit check sweeps the dial **1.0 mm** inward and finds nothing in its path.
+* **Protrusion:** the dial centre moved 0.6 mm toward the wall (4.3 mm in from the inner wall instead of 4.9; body front now 0.45 mm from the wall). The dial now stands **0.95 mm proud of the case side and 1.95 mm proud of the 1 mm-deep thumb pocket** around it (was 0.35 / 1.35 mm).
+* **Assembly fix:** the wheel slot in the top half now runs down to the split line, and a matching tab on the bottom half fills it under the dial. Without this the top half could not be lowered over a dial that sticks out through the wall (the check now tests that path; the previous Feather case failed it).
+* **Glue:** a thin bead of medium CA or 5-min epoxy on the platform and side walls only. **Keep glue away from the dial, the slot in the front of the body and the tabs' moving parts.**
+
+### Power switch — SS-12F16 (SPDT / 1P2T), screwed to the case wall
+Datasheets: [G-Switch SS-12F16-GXXX](https://xonstorage.z8.web.core.windows.net/pdf/gswitch_ss12f16g050_apr22_xonlink.pdf), [Light Country SS12F16 (SS-001B)](https://yibeiic-shop.oss-cn-hangzhou.aliyuncs.com/media/collection/ss12d02-9bziHfGW-yoDg9ny3q.pdf).
+Mounting plate 19.5–19.7 × 5.6–5.7 × 0.4–0.5 mm with **two M2 × 0.4 tapped holes 15 mm apart**; body 11 × ~5.7 × 5 mm deep; three solder lugs on a 3 mm pitch, 3 mm long; knob 3 × 3 mm, **3 mm travel**; knob height above the plate L: **G4 = 4.0, G5 = 5.0, G6 = 6.0 mm**.
+
+* **Where:** right side, in the **bottom half**, centre 75 mm from the USB face (77.5 mm above the dock bottom face) and Z −5 (about mid-thickness), below the wheel. It sits in the side channel beside the battery holder, so it needs no space on the deck.
+* **Mount:** the plate drops into a 0.6 mm pocket in the inside face of the wall (0.15 mm clearance all round), which locates it. Two **M2 × 3 pan-head screws** from outside thread into the switch's own tapped ears (M2 × 4 also fits: the tips clear everything inside). A drop of CA on the plate is optional.
+* **Knob:** a 6.6 × 3.6 mm slot (filleted outside) with ON / OFF engraved under it. **Knob toward the top end = ON, toward the USB end = OFF.**
+* **Variant:** `SW_L` in `scripts/layout.py` (default 4.0 for **G4**). Knob protrusion past the case side: **G4 2.6 mm** (old SK-12E12 design: 2.8 mm), G5 3.6 mm, G6 4.6 mm. G6 works but sticks out more and is easier to knock on in a pocket. LCSC only stocks the G050 (C2876006); set `SW_L=5.0` for it. The wall is 1.4 mm thick under the plate.
+
+### Wires
+* The Feather's right header wires go down the existing deck slot (x 31–35) into the **right channel** under the deck (between the holder and the wall), run up the channel, and reach the switch lugs directly.
+* The wheel wires leave its tabs toward the FM-module side, run along the deck past the cradle and go down a **second deck slot (x 30.4–34, Y 69.6–80.5)** into the same channel. The optional LED leads use that slot too.
+* The Feather has **one GND pin**: run one GND wire from it to a heat-shrunk splice in the channel and branch to the wheel C, the switch OFF lug, the divider and the green LED.
+* Pre-solder the wheel's wires (about 120 mm, 30 AWG silicone) before gluing it in; it is hard to reach afterwards.
+
 ## LEDs: what you can see
 | LED | Where | Visible when |
 |---|---|---|
 | Feather **CHG** (amber, MCP73831 STAT) | Ø1.6 window in the top, near the USB end, with its own light tunnel | undocked (USB cable) |
 | Feather **red D13** | window near the USB end | undocked |
 | Feather **NeoPixel** | window about 21 mm above the bottom face | undocked |
-| Controls-board **red "CHG"** mirror | window at the upper right, 75 mm from the bottom | **always, including while docked** |
-| Controls-board **green "FULL"** | window just above it | **always, including while docked** |
+| Optional 3 mm **red "CHG"** LED | socket in the top, 76.5 mm above the bottom face | **always, including while docked** |
+| Optional 3 mm **green "FULL"** LED | socket just above it | **always, including while docked** |
 
-The Feather's own LEDs sit inside the dock pocket, so the two mirror LEDs repeat the charger state above the dock line. They are driven in hardware from VBUS and the charger's STAT pin through a fine wire to the STAT end of the Feather's R2. That means they work with the power switch OFF. If you'd rather not solder that wire, leave D1/D2 and the STAT wire out; the Feather windows still work when undocked. A RESET pin-hole (paper clip) sits above the Feather's RESET button.
+The Feather's own LEDs sit inside the dock pocket. The old controls board carried two mirror LEDs above the dock line; with no board, they become two **3 mm through-hole LEDs pushed into sockets in the top half** (flange seats on the socket, dome flush with the top face; `LED3_ABOVE_FLANGE` = 4.6 mm, measure yours) with inline 1.5 k resistors, wired exactly as before (VBUS → 1.5k → red → STAT → 1.5k → green → GND; STAT via a fine wire to the STAT end of Feather R2). They work with the switch OFF. They are optional: set `mirror_leds = false` in the .scad to drop the sockets.
 
 ## Inside the case (front face up, USB-C end down)
-* **Bottom half, back:** the 18650 holder lies flat on the floor with the cell opening up and + at the USB end. Its PC pins are bent flat into floor grooves and soldered to wires just past each end of the holder. Corner fences locate the holder; double-sided tape holds it. Eight posts beside the holder carry the deck.
-* **Frame:** a 1 mm deck over the holder, with:
-  * pegs for the Feather and controls-board holes,
-  * a 0.6 mm ledge and corner stops for the FM module,
-  * slots for the wires (battery leads up beside the JST, Feather header wires down to the right-side channel, and back up under the controls-board pads),
-  * reliefs for the USB shell legs and the switch and wheel pins.
-* **On the deck:**
-  * the Feather at the USB end (Y 1.2 – 52.0),
-  * the FM module at the top left with its jack out through the top end wall,
-  * the controls board on the right, with the wheel and switch knob through the right wall, both above the dock line.
-* **Wires:** battery to the Feather JST in the left channel. Feather to controls board in the right channel. Feather STEMMA QT to the FM module over the deck.
-* Four M2 × 12 screws go in from the back into heat-set inserts in the top half: two at the USB end and two at the taper. A perimeter lip seals the joint. **There are no screws at the top end**, because there is no room; the lip and the FM/controls hold-downs keep it closed.
+* **Bottom half, back:** the 18650 holder lies flat on the floor with the cell opening up and + at the USB end. Its PC pins are bent flat into floor grooves and soldered to wires just past each end of the holder. Corner fences locate the holder; double-sided tape holds it. Eight posts beside the holder carry the deck (one has the tenon for the wheel cradle). The **power switch** is screwed to the right wall above the dock line.
+* **Frame:** a 1 mm deck over the holder, with pegs for the Feather, a 0.6 mm ledge, corner stops and a +X rail for the FM module, the **wheel cradle**, wire slots, and reliefs for the USB shell legs.
+* **On the deck:** the Feather at the USB end (Y 1.2 – 52.0), the FM module at the top left with its jack out through the top end wall, the wheel in its cradle on the right with the dial through the right wall.
+* Four M2 × 12 screws go in from the back into heat-set inserts in the top half: two at the USB end and two at the taper. A perimeter lip seals the joint. **There are no screws at the top end**, because there is no room; the lip and the FM hold-downs keep it closed.
 
 ## Assembly (outline)
-1. Order the controls board from `fab/`: gerbers zip, `*-BOM-jlcpcb.csv` and `*-CPL-jlcpcb.csv`. Hand-solder SW1 (SK-12E12, LCSC C136720).
-2. Print `case/stl/case_bottom.stl` (floor down), `case_top.stl` (face down) and `frame.stl` (deck down). Use PLA or PETG with 0.2 mm layers. Supports are needed only for the USB/jack/switch openings if your printer can't bridge them. Fit 4 M2 heat-set inserts into the top half.
+1. Print `case/stl/case_bottom.stl` (floor down), `case_top.stl` (face down) and `frame.stl` (deck down). PLA or PETG, 0.2 mm layers. Supports are needed only for the USB/jack/switch openings if your printer can't bridge them. Fit 4 M2 heat-set inserts into the top half.
+2. **Switch:** check with a meter which outer lug connects to the middle lug when the knob is at one end. Solder ~120 mm wires: **middle lug → EN**, the lug that connects when the knob is at the **OFF (USB) end → GND**; leave the third lug empty. Push the knob out through the slot from inside, seat the plate in its pocket and fit the two M2 × 3 screws from outside.
 3. Battery: bend the holder pins flat toward the holder ends and solder the cut JST PH lead (#261): red to + at the USB end, black to −. Check the polarity against the Feather's "+" mark. Tape the holder into the fences. Run the leads up the left channel.
-4. Solder 9 wires to the Feather per `docs/pin_map.md`, and the STAT fine wire if used. Solder the cut STEMMA QT cable to the FM module: red 3V3, black GND, blue SDA, yellow SCL.
-5. Lay the frame on the posts. Press the Feather onto its pegs, feed the controls wires down the right slot and up into J1 from below, and solder. Fit the controls board and the FM module.
-6. Fit the cell, close the case and fit the screws.
+4. **Wheel:** solder ~120 mm wires to its tabs (A, S, C, B — see `docs/pin_map.md`), insulate, then glue it into the frame cradle with the bosses in their holes and the dial toward the right wall. Let the glue cure.
+5. Solder the wires to the Feather per `docs/pin_map.md` (and the optional divider, LEDs and STAT fine wire). Solder the cut STEMMA QT cable to the FM module: red 3V3, black GND, blue SDA, yellow SCL.
+6. Lay the frame on the posts (the cradle mortise drops over the tenon), feeding the wires down the slots into the right channel. Press the Feather onto its pegs and fit the FM module. Fit the LEDs into the top-half sockets if used.
+7. Fit the cell, lower the top half straight down (its wheel slot passes over the dial) and fit the screws.
 
 ## Measure and edit (do this before printing)
 All are in `scripts/layout.py`. Then run `case/build_case.sh`.
-| Parameter | Current value | Measure on your FM module |
+| Parameter | Current value | Measure on your part |
 |---|---|---|
 | `FM["w"], FM["h"]` | 26.9 × 26.9 | board outline |
 | `FM["t"]`, `FM["z0"]` | 1.6, 0.6 (ledge height) | thickness, and the bottom-side pin protrusion: must be ≤ 1.7 mm |
@@ -86,21 +113,26 @@ All are in `scripts/layout.py`. Then run `case/build_case.sh`.
 | `FM_JACK_AXIS_H`, `FM_JACK_BODY_H` | 2.5, 5.0 | jack axis height above the board top, body height |
 | component height on the FM top | assumed ≤ 5.5 mm (ceiling at Z 8.2) | tallest part |
 | holder height | 21.31 (datasheet) | with the cell fitted, must stay below the deck (0.1 mm margin) |
+| wheel push travel | 1.0 (assumed) | how far the dial moves when pushed (`WHEEL_PUSH`) |
+| switch knob height | `SW_L` = 4.0 (G4) | knob height above the plate |
+| 3 mm LED length | `LED3_ABOVE_FLANGE` = 4.6 | flange top to dome tip |
 
 ## Checks (as generated)
-* ERC on the controls board: **0 errors, 0 warnings** (`fab/erc_report.txt`).
-* DRC: **0 violations, 0 unconnected, 0 schematic-parity issues** (`fab/drc_report.txt`).
-* JLC CPL: corrections refit from the EasyEDA footprints: `scripts/jlc_cpl_fit.py --check` → OK.
-* 3D fit (`case/case_fit_report.txt`): no overlap between any part and the top, bottom or frame, and none between the three printed parts. Parts checked: Feather board and every component envelope from the Eagle file, holder, FM board and jack, controls board, wheel and switch models, 0603 parts.
-* Dock interface (`case/dock_check_report.txt`): see above.
+* 3D fit (`case/case_fit_report.txt`): **PASS, 0 interferences**. No overlap between any part and the top, bottom or frame, and none between the three printed parts. Parts checked: Feather board and every component envelope from the Eagle file, holder, FM board and jack, the SIQ-02FVS3 model, the dial swept 1 mm inward (push), a solder/wire keepout at the wheel tabs, the SS-12F16 plate/body/lugs, its knob swept over the full 3 mm travel, a solder keepout at its lugs, the M2 × 3 screw shanks and the optional 3 mm LEDs. It also checks that the top half can be lowered straight over the protruding dial.
+* Dock interface (`case/dock_check_report.txt`): see above. Unchanged by the controls change (everything new is above the dock line).
+* There is no ERC/DRC any more: there is no PCB.
 
 ## Known risks and limits
+* Nothing has been printed or built. Fit is CAD-only, from datasheet dimensions.
 * FM-module geometry is estimated: hole positions, jack position, bottom-side pin length, I2C pull-ups.
 * The 0.1 mm gap between the holder top and the deck relies on the datasheet height of 21.31 mm.
-* The STAT tap is a fine-wire solder joint on a Feather 0603 resistor pad.
+* **Wheel:** the push travel (1.0 mm assumed) and the strength of a glued joint under 3–6 N pushes are untested. Soldering 30 AWG wire to the small SMD tabs is fiddly; strain-relieve the wires with a dab of glue on the deck. The cradle clearances (0.15 mm) may need sanding or a small `cradle`/`peg_hole_d` change for your printer.
+* **Switch:** SS-12F16 clones vary (plate 19.5–19.7, thickness 0.4–0.5, and some may have plain, untapped ears — then use M2 × 5 screws with M2 nuts inside, turning a nut flat toward the switch body (the nut clears the body by only ~0.3 mm)). Which outer lug is "OFF" must be checked with a meter. The 1.4 mm wall under the plate and the M2 threads in a 0.4–0.5 mm plate are untested for strength.
+* **Optional LEDs:** 3 mm LED lengths vary; adjust `LED3_ABOVE_FLANGE`. The STAT tap is a fine-wire solder joint on a Feather 0603 resistor pad.
+* The battery divider (if fitted) is inline resistors in heat-shrink, not on a board.
 * Off-state drain is about 0.4 mA through the Feather's EN pull-up. Charging is slow: 200 mA, about 18 h for 3500 mAh.
-* The wheel has no RC debounce or ESD diode. Debounce in firmware (quadrature state table, one step per detent); see `docs/firmware_notes.md` for the decode notes and an Arduino-Pico example. The SIQ-02FVS3 locating bosses are assumed not to protrude more than 1.1 mm below the 1.6 mm controls board.
-* The battery is changed by lifting the frame stack. Not tool-free.
+* The wheel has no RC debounce or ESD diode. Debounce in firmware; see `docs/firmware_notes.md`.
+* The battery is changed by lifting the frame stack (now with the wheel and its wires on it). Not tool-free.
 * The top end is held only by the lip, with no screws.
 
-Licence: case, board and scripts are released into the public domain under CC0 1.0, like the rest of OpenALD (see `../LICENSE`). The Adafruit Feather RP2040 Eagle file in `ref/` (and the mechanical data parsed from it) is CC BY-SA (Adafruit).
+Licence: case and scripts are released into the public domain under CC0 1.0, like the rest of OpenALD (see `../LICENSE`). The Adafruit Feather RP2040 Eagle file in `ref/` (and the mechanical data parsed from it) is CC BY-SA (Adafruit).

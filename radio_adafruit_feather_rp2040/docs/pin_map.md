@@ -1,48 +1,54 @@
-# OpenALD Feather RP2040 v1.0 — pin map
+# OpenALD Feather RP2040 v1.0 — pin map (direct-mount wheel and switch)
 
-Nothing here has been hardware-validated yet.
+Nothing here has been hardware-validated yet. There is no controls PCB: the wheel, the switch and the optional parts are wired straight to the Feather (28–30 AWG silicone wire, ~120 mm per lead).
 
 ## Feather RP2040 (Adafruit #4884) connections
 
 | Feather pin (silkscreen) | RP2040 GPIO | Goes to | Wire | Notes |
 |---|---|---|---|---|
-| **D24** | GP24 | Controls J1.1 **ENCA** (wheel A) | 30 AWG | Use the internal pull-up. Debounce in firmware: the board has no RC filter. |
-| **D25** | GP25 | Controls J1.2 **ENCB** (wheel B) | 30 AWG | Use the internal pull-up. |
-| **D4** | GP6 | Controls J1.3 **ENCSW** (wheel push) | 30 AWG | Use the internal pull-up. Active low. |
-| **EN** | — (enables the AP2112 3.3 V regulator) | Controls J1.4 **EN** → SW1 common | 28–30 AWG | SW1 OFF ties EN to GND, which turns the 3.3 V rail, the RP2040 and the FM module off. ON leaves EN open (the Feather's own 10 k pull-up turns it on). |
-| **GND** (JP1.13) | — | Controls J1.5 **GND** | 28 AWG | Common for the wheel, the switch, the divider and the green LED. |
-| **USB** (VBUS) | — | Controls J1.6 **VBUS** | 28–30 AWG | Supplies only the red CHG mirror LED (about 2 mA). |
-| **STAT tap** (no pad) | — | Controls J1.7 **STAT** | 32–36 AWG enamel or wire-wrap wire | Solder to the **STAT end of Feather R2**, the 10 k resistor in series with the CHG LED. In this repo's case frame that end is at (25.92, 7.77). Optional: skip it and leave D1/D2 off the board. |
-| **BAT** (VBAT) | — | Controls J1.8 **VBAT** | 28 AWG | Top of the battery divider. |
-| **A0** | GP26 / ADC0 | Controls J1.9 **BSNS** | 30 AWG | VBAT/2 through 220 k / 220 k, with 100 nF at the ADC pin. |
-| **STEMMA QT** (JST SH 4-pin) | GP2 SDA / GP3 SCL, 3V3, GND | RDA5807M module VCC / GND / SDA / SCL | STEMMA QT cable #4210, one end cut | 3V3 here is switched by EN, so the radio turns off with the switch. Arduino `Wire` and CircuitPython `board.STEMMA_I2C()` both use this port. |
+| **D24** | GP24 | Wheel **A** | 30 AWG | Use the internal pull-up. Debounce in firmware: no RC filter. |
+| **D25** | GP25 | Wheel **B** | 30 AWG | Use the internal pull-up. |
+| **D4** | GP6 | Wheel **S** (push switch) | 30 AWG | Use the internal pull-up. Active low. |
+| **GND** (JP1.13, the only GND pin) | — | GND splice → wheel **C**, switch OFF-end lug, divider bottom, green LED cathode | 28 AWG to the splice | Heat-shrunk splice in the right channel. |
+| **EN** | — (enables the AP2112 3.3 V regulator) | Switch **middle lug** (common) | 28–30 AWG | Knob at the OFF (USB) end ties EN to GND: the 3.3 V rail, the RP2040 and the FM module turn off. Knob at the ON end leaves EN open (the Feather's own pull-up turns it on). |
+| **BAT** (VBAT) | — | Divider top (220 k) | 28–30 AWG | Optional battery gauge. |
+| **A0** | GP26 / ADC0 | Divider middle (220 k / 220 k junction, 100 nF to GND) | 30 AWG | VBAT/2. |
+| **USB** (VBUS) | — | Optional: 1.5 k → red 3 mm LED anode | 30 AWG | About 2 mA while charging. |
+| **STAT tap** (no pad) | — | Optional: red LED cathode, and 1.5 k → green LED anode | 32–36 AWG enamel or wire-wrap | Solder to the **STAT end of Feather R2** (the 10 k in series with the CHG LED), case position (25.92, 7.77). |
+| **STEMMA QT** (JST SH 4-pin) | GP2 SDA / GP3 SCL, 3V3, GND | RDA5807M module VCC / GND / SDA / SCL | STEMMA QT cable #4210, one end cut | 3V3 is switched by EN, so the radio turns off with the switch. |
 | **JST PH battery** | — | 18650 holder + / − | JST PH cable #261 (cut) | **Check polarity** against the "+" mark on the Feather before plugging in. Red goes to the holder + pin (the USB end). |
 
-Spare pins remain free: A1–A3, D5, D6, D9–D13, SCK, MOSI, MISO, TX and RX. The red LED is D13 / GP13 and the NeoPixel is GP16. Both are visible through the top windows.
+Spare pins remain free: A1–A3, D5, D6, D9–D13, SCK, MOSI, MISO, TX and RX. The red LED is D13 / GP13 and the NeoPixel is GP16. Both are visible through the top windows (undocked).
 
-## Controls board J1 (9 THT pads, 1.8 mm pitch, pad 1 nearest the wheel)
+Unchanged from the controls-board version: the GPIO assignment (A = D24, B = D25, push = D4, C = GND, switch common = EN, OFF = GND, divider on A0). Only the physical path changed (wires instead of PCB traces), so `firmware_notes.md` applies as before.
 
-| Pad | Net | On the board |
-|---|---|---|
-| 1 | ENCA | SW2 (SIQ-02FVS3) A |
-| 2 | ENCB | SW2 B |
-| 3 | ENCSW | SW2 S (push) |
-| 4 | EN | SW1 pin 2 (common) |
-| 5 | GND | SW1 pin 1 (OFF), SW2 C, R2, C1, D2 cathode, GND pour |
-| 6 | VBUS | R3 1.5 k → D1 (red) anode |
-| 7 | STAT | D1 cathode; R4 1.5 k → D2 (green) anode |
-| 8 | VBAT | R1 220 k (top of the divider) |
-| 9 | BSNS | R1/R2 junction, C1 100 nF |
+## Mitsumi SIQ-02FVS3 tabs (as mounted)
+The four solder tabs are on the body edge facing into the case (toward the FM module), in this order from the USB end toward the top end:
 
-## Charge-mirror LEDs (on the controls board, above the dock line)
-
-MCP73831 STAT is push-pull. It is low while charging, high (VBUS) when charging is done, and Hi-Z when the charger is off or no battery is fitted.
-
-| State | Feather CHG (amber) | D1 red "CHG" | D2 green "FULL" |
+| Order (USB end → top end) | Tab | Case Y (mm) | To |
 |---|---|---|---|
-| USB/dock power, charging | on | **on** (VBUS → R3 → D1 → STAT low, about 2 mA) | off |
-| USB/dock power, charge complete | off | off | **on** (STAT high → R4 → D2, about 1.3 mA) |
+| 1 | **B** | 58.5 | D25 |
+| 2 | **C** (common) | 61.0 | GND |
+| 3 | **S** (push) | 64.0 | D4 |
+| 4 | **A** | 66.5 | D24 |
+
+Check the A/B/S/C markings printed on your part's datasheet drawing ("A PUSH COM B" in the land pattern) before soldering. If A and B are swapped, the wheel just counts the other way; swap `PIN_A` / `PIN_B` in firmware.
+
+## SS-12F16 switch lugs (as mounted, knob toward the top end = ON)
+| Lug | To |
+|---|---|
+| Outer lug that connects to the middle when the knob is at the **OFF (USB) end** — normally the USB-side lug, **check with a meter** | GND |
+| Middle lug (common) | EN |
+| Other outer lug | not connected |
+
+## Optional dock-visible charge LEDs (3 mm, in the top-half sockets)
+MCP73831 STAT is push-pull: low while charging, high (VBUS) when charging is done, Hi-Z when the charger is off or no battery is fitted.
+
+| State | Feather CHG (amber) | red "CHG" | green "FULL" |
+|---|---|---|---|
+| USB/dock power, charging | on | **on** (VBUS → 1.5k → red → STAT low, about 2 mA) | off |
+| USB/dock power, charge complete | off | off | **on** (STAT high → 1.5k → green, about 1–2 mA) |
 | No USB power | off | off | off |
-| USB power, no cell or charger fault (STAT Hi-Z) | off | possibly a faint glow: D1 and D2 in series across VBUS, about 5.0 V needed | possibly a faint glow |
+| USB power, no cell or charger fault (STAT Hi-Z) | off | possibly a faint glow (red and green in series across VBUS) | possibly a faint glow |
 
 These LEDs are wired to the charger in hardware, so they work with the power switch OFF.

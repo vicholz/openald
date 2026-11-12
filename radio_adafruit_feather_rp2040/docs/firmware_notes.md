@@ -18,7 +18,7 @@ There is no firmware in this package yet. These notes cover what firmware has to
 
 Paper-verified against the Mitsumi SIQ series datasheet ([LCSC copy of the official PDF](https://datasheet.lcsc.com/datasheet/pdf/7bff72617d5a3503f5ed21ab02a77dea.pdf?productCode=C2925423)). Nothing here has been tested on hardware.
 
-* **Wiring:** A = D24 (GP24), B = D25 (GP25), push = D4 (GP6), common C = GND, via controls-board J1 pads 1 / 2 / 3 / 5. These are ordinary Feather RP2040 GPIOs (not QSPI, and not the STEMMA QT I2C pins GP2/GP3). They all support pin interrupts and PIO. Enable `INPUT_PULLUP` in `setup()` before you read them: at reset the RP2040 defaults these pads to pull-down. There is no RC filter and no ESD diode on the board, so debounce in firmware (the datasheet does not specify bounce time).
+* **Wiring:** A = D24 (GP24), B = D25 (GP25), push = D4 (GP6), common C = GND, wired straight from the wheel's tabs to the Feather (no controls board; see `pin_map.md`). These are ordinary Feather RP2040 GPIOs (not QSPI, and not the STEMMA QT I2C pins GP2/GP3). They all support pin interrupts and PIO. Enable `INPUT_PULLUP` in `setup()` before you read them: at reset the RP2040 defaults these pads to pull-down. There is no RC filter and no ESD diode, so debounce in firmware (the datasheet does not specify bounce time).
 * **Electrical:** the RP2040 internal pull-ups are 50–80 kΩ (RP2040 datasheet, GPIO pad characteristics), so a closed contact draws about 41–66 µA at 3.3 V, under the 0.5 mA / 5 V DC rating. The datasheet does not specify a minimum wetting current. Do not also configure D24/D25 as UART1 or I2C0; `Wire` / `board.STEMMA_I2C()` already uses GP2/GP3.
 * **Decode:** 15 detents, one quadrature cycle (four valid Gray-code transitions) per detent, A leading B for clockwise. Count **one step per detent** (accumulate ±4), not one step per edge. A 1 ms state-table poll debounces; PIO quadrature is also fine.
 * Suggested behaviour, the same as the single-board radio: turn changes the volume, push and turn tunes, a long press runs seek.
@@ -66,19 +66,19 @@ void encoder_poll() {            // call every 1 ms
 ```
 
 ## Battery voltage (the Feather has no battery monitor)
-* A0 (GP26) reads VBAT/2 through 220 k / 220 k (R1/R2) with 100 nF (C1).
+* A0 (GP26) reads VBAT/2 through an inline 220 k / 220 k divider with 100 nF from A0 to GND (hand-wired in heat-shrink; see `pin_map.md`). Without the divider there is no battery reading.
 * `vbat = adc_raw / 4095 * 3.3 * 2`. With Arduino `analogReadResolution(12)`, average 8–16 samples.
-* The source impedance is 110 k. C1 holds the node during sampling, so read no faster than about every 10 ms.
+* The source impedance is 110 k. The 100 nF capacitor holds the node during sampling, so read no faster than about every 10 ms.
 * Divider drain is about 9.5 µA, always on, including when switched OFF.
 * Rough charge levels at rest: 4.15 V or more is full, about 3.7 V is half, 3.4 V or less is low. Shut down cleanly below about 3.3 V. A protected cell cuts off near 2.5–2.8 V anyway.
 
 ## Power switch / EN behaviour
-* OFF means EN is held low: the 3.3 V regulator is off, along with the RP2040, the FM module and the NeoPixel.
+* OFF (SS-12F16 knob toward the USB end) means EN is held low: the 3.3 V regulator is off, along with the RP2040, the FM module and the NeoPixel.
 * **Off-state drain**: the Feather's EN pull-up (10 k to the battery/USB rail) conducts about 0.4 mA while EN is grounded. That is roughly 9–10 % of a 3500 mAh cell per month.
   Optional mod: replace that pull-up with 100 k to cut the drain to about 40 µA. Total off drain is then about 50 µA including the divider.
 * Charging works with the switch in either position. The MCP73831 is powered from VBUS and charges at **200 mA**, so a 3500 mAh cell takes about **18–20 h** from empty. That is slow, and it is a property of the Feather.
-* STAT (on J1.7) can also go to a spare GPIO through a 100 k resistor if firmware should know the charge state. That is not done on this board.
+* STAT (the optional fine-wire tap) can also go to a spare GPIO through a 100 k resistor if firmware should know the charge state. That is not done here.
 
 ## LEDs firmware can use
 * Red D13 (GP13) and the NeoPixel (GP16) show through the top windows near the USB end. These are hidden while docked.
-* The CHG/FULL mirror LEDs on the controls board are hardware-only and visible while docked.
+* The optional 3 mm CHG/FULL LEDs in the top half are hardware-only (driven by VBUS and STAT) and visible while docked.

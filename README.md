@@ -16,14 +16,14 @@ constraints, open TODOs, test checklist and exact regeneration commands.
 |---|---|---|
 | [`radio_single_board/`](radio_single_board/README.md) | **OpenALD v1.0** single-board radio: ATmega328PB + RDA5807M, CH340K USB-C programming, TP4056 ~900 mA charging with DW01A/FS8205A protection and reverse-cell protection, thumbwheel (press = battery check), slide switch, centred vertical 3-LED level bar. 38 × 87 mm 2-layer PCB; case 43 × 92 × 33.4 mm | Designed; ERC/DRC/JLC-CPL/case fit pass; not built |
 | [`charging_dock/`](charging_dock/README.md) | **OpenALD Dock v1.0**: 6 radios (2 × 3, 1 in apart) stand USB-C-down in 2 in pockets; one rear USB-C PD input (≥ 45 W charger, 15 V or 20 V); HUSB238 + 2 × SY8205 bucks + SY6280 limit per slot. 192 × 112 × 62.5 mm | Designed; ERC/DRC/JLC-CPL/fit pass; not built |
-| [`radio_adafruit_feather_rp2040/`](radio_adafruit_feather_rp2040/README.md) | **OpenALD Feather RP2040 v1.0**: Feather RP2040 + RDA5807M breakout with jack + 18650 holder + small controls PCB (wheel, switch, charge-mirror LEDs) in a printed frame; same dock footprint at the base | Designed; ERC/DRC/JLC-CPL/fit pass; FM-module dimensions are estimates; not built |
+| [`radio_adafruit_feather_rp2040/`](radio_adafruit_feather_rp2040/README.md) | **OpenALD Feather RP2040 v1.0**: Feather RP2040 + RDA5807M breakout with jack + 18650 holder in a printed frame; **no PCB**: SIQ-02FVS3 wheel glued into a frame cradle, SS-12F16 switch screwed into the case wall, all hand-wired; same dock footprint at the base | Designed; fit check pass; FM-module dimensions are estimates; not built |
 
 Dock ↔ radio mechanical contract: [`charging_dock/DOCK_INTERFACE.md`](charging_dock/DOCK_INTERFACE.md).
 
 ## Quick links
 * Single-board radio: [Gerbers](radio_single_board/fab/openald-gerbers-jlcpcb.zip) · [JLC BOM](radio_single_board/fab/openald-BOM-jlcpcb.csv) · [JLC CPL](radio_single_board/fab/openald-CPL-jlcpcb.csv) · [human BOM](radio_single_board/fab/openald-BOM-human.csv) · [minimal (4-part) assembly set](radio_single_board/fab/minimal/) · [PCBWay BOM](radio_single_board/fab/openald-BOM-pcbway.xlsx) · [NextPCB BOM](radio_single_board/fab/openald-BOM-nextpcb.xls) · [schematic PDF](radio_single_board/docs/openald-schematic.pdf) · [case STLs](radio_single_board/case/)
 * Dock: [Gerbers](charging_dock/fab/openald-dock-gerbers-jlcpcb.zip) · [JLC BOM](charging_dock/fab/openald-dock-BOM-jlcpcb.csv) · [JLC CPL](charging_dock/fab/openald-dock-CPL-jlcpcb.csv) · [human BOM](charging_dock/fab/openald-dock-BOM-human.csv) · [schematic PDF](charging_dock/docs/openald-dock-schematic.pdf) · [case STLs](charging_dock/case/)
-* Feather variant: [controls-board Gerbers](radio_adafruit_feather_rp2040/fab/openald-feather-controls-gerbers-jlcpcb.zip) · [BOM](radio_adafruit_feather_rp2040/docs/BOM.md) · [pin map](radio_adafruit_feather_rp2040/docs/pin_map.md) · [wiring diagram](radio_adafruit_feather_rp2040/docs/wiring_diagram.png) · [firmware notes](radio_adafruit_feather_rp2040/docs/firmware_notes.md) · [case STLs](radio_adafruit_feather_rp2040/case/stl/)
+* Feather variant: [BOM](radio_adafruit_feather_rp2040/docs/BOM.md) · [pin map](radio_adafruit_feather_rp2040/docs/pin_map.md) · [wiring diagram](radio_adafruit_feather_rp2040/docs/wiring_diagram.png) · [firmware notes](radio_adafruit_feather_rp2040/docs/firmware_notes.md) · [case STLs](radio_adafruit_feather_rp2040/case/stl/)
 * Ready-made zip packages per subproject: GitHub Release **v1.0** assets (or build them with `tools/make_packages.sh`).
 
 ## How to order (JLCPCB)
@@ -74,7 +74,7 @@ LICENSE              CC0 1.0 Universal    requirements.txt  Python deps
 tools/               check_all.sh, fetch_kicad3d.sh, make_packages.sh, easyeda/ (EasyEDA footprint cache for jlc_cpl_fit)
 radio_single_board/  kicad/ fab/ (gerbers, JLC BOM/CPL, centroid, .pos, vendor BOMs, minimal/) case/ previews/ docs/ scripts/
 charging_dock/       kicad/ fab/ case/ (STLs, floor_pads/) previews/ docs/ scripts/ DOCK_INTERFACE.md
-radio_adafruit_feather_rp2040/  kicad/ fab/ case/ (stl/) previews/ docs/ scripts/ ref/ (Adafruit Eagle board, CC BY-SA) make_all.sh
+radio_adafruit_feather_rp2040/  case/ (stl/) previews/ docs/ scripts/ ref/ (Adafruit Eagle board, CC BY-SA) archive/ (retired PCB) make_all.sh
 ```
 
 ## License

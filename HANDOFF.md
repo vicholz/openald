@@ -22,7 +22,7 @@ in a 3D-printed case. Plus a 6-slot charging dock and an off-the-shelf (Feather 
 |---|---|---|
 | `radio_single_board/` | `kicad/openald.kicad_{sch,pcb,pro}`, `case/openald_case.scad`, `fab/` | v1.0 design complete; ERC 0 err (2 accepted warnings), DRC 0 err/62 silk-only, CPL check OK, case fit 0 interferences |
 | `charging_dock/` | `kicad/openald-dock.*`, `case/openald_dock.scad`, `scripts/geom.py` | v1.0 design complete; ERC 0/0, DRC 0 err/75 silk-only, CPL check OK, dock fit 0 interferences |
-| `radio_adafruit_feather_rp2040/` | `kicad/openald-feather-controls.*`, `case/openald_feather_case.scad`, `scripts/layout.py` | v1.0 design complete; ERC 0/0, DRC 0, CPL check OK, fit PASS; FM-module geometry is estimated |
+| `radio_adafruit_feather_rp2040/` | `case/openald_feather_case.scad`, `scripts/layout.py` (no PCB: direct-mount wheel + switch) | v1.0 design complete; fit PASS (0 interferences), dock check OK; FM-module geometry is estimated |
 
 ## 2. Hard constraints (from Victor — do not violate)
 1. **Never change the single-board radio case thickness** (33.4 mm). Case outer size stays **43 × 92 × 33.4 mm**.
@@ -57,6 +57,7 @@ Dates are 2026, America/Los_Angeles. "rev" names are the pre-release names; the 
 | **OpenALD** | Renamed to **OpenALD** ("a device, not a system"). Same v1.0. |
 | Dock + LED move | For the dock the **level bar moved to a vertical column near the jack end**: D1/D5/D6 at x = 24.0, y = 15.4/12.4/9.4 mm (KiCad coords from top-left; D1 lowest, D6 nearest the jack, 3 mm pitch) ≈ 20 mm above the dock rim. Re-routed; nothing else moved; case thickness unchanged. TP4056 LEDs D3/D4 stay beside the USB-C (hidden when docked → firmware shows charging on the bar). **OpenALD Dock v1.0** designed in `charging_dock/`. |
 | Feather variant | `radio_adafruit_feather_rp2040/` designed (see §5). |
+| **Feather: direct-mount controls** (2026-11-11, still v1.0) | Victor: "add a case frame … where I can mount a SS-12F16 1P2T G4/G6 switch directly into the case, and glue the wheel into. I will solder wires from the wheel and the switch to the feather." The **controls PCB is retired** (moved to `radio_adafruit_feather_rp2040/archive/controls_board_pcb/`). **SS-12F16** SPDT panel switch: plate in a 0.6 mm pocket on the inside of the right wall (bottom half, centre Y 75, Z −5), 2 × M2 × 3 screws from outside into its tapped ears, knob slot 6.6 × 3.6, `SW_L` = 4 (G4, 2.6 mm proud; G6 = 4.6 mm). **SIQ-02FVS3** bought loose and glued into a frame cradle (1.6 mm platform, boss holes, side walls with tab notches; a tenon on the bottom-half post under it takes the push); dial moved 0.6 mm outward → **0.95 mm proud of the side / 1.95 mm above the thumb-pocket floor** (was 0.35 / 1.35). Top-half wheel slot now runs to the split with a bottom-half tab under the dial (the old Feather case could not be closed over the protruding dial — the new check found 30 mm³ of top half in that path). Divider and charge-mirror LEDs become optional hand-wired parts (inline resistors; two 3 mm LEDs in top-half sockets). Same GPIOs (A D24, B D25, push D4, C GND, switch common EN). Backup: `/workspace/openald-feather-pre-directmount-backup` on the build box (not in git). |
 | Repo | This GitHub repo created 2026-11-11; scripts made path-independent (no `/workspace` paths); `tools/` added; CC0 chosen. |
 | **Wheel press = battery check; bar centred** (2026-11-11, still v1.0) | Victor: remove the separate battery-check button and use the wheel press; centre the level bar and move it up for the dock. **SW2 EVQ-P7A01P (C79167) removed** (footprint, 3D model, case hole, printed plunger). The wheel's push switch S now drives the gate of new **P-FET Q4 AO3401A (C15127)** with **R25 1M (C22935)** pull-up to VBAT; Q4 replaces SW2 between VBAT and VBTN, so D2/D10/R6/R7 work as before (switch off: hold the wheel in → MCU powered → bar shows level). S left PD4 (it now sits at VBAT); the press is read as **BTN_SENSE high on PC1** (wake PCINT9); PD4 spare. Mapping: short press = battery check 3 s, hold = seek, push-and-turn = tune. **Bar: D6/D5/D1 at x = 19.0 (centreline), y = 6.1/8.9/14.0**, windows evenly spaced at y = 6.1/8.9/11.7 (D1 tunnel slanted, it has to skip the holder peg hole at (19, 11.34)); window centres 32.6/29.8/27.0 mm above the dock rim. FB1/FB2 moved to (24.0, 10.4/12.4). Re-routed. −$0.10/board parts, one fewer extended-part fee. Backup of the pre-change folder: `/workspace/openald-pre-button-removal-backup` on the build box (not in git; the previous commit 9509ac4 has it too). |
 
@@ -107,17 +108,20 @@ PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC
 * Parts: Adafruit Feather RP2040 (#4884), RDA5807M breakout with built-in 3.5 mm jack (~27 × 27 mm, 4-pin I2C: VCC,
   GND, SDA, SCL; runs 3.3–5 V, ~20 mA; use 3.3 V — not 5 V tolerant; drives 32 Ω headphones; headphone cable antenna),
   MPD BH-18650-PC holder + protected 18650 (Feather has no reverse-polarity protection), JST PH lead (#261), STEMMA QT
-  cable (#4210), small JLC controls board (SIQ-02FVS3 wheel, SK-12E12 switch on Feather EN, 220k/220k battery divider,
-  red/green charge-mirror LEDs driven from VBUS + the MCP73831 STAT pin via a fine wire to Feather R2).
+  cable (#4210). **No PCB:** Mitsumi SIQ-02FVS3 wheel (LCSC C2925423, loose) glued into a printed frame cradle and an
+  SS-12F16 SPDT panel slide switch (G4 default, `SW_L` in `layout.py`) screwed into the right case wall, both hand-wired
+  to the Feather (A D24, B D25, push D4, C GND; switch common EN, OFF-end lug GND). Optional hand-wired 220k/220k divider
+  on A0 and two 3 mm charge LEDs (VBUS/STAT, top-half sockets, visible while docked). Old controls PCB: `archive/`.
 * Case: bottom 52.8 mm identical to the single-board case (43 × 33.4 mm), tapers to 45.5 mm wide above; 92 mm long.
   Feather sits where the old PCB was so its USB-C lines up with the dock plug (no adapter). Older Feathers (rev B and
   before, 2.48 mm USB overhang): `python3 scripts/feather_data.py --usb-overhang 2.48` then `case/build_case.sh`.
-* ~$32/radio in parts (estimate, excl. JLC/shipping/FM module).
+* ~$32/radio in priced parts (estimate, excl. screws/wire/passives/shipping/FM module); no JLC order any more.
 * **Risks/TODO:** FM-module hole/jack positions are **estimates** (photo could not be measured) — measure and edit
   `scripts/layout.py` (table in its README) before printing; charging is only **200 mA (≈ 18–20 h)**; off-state drain
   ~0.4 mA via the Feather EN pull-up (~9 %/month; swap that resistor to 100k → ~50 µA total); battery change means
   lifting the frame; top end held by the lip only; STAT tap is a fine-wire joint; holder-to-deck margin 0.1 mm relies on
-  the datasheet height 21.31 mm; wheel has no RC debounce.
+  the datasheet height 21.31 mm; wheel has no RC debounce; wheel push travel (1.0 mm assumed) and glue strength
+  untested; SS-12F16 clone dimensions vary and the OFF lug must be found with a meter.
 
 ## 6. Charging dock — key facts and risks
 * **Power:** rear USB-C (HRO TYPE-C-31-M-12) → **HUSB238** PD sink (C7471904; requests the highest PDO ≤ 20 V with
@@ -148,20 +152,19 @@ for the case fit checks: `tools/fetch_kicad3d.sh && export KICAD9_3DMODEL_DIR=$P
 radio_single_board  ERC 0 errors / 2 warnings   (pin_to_pin U3 pin 3 PE0–GND and pin 6 PE1–+3V3: intentional 328P drop-in)
                     DRC 62 = 8 silk_edge_clearance + 24 silk_over_copper + 30 silk_overlap; 0 unconnected; 0 parity
 charging_dock       ERC 0/0; DRC 75 = 2 silk_edge_clearance + 39 silk_over_copper + 34 silk_overlap; 0 unconnected; 0 parity
-feather_controls    ERC 0/0; DRC 0; 0 unconnected; 0 parity
 each                jlc_cpl_fit.py --check -> "correction table: OK"
 ALL CHECKS PASSED
 ```
 **Case fit:** `tools/check_all.sh --case` (or each `build_case.sh`) → `INTERFERENCES: 0` (radio: closest to tunnel
-walls D1 0.31 mm inside its slanted tunnel; dock: outer 191.8 × 111.72 × 62.5); feather `RESULT: PASS (0 interferences)`. Takes ~3 min (radio),
+walls D1 0.31 mm inside its slanted tunnel; dock: outer 191.8 × 111.72 × 62.5); feather `RESULT: PASS (0 interferences)` (no PCB checks: the Feather variant has no PCB). Takes ~3 min (radio),
 longer for the dock; rewrites STLs/previews (diffs are mesh-ordering/timestamp noise).
 
 **Per subproject** (run from the subproject folder):
 | Step | radio_single_board | charging_dock | radio_adafruit_feather_rp2040 |
 |---|---|---|---|
-| Full PCB regen (re-routes! needs Freerouting) | `scripts/run_all_pcb.sh [passes]` | `scripts/run_all_pcb.sh [passes]` | `./make_all.sh` (everything) |
-| Fab outputs | `cd scripts && python3 make_fab.py` and `python3 make_fab.py --minimal` | `cd scripts && python3 make_fab.py` | `cd scripts && python3 make_fab.py` |
-| JLC CPL check | `cd scripts && python3 jlc_cpl_fit.py --check` (`--plots` for overlays) | same | same |
+| Full PCB regen (re-routes! needs Freerouting) | `scripts/run_all_pcb.sh [passes]` | `scripts/run_all_pcb.sh [passes]` | no PCB; `./make_all.sh` rebuilds wiring + case |
+| Fab outputs | `cd scripts && python3 make_fab.py` and `python3 make_fab.py --minimal` | `cd scripts && python3 make_fab.py` | – |
+| JLC CPL check | `cd scripts && python3 jlc_cpl_fit.py --check` (`--plots` for overlays) | same | – |
 | Vendor BOMs | `cd scripts && python3 make_vendor_boms.py` | – | – |
 | Case + fit + renders | `scripts/build_case.sh` | `scripts/build_case.sh` | `case/build_case.sh` |
 | Previews | `python3 scripts/render_pcb_previews.py` | same | (in make_all/build_case) |
@@ -201,7 +204,9 @@ plug temperatures; per-slot current limit trips at ~1.1–1.8 A.
 
 Feather variant: 15. **Measure the FM module** (outline, thickness, holes, jack position/height, bottom pin length,
 tallest part) and update `scripts/layout.py` before printing. 16. Verify the 0.1 mm holder-to-deck gap with a real
-cell. 17. STAT mirror LEDs behaviour; off-state drain; 200 mA charge time.
+cell. 17. Optional 3 mm charge LEDs behaviour; off-state drain; 200 mA charge time. 18. **Print and fit the direct-mount
+controls:** switch plate in its pocket, M2 threads, knob travel/feel, OFF lug with a meter; wheel in the cradle (boss holes,
+side walls), push travel and click with the case closed, glue joint after many pushes, top half closing over the dial.
 
 ## 9. Open decisions / TODOs
 * Write firmware (single board: MiniCore/Arduino per §4; Feather: Arduino-Pico or CircuitPython per its firmware_notes).
@@ -262,8 +267,9 @@ charging_dock/
   README.md DOCK_INTERFACE.md kicad/ fab/ case/ (STLs, floor_pads/, dock_fit_report.txt) previews/ docs/
   scripts/                 geom.py = geometry source of truth, design.py, generators, plugsearch.py/jlcq.py (part search helpers)
 radio_adafruit_feather_rp2040/
-  README.md make_all.sh kicad/ fab/ case/ (stl/, reports) previews/ docs/ (pin map, firmware notes, BOM, wiring) ref/
-  scripts/                 layout.py = mechanical source of truth, feather_data.py parses ref/*.brd
+  README.md make_all.sh case/ (stl/, reports) previews/ docs/ (pin map, firmware notes, BOM, wiring) ref/ (+ models/)
+  scripts/                 layout.py = mechanical source of truth, feather_data.py parses ref/*.brd, check_fit.py
+  archive/controls_board_pcb/  retired controls PCB (KiCad, fab, generators) - not used
 ```
 Generated (not hand-edited) files: `.kicad_sch`, `.kicad_pcb`, footprints/symbols/3D models, `case_params.scad`,
 `dock_params.scad`, everything in `fab/`, `previews/` and STLs. Edit `design.py` / `placement.py` / `geom.py` /

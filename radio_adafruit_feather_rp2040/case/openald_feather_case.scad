@@ -3,7 +3,9 @@
 // Feather's bottom face.  The lowest 2 in (Y -2.5 .. 48.3) is the same solid as the OpenALD single-board case
 // (43.0 x 33.41 section, R5.5 plan corners, R2 edges, same USB-C opening and plug-body recess) so it fits the dock.
 // Above that the body tapers out by 1.25 mm per side (Y 50.3 .. 54.3) to 45.5 mm wide.
-// All positions come from case_params.scad (generated from scripts/layout.py + the KiCad controls board).
+// All positions come from case_params.scad (generated from scripts/layout.py).
+// Direct-mount controls (no controls PCB): the SS-12F16 power switch screws to the inside of the right wall (bottom
+// half), the SIQ-02FVS3 thumbwheel is glued into a cradle on the frame, optional 3 mm charge LEDs push into the top.
 include <case_params.scad>
 
 part = "assembly";  // top | bottom | frame | assembly | print | closed | top_raw | bottom_raw | frame_raw | section
@@ -20,6 +22,13 @@ fm_ledge = 1.5;                                    // FM board rests on a 1.5 mm
 fm_posts = true;                                   // top-half posts on the (ESTIMATED) FM corner holes
 usb_pocket_d = 1.5; label_depth = 0.4; label_size = 1.8;
 wheel_pocket_d = 1.0; wheel_pocket_h = 6.0;
+wheel_tab_fit = 0.15;                              // bottom-half tab under the wheel slot (lets the top half drop over the dial)
+cradle_wall = 1.5; cradle_wall_h = 1.6;            // wheel cradle side walls (Z 1.6 .. 3.2, 0.4 under the dial)
+peg_hole_d = 1.75;                                 // for the wheel's D1.55 locating bosses
+sw_fit = 0.15;                                     // plate pocket clearance
+sw_screws = true; sw_screw_d = 2.3;                // M2 x 3 (or x4) pan-head screws from outside into the switch's tapped plate
+mirror_leds = true;                                // optional dock-visible 3 mm CHG/FULL LEDs in the top half
+led3_bore = 3.15; led3_boss_d = 5.4;
 $fn = 40;
 
 TOP_OUT = TOP_IN + TOP_T;                          // 9.8
@@ -68,7 +77,7 @@ module filleted_pocket(w,h,cr,depth,n=10) { translate([0,0,-depth]) filleted_hol
 
 // ---------------- openings ----------------
 module cutouts() {
-  zc = CB_Z0 + CB_T;   // controls-board top = Feather top = 1.6
+  zc = WHEEL_SEAT_Z;   // wheel seat (cradle top) = 1.6, the dial is at Z 3.6 .. 5.6
   // USB-C (bottom face) - identical to the single-board case: plug-body pocket + filleted receptacle opening
   translate([USB_X, Y_IN0-WALL, USB_Z]) rotate([90,0,0]) filleted_pocket(12.8, 7.4, 3.0, usb_pocket_d);
   translate([USB_X, Y_IN0, USB_Z]) rotate([90,0,0]) filleted_hole(USB_W+0.5, USB_H+0.5, 1.4, WALL-usb_pocket_d, 0.4, 0.3);
@@ -76,25 +85,40 @@ module cutouts() {
   translate([FM_JACK_X, Y_IN1-0.1, fm_box[4]+fm_box[5]+FM_JACK_AXIS_H]) rotate([-90,0,0]) {
     cylinder(d=FM_JACK_HOLE_D,h=WALL+1); translate([0,0,WALL-0.8]) cylinder(d1=FM_JACK_HOLE_D,d2=FM_JACK_HOLE_D+1.8,h=0.9); }
   // thumbwheel (right side): pocket thins the wall to 1 mm, slot through its floor
-  ch = sqrt(pow(wheel_r,2)-pow(IN_X1U-wheel_xy[0],2));
+  ch = sqrt(pow(WHEEL_R,2)-pow(IN_X1U-wheel_xy[0],2));
   wz = zc+(wheel_z0+wheel_z1)/2;
   translate([IN_X1U+WALL, wheel_xy[1], wz]) rotate([0,90,0]) rotate([0,0,90]) filleted_pocket(2*ch+5.0, wheel_pocket_h, 2.6, wheel_pocket_d);
   translate([IN_X1U, wheel_xy[1], wz]) rotate([0,90,0]) rotate([0,0,90]) filleted_hole(2*ch+1.2, wheel_z1-wheel_z0+1.0, 1.0, WALL-wheel_pocket_d, 0.5, 0.3);
-  // power switch (right side)
-  translate([IN_X1U, sw_y, zc+(sw_act_z0+sw_act_z1)/2]) rotate([0,90,0]) rotate([0,0,90])
-    filleted_hole(abs(sw_on_y-sw_off_y)+sw_act_w+0.7, sw_act_z1-sw_act_z0+0.7, 0.9, WALL, 0.8, 0.3);
+  // SS-12F16 power switch (right side, bottom half): plate pocket in the inner wall face, actuator slot, 2 M2 holes
+  translate([IN_X1U-0.01, SW_Y-sw_plate[0]/2-sw_fit, SW_Z-sw_plate[1]/2-sw_fit]) cube([SW_POCKET+0.01, sw_plate[0]+2*sw_fit, sw_plate[1]+2*sw_fit]);
+  translate([IN_X1U+SW_POCKET-0.01, SW_Y, SW_Z]) rotate([0,90,0]) rotate([0,0,90])
+    filleted_hole(sw_act[0]+SW_TRAVEL+0.6, sw_act[1]+0.6, 0.8, WALL-SW_POCKET+0.01, 0.6, 0);
+  if (sw_screws) for (dy=[-SW_HOLE_P/2, SW_HOLE_P/2]) translate([IN_X1U-1, SW_Y+dy, SW_Z]) rotate([0,90,0]) cylinder(d=sw_screw_d, h=WALL+2);
 }
-module switch_labels() {   // engraved under the two ends of the switch slot (right side, top half)
-  for (L=[["ON",sw_on_y+0.6],["OFF",sw_off_y-0.6]])
-    translate([IN_X1U+WALL-label_depth, L[1], 1.9]) rotate([90,0,90]) linear_extrude(label_depth+1)
+function wheel_ch() = sqrt(pow(WHEEL_R,2)-pow(IN_X1U-wheel_xy[0],2));   // half-chord of the dial at the inner wall
+module wheel_notch(grow=0) {  // top half: the wheel slot continues down to the split so the top half drops over the dial
+  ch = wheel_ch(); wz = WHEEL_SEAT_Z+(wheel_z0+wheel_z1)/2;
+  translate([IN_X1U-0.5, wheel_xy[1]-ch-0.6-grow, -1]) cube([WALL+2, 2*ch+1.2+2*grow, 1+wz]);
+}
+module wheel_tab() {          // bottom half: fills the notch up to just under the slot (dial bottom is 0.65 above it)
+  ch = wheel_ch(); top = WHEEL_SEAT_Z+wheel_z0-0.5-wheel_tab_fit;
+  intersection() { shell();
+    translate([IN_X1U, wheel_xy[1]-ch-0.6+wheel_tab_fit, -0.01]) cube([WALL+1, 2*ch+1.2-2*wheel_tab_fit, top+0.01]); }
+}
+module switch_labels() {   // engraved under the two ends of the switch slot (right side, bottom half); knob toward +Y = ON
+  for (L=[["ON",SW_Y+2.6],["OFF",SW_Y-2.6]])
+    translate([IN_X1U+WALL-label_depth, L[1], SW_Z-sw_act[1]/2-2.6]) rotate([90,0,90]) linear_extrude(label_depth+1)
       text(L[0], size=1.5, font="DejaVu Sans:style=Bold", halign="center", valign="center");
 }
 
 // ---------------- LEDs: tunnels + windows ----------------
-// [x, y, bore_x, bore_y, board_top_z]; Feather CHG (amber, MCP73831), Feather red D13, Feather NeoPixel,
-// controls-board red CHG + green FULL mirrors (above the dock line, visible while docked)
-leds = [[f_led_chg[0],f_led_chg[1],2.0,1.4], [f_led_red[0],f_led_red[1],1.4,2.0], [f_led_neo[0],f_led_neo[1],2.6,2.6],
-        [cb_leds[0][0],cb_leds[0][1],2.6,1.8], [cb_leds[1][0],cb_leds[1][1],2.6,1.8]];
+// [x, y, bore_x, bore_y]; Feather CHG (amber, MCP73831), Feather red D13, Feather NeoPixel (all inside the dock pocket)
+leds = [[f_led_chg[0],f_led_chg[1],2.0,1.4], [f_led_red[0],f_led_red[1],1.4,2.0], [f_led_neo[0],f_led_neo[1],2.6,2.6]];
+// optional 3 mm THT CHG/FULL LEDs (above the dock line): pushed in from inside until the flange seats, dome flush with the top
+led3_seat = TOP_IN+TOP_T-LED3_ABOVE_FLANGE;
+module led3_bosses() { if (mirror_leds) for (p=led3) translate([p[0],p[1],led3_seat]) cylinder(d=led3_boss_d,h=TOP_IN-led3_seat+0.01); }
+module led3_bores()  { if (mirror_leds) for (p=led3) { translate([p[0],p[1],led3_seat-0.01]) cylinder(d=led3_bore,h=TOP_T+TOP_IN); 
+                         translate([p[0],p[1],TOP_IN+TOP_T-0.4]) cylinder(d1=led3_bore,d2=led3_bore+0.8,h=0.41); } }
 usb_env = f_parts[21];
 module part_keepout() {   // Feather components + 0.25 (tunnel walls must not land on parts)
   for (p=f_parts) translate([p[0]-0.25,p[2]-0.25,p[4]-0.01]) cube([p[1]-p[0]+0.5,p[3]-p[2]+0.5,p[5]-p[4]+0.26]);
@@ -128,19 +152,17 @@ module top_half() {
       for (h=feather_holes) translate([h[0],h[1],1.6+0.05]) cylinder(d=3.4,h=TOP_IN-1.65+0.01);
       // RESET pin-hole guide tube (paper clip), stops 0.5 above the button
       translate([f_btn_reset[0],f_btn_reset[1],4.0]) cylinder(d=reset_d+1.6,h=TOP_IN-4.0+0.01);
-      // controls-board hold-downs on the two peg holes
-      for (h=cb_holes) translate([h[0],h[1],CB_Z0+CB_T+0.05]) cylinder(d=3.2,h=TOP_IN-CB_T-0.05+0.01);
+      led3_bosses();
       // FM module hold-downs (corner holes - ESTIMATED positions)
       if (fm_posts) for (x=[fm_box[0]+FM_HOLE_INSET, fm_box[1]-FM_HOLE_INSET]) for (y=[fm_box[2]+FM_HOLE_INSET, fm_box[3]-FM_HOLE_INSET])
         translate([x,y,fm_box[4]+fm_box[5]+0.05]) cylinder(d=3.6,h=TOP_IN-fm_box[4]-fm_box[5]-0.05+0.01);
     }
     translate([0,0,-0.01]) difference() { linear_extrude(lip_h+0.3) in2d(lip_t+fit); translate([0,0,-1]) linear_extrude(lip_h+3) in2d(-0.01); }
     for (s=screws) translate([s[0],s[1],-0.01]) cylinder(d=insert_d,h=insert_top+0.01);
-    for (h=cb_holes) translate([h[0],h[1],CB_T-0.1]) cylinder(d=CB_HOLE_D+0.2,h=1.2);      // peg-tip relief
     for (h=feather_holes) translate([h[0],h[1],1.5]) cylinder(d=2.3,h=1.2);
     translate([f_btn_reset[0],f_btn_reset[1],3.9]) cylinder(d=reset_d,h=TOP_IN);
     translate([f_btn_reset[0],f_btn_reset[1],TOP_OUT-0.4]) cylinder(d1=reset_d,d2=reset_d+0.9,h=0.45);
-    cutouts(); led_windows(); switch_labels();
+    cutouts(); wheel_notch(); led_windows(); led3_bores();
   }
 }
 
@@ -160,19 +182,41 @@ module bottom_half() {
       }
       // deck supports: posts from the floor to the frame deck, in the side channels beside the holder
       for (l=legs) translate([l[0]-leg_w[0]/2,l[1]-leg_w[1]/2,FLOOR_Z-0.01]) cube([leg_w[0],leg_w[1],DECK_Z0-0.05-FLOOR_Z+0.01]);
+      // tenon on the leg under the wheel cradle: engages the frame so the wheel push (3-6 N, -X) goes into the case
+      translate([tenon_leg[0]-tenon_w[0]/2,tenon_leg[1]-tenon_w[1]/2,DECK_Z0-0.06]) cube([tenon_w[0],tenon_w[1],tenon_h+0.06]);
+      wheel_tab();
     }
     for (s=screws) { translate([s[0],s[1],head_seat-0.01]) cylinder(d=screw_d,h=-head_seat+1);
                      translate([s[0],s[1],BOT_OUT-1]) cylinder(d=head_d,h=head_seat-BOT_OUT+1); }
     // grooves for the holder's PC pins, bent flat under the holder toward its ends (wire soldered past the end)
     for (i=[0,1]) { p=holder_pins[i]; y0 = i==0 ? holder_box[2]-1.8 : p[1]-0.8; y1 = i==0 ? p[1]+0.8 : holder_box[3]+1.8;
       translate([p[0]-1.0, y0, FLOOR_Z-0.6]) cube([2.0, y1-y0, 0.61]); }
-    cutouts();
+    cutouts(); switch_labels();
   }
 }
 
 // deck-support posts (bottom half) and the internal frame (print 1x, deck down)
 legs = [[7.0,7.0],[7.0,40],[-0.5,72],[7.0,85.8], [36.6,8.0],[36.6,40],[36.6,62.5],[36.6,85.2]];
 leg_w = [1.3, 3.0];
+tenon_leg = [36.6,62.5]; tenon_w = [0.9, 2.4]; tenon_h = 0.7;   // tenon on that leg's top, into a mortise in the deck underside
+// wheel-local helper: u along +X (toward the wall) and v along +Y from the dial centre, z absolute
+module wl(u,v,z) { translate([wheel_xy[0]+u, wheel_xy[1]+v, z]) children(); }
+module wheel_cradle() {      // platform + side walls under the SIQ-02FVS3 body (body: u -7.25..3.85, v -5.15..5.15)
+  bw = 5.15+0.15;           // half-width of the body slot
+  difference() {
+    union() {
+      wl(-6.9,-bw-cradle_wall,0) cube([6.9+3.6, 2*(bw+cradle_wall), WHEEL_SEAT_Z]);
+      for (s=[-1,1]) wl(-6.9, s>0 ? bw : -bw-cradle_wall, WHEEL_SEAT_Z-0.01) cube([6.9+3.0, cradle_wall, cradle_wall_h+0.01]);
+    }
+    // locating-boss holes (bosses at u -4.5, v +-3)
+    for (s=[-1,1]) wl(-4.5, 3*s, WHEEL_SEAT_Z-1.5) cylinder(d=peg_hole_d, h=2);
+    // reliefs under the metal mounting tabs (side tabs at u -1.3 / -5.4 stick out ~0.75 past the body sides; front tabs at u +3.25, v +-3.25)
+    for (u=[-1.3,-5.4]) for (s=[-1,1]) wl(u-0.75, s>0 ? 4.6 : -6.3, WHEEL_SEAT_Z-0.4) cube([1.5, 1.7, 1.1]);
+    for (s=[-1,1]) wl(3.25, 3.25*s, WHEEL_SEAT_Z-0.4) cylinder(d=1.9, h=1);
+    // mortise for the leg tenon (from below)
+    translate([tenon_leg[0]-tenon_w[0]/2-0.15, tenon_leg[1]-tenon_w[1]/2-0.15, DECK_Z0-0.01]) cube([tenon_w[0]+0.3, tenon_w[1]+0.3, tenon_h+0.25]);
+  }
+}
 module frame() {
   difference() {
     union() {
@@ -183,18 +227,19 @@ module frame() {
         translate([fm_box[0]+fm_ledge,fm_box[2]+fm_ledge,-1]) cube([fm_box[1]-fm_box[0]-2*fm_ledge,fm_box[3]-fm_box[2]-2*fm_ledge,5]);
       }
       lz = fm_box[4]+fm_box[5]+0.8;
-      // (the controls-board edge, 0.4 mm away, locates the FM board's +X side; the case walls locate -X and +Y)
+      // the case walls locate the FM board's -X and +Y sides; a rail locates +X, two stops locate -Y
+      translate([fm_box[1]+0.4,72,0]) cube([0.8,fm_box[3]-1-72,lz]);         // +X edge rail (above the wheel wire bay)
       translate([fm_box[1]-4.5,fm_box[2]-1.0,0]) cube([4.5,0.8,lz]);           // -Y edge, right end
       translate([fm_box[0]+0.5,fm_box[2]-1.0,0]) cube([4,0.8,lz]);              // y0 edge near the left wall
-      // Feather locating pegs (in its 2.5 mm holes) and controls-board pegs (2.1 mm holes)
+      // Feather locating pegs (in its 2.5 mm holes)
       for (h=feather_holes) translate([h[0],h[1],-0.01]) cylinder(d=2.2,h=1.4);
-      for (h=cb_holes) translate([h[0],h[1],-0.01]) cylinder(d=CB_HOLE_D-0.2,h=1.4);
+      wheel_cradle();
     }
     for (s=screws) hull() { translate([s[0],s[1],-5]) cylinder(r=3.2+0.4,h=10); c=side_cube(s); translate([c[0]-0.5,c[1]-0.5,-5]) cube([3,3,10]); }
     translate([0.0,8.0,-5]) cube([6.2,9.0,10]);                  // battery wires up to the JST (left channel)
     translate([31.2,12.0,-5]) cube([3.8,36.0,10]);              // Feather JP1/JP3 wires down to the right channel
-    translate([pad_col[0]-1.2,pad_col[1]-1.2,-5]) cube([2.4,pad_col[2]-pad_col[1]+2.4,10]);   // wires up to the pad column
-    for (p=cb_tht) translate([p[0],p[1],-5]) cylinder(d=p[2],h=10);
+    translate([30.4,69.6,-5]) cube([3.6,10.9,10]);              // wheel / LED wires down to the right channel (switch is there)
+    translate([tenon_leg[0]-tenon_w[0]/2-0.15, tenon_leg[1]-tenon_w[1]/2-0.15, DECK_Z0-0.01]) cube([tenon_w[0]+0.3, tenon_w[1]+0.3, tenon_h+0.25]);
     for (x=[14.68,23.32]) for (y=[2.60,6.78]) translate([x,y,-5]) cylinder(d=1.8,h=10);      // Feather USB-C shell legs
     translate([fm_box[0]+fm_ledge,fm_box[2]+fm_ledge,-5]) cube([fm_box[1]-fm_box[0]-2*fm_ledge,fm_box[3]-fm_box[2]-2*fm_ledge,10]);  // under the FM board
   }
@@ -207,11 +252,24 @@ module ghosts() {
   color("#222",0.8) translate([holder_box[0],holder_box[2],holder_box[4]]) cube([holder_box[1]-holder_box[0],holder_box[3]-holder_box[2],holder_box[5]-holder_box[4]]);
   color("#36c",0.9) translate([fm_box[0],fm_box[2],fm_box[4]]) cube([fm_box[1]-fm_box[0],fm_box[3]-fm_box[2],fm_box[5]]);
   color("#888") translate([FM_JACK_X-3,fm_box[3]-12,fm_box[4]+fm_box[5]]) cube([6,12,FM_JACK_BODY_H]);
-  color("#2a5",0.9) linear_extrude(CB_T) polygon(cb_outline);
-  color("#555") translate([wheel_xy[0],wheel_xy[1],CB_T+wheel_z0]) cylinder(r=wheel_r,h=wheel_z1-wheel_z0);
-  color("#eee") translate([sw_pin_x-2,sw_y-4.3,CB_T]) cube([sw_face_x-sw_pin_x+2,8.6,4.5]);
-  color("#eee") translate([sw_face_x,(sw_on_y)-sw_act_w/2,CB_T+sw_act_z0]) cube([sw_tip_x-sw_face_x,sw_act_w,sw_act_z1-sw_act_z0]);
+  ghost_wheel();
 }
+module ghost_wheel() {   // SIQ-02FVS3 (simplified): body, dial, 4 terminals
+  color("#777") wl(-7.25,-5.15,WHEEL_SEAT_Z) cube([7.25+3.85,10.3,wheel_z0]);
+  color("#333") translate([wheel_xy[0],wheel_xy[1],WHEEL_SEAT_Z+wheel_z0]) cylinder(r=WHEEL_R,h=wheel_z1-wheel_z0,$fn=60);
+  color("silver") for (v=[-4,-1.475,1.475,4]) wl(-8.0,v-0.35,WHEEL_SEAT_Z) cube([0.8,0.7,0.3]);
+}
+module ghost_switch() {  // SS-12F16 (knob at the ON end): plate, body, lugs, actuator, screws
+  px = IN_X1U+SW_POCKET-sw_plate[2];
+  color("#bbb") translate([px, SW_Y-sw_plate[0]/2, SW_Z-sw_plate[1]/2]) cube([sw_plate[2], sw_plate[0], sw_plate[1]]);
+  color("#222") translate([px-sw_body[2], SW_Y-sw_body[0]/2, SW_Z-sw_body[1]/2]) cube([sw_body[2], sw_body[0], sw_body[1]]);
+  color("silver") for (k=[-1,0,1]) translate([px-sw_body[2]-SW_LUG_L, SW_Y+k*SW_LUG_P-0.8, SW_Z-0.25]) cube([SW_LUG_L,1.6,0.5]);
+  color("#111") translate([px+sw_plate[2], SW_Y+SW_TRAVEL/2-sw_act[0]/2, SW_Z-sw_act[1]/2]) cube([SW_L, sw_act[0], sw_act[1]]);
+  if (sw_screws) color("#999") for (dy=[-SW_HOLE_P/2, SW_HOLE_P/2]) translate([IN_X1U+WALL, SW_Y+dy, SW_Z]) rotate([0,90,0]) cylinder(d=3.8,h=1.3);
+}
+module ghost_leds() { if (mirror_leds) for (i=[0:len(led3)-1]) { p=led3[i];
+  color(i==0?"red":"limegreen") { translate([p[0],p[1],led3_seat-1]) cylinder(d=3.8,h=1); translate([p[0],p[1],led3_seat]) cylinder(d=3,h=LED3_ABOVE_FLANGE-1.5);
+                                   translate([p[0],p[1],TOP_IN+TOP_T-1.5]) cylinder(d1=3,d2=2.2,h=1.5); } } }
 
 if (part=="top")         translate([0,0,TOP_OUT]) rotate([180,0,0]) top_half();
 else if (part=="bottom") translate([0,0,-BOT_OUT]) bottom_half();
@@ -221,10 +279,15 @@ else if (part=="bottom_raw") bottom_half();
 else if (part=="frame_raw") frame();
 else if (part=="print") { translate([0,0,-BOT_OUT]) bottom_half(); translate([55,87,TOP_OUT]) rotate([180,0,0]) top_half();
                           translate([105,0,-DECK_Z0]) frame(); }
-else if (part=="closed") { color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("tan") frame(); ghosts(); }
-else if (part=="section") {   // closed case cut at Y = sec_y, looking from the USB-C end
-  color("lightgray") clipc() bottom_half(); color("lightsteelblue") clipc() top_half(); color("tan") clipc() frame(); clipc() ghosts(); }
-else { color("lightgray") bottom_half(); color("tan") translate([0,0,14]) frame(); ghosts_up(); color("lightsteelblue",0.6) translate([0,0,30]) top_half(); }
-module clipc() { intersection() { children(); translate([-20,sec_y,-40]) cube([100,100,80]); } }
+else if (part=="closed") { color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("tan") frame(); ghosts(); ghost_switch(); ghost_leds(); }
+else if (part=="section") {   // closed case cut at Y = sec_y, looking from the USB-C end (cut faces keep each part's colour)
+  clipc("lightgray") bottom_half(); clipc("lightsteelblue") top_half(); clipc("tan") frame(); clipc("#555") ghosts();
+  clipc("#222") ghost_switch(); clipc("red") ghost_leds(); }
+else if (part=="inside_right") {   // bottom half + frame + parts, top half removed, cut at X = 30.6, Y > 52 (looking at the right wall from inside)
+  intersection() { union() { color("lightgray") bottom_half(); color("tan") frame(); ghosts(); ghost_switch(); } translate([30.6,52,-40]) cube([30,60,80]); } }
+else if (part=="cradle") { color("tan") frame(); ghost_wheel(); }
+else { color("lightgray") bottom_half(); ghost_switch(); color("tan") translate([0,0,14]) frame(); ghosts_up();
+       color("lightsteelblue",0.6) translate([0,0,30]) top_half(); translate([0,0,30]) ghost_leds(); }
+module clipc(c="gray") { color(c) intersection() { children(); translate([-20,sec_y,-40]) cube([100,100,80]); } }
 module ghosts_up() { translate([0,0,14]) ghosts(); }
 sec_y = 30;

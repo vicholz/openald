@@ -7,7 +7,7 @@
 # Expected results (v1.0, 2026-11-11):
 #   radio_single_board  ERC 0 errors / 2 warnings (accepted PE0/PE1 pin_to_pin), DRC 58 silk-only, 0 unconnected, 0 parity
 #   charging_dock       ERC 0 / 0, DRC 75 silk-only, 0 unconnected, 0 parity
-#   radio_adafruit_feather_rp2040  ERC 0 / 0, DRC 0 / 0 unconnected / 0 parity
+#   radio_adafruit_feather_rp2040  no PCB (direct-mount wheel + switch): case fit only (--case)
 #   every board         jlc_cpl_fit.py --check -> "correction table: OK"
 #   --case              INTERFERENCES: 0 in each fit report
 set -u
@@ -28,7 +28,6 @@ chk() { # name dir sch pcb
 }
 chk radio_single_board radio_single_board openald.kicad_sch openald.kicad_pcb
 chk charging_dock charging_dock openald-dock.kicad_sch openald-dock.kicad_pcb
-chk feather_controls radio_adafruit_feather_rp2040 openald-feather-controls.kicad_sch openald-feather-controls.kicad_pcb
 if [ "${1:-}" = "--case" ]; then
   [ -d "${KICAD9_3DMODEL_DIR:-/usr/share/kicad/3dmodels}/Capacitor_SMD.3dshapes" ] || echo "WARNING: KiCad 3D models not found (install kicad-packages3d or set KICAD9_3DMODEL_DIR); the radio fit check will only cover the project's own models"
   echo "== case fit: radio_single_board"; bash "$R/radio_single_board/scripts/build_case.sh" >/dev/null 2>&1; tail -1 "$R/radio_single_board/case/case_fit_report.txt"
