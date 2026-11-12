@@ -1,10 +1,10 @@
 # OpenALD: PCB, assembly files and 3D-printed case (v1.0)
 
-OpenALD is an ATmega328PB + RDA5807M (RRD-102 module) FM radio, **programmable over its USB-C port** (CH340K USB-serial, Arduino IDE / MiniCore). It runs from one 18650 cell (reverse-polarity protected), charges over USB-C (TP4056 + DW01A/FS8205A protection) and uses an XC6206 3.3 V LDO. Controls are a thumbwheel encoder with push for volume and tuning, a slide power switch that sticks out of the case, and a battery-check button. A **3-LED battery-level bar** runs as a **vertical column** on the front face near the jack end (so it stays visible when the radio stands USB-C-down in the OpenALD Dock), and the TP4056 red/green charge LEDs sit next to the USB-C. The headphone cable acts as the antenna. The board silkscreen reads **OpenALD v1.0**.
+OpenALD is an ATmega328PB + RDA5807M (RRD-102 module) FM radio, **programmable over its USB-C port** (CH340K USB-serial, Arduino IDE / MiniCore). It runs from one 18650 cell (reverse-polarity protected), charges over USB-C (TP4056 + DW01A/FS8205A protection) and uses an XC6206 3.3 V LDO. Controls are a thumbwheel encoder with push for volume and tuning (**press the wheel = battery check**; there is no separate battery-check button any more), and a slide power switch that sticks out of the case. A **3-LED battery-level bar** runs as a **vertical column centred across the front face** near the jack end (so it stays well above the rim when the radio stands USB-C-down in the OpenALD Dock), and the TP4056 red/green charge LEDs sit next to the USB-C. The headphone cable acts as the antenna. The board silkscreen reads **OpenALD v1.0**.
 
 > **Note:** I couldn't open the attached spec file on the build machine. This design follows the written summary of the spec instead, so compare it against your original.
 
-> **OpenALD v1.0 is untested hardware.** This release is the former FM radio rev 4.3 design, renamed and reset to v1.0, with no electrical changes. The only layout and case change is that the level bar moved to a vertical column near the jack end for the charging dock (see "Level bar moved for the dock"). It passes ERC, DRC and the 3D case-fit check. Pre-release rev 4.2 had two full datasheet reviews, and rev 4.3 (which only changed the charge-current resistor) had its own independent review (see "Pre-release history" below). No board has been built or programmed yet. Build one or two first.
+> **OpenALD v1.0 is untested hardware.** This release is the former FM radio rev 4.3 design, renamed and reset to v1.0, with no electrical changes. Since then (all still v1.0): the level bar moved to a vertical column near the jack end for the charging dock, and on 2026-11-11 the separate battery-check button SW2 was removed (the wheel press does its job through a small P-FET, Q4) and the bar was centred across the board and moved up (see "Wheel press replaces the battery-check button"). It passes ERC, DRC and the 3D case-fit check. Pre-release rev 4.2 had two full datasheet reviews, and rev 4.3 (which only changed the charge-current resistor) had its own independent review (see "Pre-release history" below). No board has been built or programmed yet. Build one or two first.
 
 The hardware in this v1.0 package is the ~900 mA charge-current design (R3 = 1.2k, TP4056 PROG). Charge time for a 3000 mAh 18650 is about 3.7 h if the chip holds 900 mA through the CC phase, likely closer to ~4 h in the closed case if the TP4056 thermally throttles. Use a **≥ 1 A charger**. A laptop USB 2.0 port is only rated 500 mA. If you need to charge from a laptop USB-A port, change **R3 to 2.4k (C22940, Basic) for ~460 mA**. See the pre-release rev 4.3 notes for the thermal estimate, USB source details, and the first-board cell-temperature check.
 
@@ -17,15 +17,15 @@ The hardware in this v1.0 package is the ~900 mA charge-current design (R3 = 1.2
 | Bottom side | MPD BH-18650-PC holder only (THT, hand-soldered) |
 | Copper | GND pour on both layers, stitched with 102 GND vias (rev 4.2: 89 stitching vias on two offset 2.5 mm grids, 3 thermal vias in the TP4056 pad, plus routed GND vias). Power nets are 0.5 mm, signals 0.25 mm (0.15 mm minimum at the TQFP/ESSOP pins). Vias are 0.6/0.3 mm (0.8/0.4 mm on power). The autorouter ran with a 0.45 mm edge keep-out |
 | ERC | **0 errors**, 2 accepted warnings (`fab/erc_report.txt`): pin_to_pin on U3 pins 3/6 (PE0 tied to GND, PE1 tied to +3V3 for ATmega328P-AU drop-in). This is intentional |
-| DRC | **0 errors, 0 unconnected pads, 0 schematic-parity issues** (re-run for OpenALD v1.0). 58 cosmetic silkscreen warnings are waived: 8 silk_edge_clearance (the jack, wheel and switch overhang the edge on purpose), 22 silk_over_copper (reference text over pads/vias) and 28 silk_overlap. Min track 0.187 mm (rule 0.15 mm), tracks/vias ≥ 0.75 mm from the edge (`fab/drc_report.txt`) |
+| DRC | **0 errors, 0 unconnected pads, 0 schematic-parity issues** (re-run after the 2026-11-11 wheel-press / centred-bar update). 62 cosmetic silkscreen warnings are waived: 8 silk_edge_clearance (the jack, wheel and switch overhang the edge on purpose), 24 silk_over_copper (reference text over pads/vias) and 30 silk_overlap. Min track 0.187 mm (rule 0.15 mm), tracks/vias ≥ 0.75 mm from the edge (`fab/drc_report.txt`) |
 
 ## How charging is shown (power switch off or on)
 The power switch cuts VSYS. In rev 4 the MCU also runs from USB with the switch off (see "Power path"), so firmware can show the charging animation on its own while USB is plugged in (optional). The rev 3 options still work:
 1. **Always, with no MCU needed:** the TP4056's own LEDs, **D3 red = charging and D4 green = full**, light from USB power. They shine through their own two light tunnels just left of the USB-C. This works with the switch off.
-2. **With the switch off, hold the button:** SW2 already powers the MCU from the battery through Schottky D2 for as long as it is held. While held, the MCU reads nCHRG and shows the charging animation or the level on the bar. Releasing the button powers it off again.
-3. **With the switch on:** press the button any time and the bar shows the level, or the charging animation if USB is charging. Plugging USB in while the radio is on also shows the charging animation once for 3 s.
+2. **With the switch off, hold the wheel pressed in:** the wheel's push switch turns on P-FET Q4, which powers the MCU from the battery (through D10, and VSYS through D2) for as long as the wheel is held in. While held, the MCU reads nCHRG and shows the charging animation or the level on the bar. Releasing the wheel powers it off again.
+3. **With the switch on:** a short press of the wheel any time shows the level on the bar, or the charging animation if USB is charging. Plugging USB in while the radio is on also shows the charging animation once for 3 s.
 
-Rev 4 powers the MCU from USB through its **own** LDO (U6) instead of feeding VBUS into VSYS. That way the FM module and the battery divider stay off. Note that while USB is powering the MCU with the switch off, BAT_ADC reads about 0 V, so the cell voltage isn't measurable then. For the level while charging, hold SW2 (VSYS then sees the cell through D2) or switch on.
+Rev 4 powers the MCU from USB through its **own** LDO (U6) instead of feeding VBUS into VSYS. That way the FM module and the battery divider stay off. Note that while USB is powering the MCU with the switch off, BAT_ADC reads about 0 V, so the cell voltage isn't measurable then. For the level while charging, hold the wheel in (VSYS then sees the cell through Q4 and D2) or switch on.
 
 ## Files
 ```
@@ -56,14 +56,13 @@ case/
   openald_case.scad       parametric OpenSCAD case (includes case_params.scad)
   case_params.scad         AUTO-GENERATED from the PCB by scripts/gen_case_params.py
   case_top.stl, case_bottom.stl   heat-set-insert version (default)
-  button_plunger.stl       small printed part (print 1)
   nut_variant/             same case with M2 hex-nut pockets instead of inserts
   case_fit_report.txt      3D interference check of the assembled PCB against both halves and the LED tunnel walls
 previews/                  pcb_top.png, pcb_bottom.png, pcb_closeup_led_bar.png, pcb_closeup_reverse_polarity.png,
                            pcb_closeup_polarity_marks_bottom.png (rev 4.2), schematic-1.png, case_closed.png, case_*.png,
                            closeup_led_bar.png, closeup_front_usb_leds.png, cutaway_led_tunnels.png (section through the bar),
                            closeup_power_switch.png, closeup_usb_c.png, closeup_thumbwheel.png, closeup_jack_end.png,
-                           cpl_overlay_<REF>.png (EasyEDA/JLC footprint vs KiCad pads; rev 4 adds U3/U6/U7/U8, rev 4.2 Q2/Q3),
+                           cpl_overlay_<REF>.png (EasyEDA/JLC footprint vs KiCad pads; rev 4 adds U3/U6/U7/U8, rev 4.2 Q2/Q3, 2026-11-11 Q4),
                            pcb_closeup_usb_serial.png
 docs/openald-schematic.pdf
 scripts/                   generator scripts. run_all_pcb.sh regenerates everything up to DRC,
@@ -77,12 +76,12 @@ scripts/                   generator scripts. run_all_pcb.sh regenerates everyth
 2. Turn on **PCB Assembly**, top side.
 3. Upload `openald-BOM-jlcpcb.csv` and `openald-CPL-jlcpcb.csv`. If a site asks for a centroid or XY file instead, use `openald-centroid.csv` (same positions, plus value and footprint columns). If it asks for a `.pos` or KiCad position file, use `openald.pos`. U4, BT1 and J3 have no JLC placement, so they show as "not selected". Leave them that way, because you hand-solder them (J3 is not fitted).
 4. **SW1 (SK-12E12-G5) is a through-hole part.** If you want JLC to solder it, pick **Standard PCBA**, which adds JLC's THT soldering fee. To keep the cheaper Economic SMT-only service, deselect SW1 and hand-solder it, which is 5 easy joints. Buy it from LCSC (C136720) in that case.
-5. **Check every part's orientation in JLC's placement preview** before paying. The CPL has per-part corrections fitted against the EasyEDA footprints JLC uses (see "What changed in rev 3.1"), so the preview should show every part on its pads. The pin-1 and polarity marks to watch are U1, U2, Q1, Q2, Q3 (rev 4.2 SOT-23 FETs), U3 (TQFP-32 pin-1 dot), U5, U6, U7 (CH340K), U8 (USBLC6), D2, D7, D8, D9, D10 and the LEDs D1, D3, D4, D5, D6 (cathode = pad 1, on the left for the bar LEDs). Also check that J1, J2, SW1, SW2 and SW3 face the board edge.
-6. Parts cost about **$7.43 per board** for the JLC-placed parts (live LCSC prices at qty 10, including SW1; rev 4.3 only swaps R3 to a Basic 1.2k, which does not add an extended-part fee. The $0.07 drop vs the rev 4.2 $7.50 figure is almost all price drift). Rev 4.1 was $7.28, **+$0.42 over rev 3.1 ($6.86)**: the ATmega328PB costs more than the ATtiny84A, plus the CH340K ($0.55), the USBLC6 ($0.16), the second XC6206 ($0.13), 3 more B5819W and some passives. On top of that come the PCB, the assembly fee, and the Economic-PCBA extended-part loading fee (~$3.07 per part type per order). There are **12 extended part types**, but **C16581 (TP4056) is a JLC *Preferred* extended part, which has no loading fee**, so **11 types are charged**: C12624, C132230, C136720, C165948, C2830320, C2925423, C351410, C7519, C79167, C95562, C968586. That's about **$34 per order** (about $31 if you deselect the through-hole SW1 and hand-solder it). Earlier revisions of this README said 12 types / $36 because they counted the TP4056 too (corrected in the rev 4.3 review). Hand-solder and off-board parts add roughly $10 per unit: module ~$1-2, holder ~$3, cell ~$5, screws and inserts.
-7. Stock checked 2026-11-10 (re-checked for rev 4.3): **ATmega328PB-AU (C132230) still only 735** (was 2,168 earlier today), R3 1.2k (C22765) 2,137,483 (Basic), AO3401A (C15127) 1,635,833, AO3400A (C20917) 990,950, 1M (C22935) 4,069,811. Earlier check (fallback ATmega328P-AU C14877: 22,013, same footprint and CPL), **CH340K (C968586) 33,016** (CH340N C2977777: 48,107 and CH340C C84681: 97,260 exist, but they are different packages and would need a footprint change), USBLC6-2SC6 (C7519) 28,286, SIQ-02FVS3 1,298, PJ-320D-4A 1,522, EVQ-P7A01P 3,478, SK-12E12-G5 15,527. Re-check stock before ordering.
+5. **Check every part's orientation in JLC's placement preview** before paying. The CPL has per-part corrections fitted against the EasyEDA footprints JLC uses (see "What changed in rev 3.1"), so the preview should show every part on its pads. The pin-1 and polarity marks to watch are U1, U2, Q1, Q2, Q3, Q4 (SOT-23 FETs), U3 (TQFP-32 pin-1 dot), U5, U6, U7 (CH340K), U8 (USBLC6), D2, D7, D8, D9, D10 and the LEDs D1, D3, D4, D5, D6 (cathode = pad 1, on the left for the bar LEDs). Also check that J1, J2, SW1 and SW3 face the board edge.
+6. Parts cost about **$7.32 per board** for the JLC-placed parts (LCSC qty-10 prices from the cached 2026-11-10 lookup, including SW1). The 2026-11-11 wheel-press update removed SW2 (Panasonic EVQ-P7A01P, C79167, Extended, $0.187) and added Q4 (AO3401A, C15127, Basic, $0.081) + R25 (1M, C22935, Basic, $0.002): **−$0.10 per board** vs the previous $7.43, and **one fewer extended part type**. Rev 4.1 was $7.28, **+$0.42 over rev 3.1 ($6.86)**: the ATmega328PB costs more than the ATtiny84A, plus the CH340K ($0.55), the USBLC6 ($0.16), the second XC6206 ($0.13), 3 more B5819W and some passives. On top of that come the PCB, the assembly fee, and the Economic-PCBA extended-part loading fee (~$3.07 per part type per order). There are **11 extended part types**, but **C16581 (TP4056) is a JLC *Preferred* extended part, which has no loading fee**, so **10 types are charged**: C12624, C132230, C136720, C165948, C2830320, C2925423, C351410, C7519, C95562, C968586. That's about **$31 per order** (was ~$34 with SW2; about $28 if you deselect the through-hole SW1 and hand-solder it). Hand-solder and off-board parts add roughly $10 per unit: module ~$1-2, holder ~$3, cell ~$5, screws and inserts.
+7. Stock checked 2026-11-10 (re-checked for rev 4.3): **ATmega328PB-AU (C132230) still only 735** (was 2,168 earlier today), R3 1.2k (C22765) 2,137,483 (Basic), AO3401A (C15127) 1,635,833, AO3400A (C20917) 990,950, 1M (C22935) 4,069,811. Earlier check (fallback ATmega328P-AU C14877: 22,013, same footprint and CPL), **CH340K (C968586) 33,016** (CH340N C2977777: 48,107 and CH340C C84681: 97,260 exist, but they are different packages and would need a footprint change), USBLC6-2SC6 (C7519) 28,286, SIQ-02FVS3 1,298, PJ-320D-4A 1,522, SK-12E12-G5 15,527 (EVQ-P7A01P no longer used). Re-check stock before ordering.
 
 ## BOM files for PCBWay and NextPCB
-`fab/openald-BOM-pcbway.xlsx` and `fab/openald-BOM-nextpcb.xls` are the official vendor templates, filled from the v1.0 human BOM. Quantities are **per board** (74 placements, 38 line items). The PCBWay title says **5PCS** to match a 5-board order; NextPCB has no order-qty field — set the board count on their quote form. U4, BT1 and J3 are marked **DNS** (PCBWay) / **DNP** (NextPCB) so the assembler will not fit them: hand-solder U4 and BT1 yourself, and do not fit a header on J3. SW1 is listed as through-hole (PCBWay Type `thru-hole`). Off-board items (the 18650 cell, M2 screws and inserts) are not in these files; they stay in `openald-BOM-human.csv`. Manufacturer is filled only when the project data names one; most passives, the LEDs, the Schottkys, the beads, U4 and J3 leave that column blank. If you are soldering the boards yourself, buy a few extra 0603 passives and LEDs — quantities were not inflated for spares. Regenerate with `scripts/make_vendor_boms.py`.
+`fab/openald-BOM-pcbway.xlsx` and `fab/openald-BOM-nextpcb.xls` are the official vendor templates, filled from the v1.0 human BOM. Quantities are **per board** (75 placements, 37 line items). The PCBWay title says **5PCS** to match a 5-board order; NextPCB has no order-qty field — set the board count on their quote form. U4, BT1 and J3 are marked **DNS** (PCBWay) / **DNP** (NextPCB) so the assembler will not fit them: hand-solder U4 and BT1 yourself, and do not fit a header on J3. SW1 is listed as through-hole (PCBWay Type `thru-hole`). Off-board items (the 18650 cell, M2 screws and inserts) are not in these files; they stay in `openald-BOM-human.csv`. Manufacturer is filled only when the project data names one; most passives, the LEDs, the Schottkys, the beads, U4 and J3 leave that column blank. If you are soldering the boards yourself, buy a few extra 0603 passives and LEDs — quantities were not inflated for spares. Regenerate with `scripts/make_vendor_boms.py`.
 
 ## Minimal JLC assembly (hotplate parts only)
 If you have a hot-air station and want JLC to place only the parts that are painful by hand, use the files in `fab/minimal/`. Upload the same Gerbers (`fab/openald-gerbers-jlcpcb.zip`), but use:
@@ -101,7 +100,7 @@ If you have a hot-air station and want JLC to place only the parts that are pain
 | U3 | ATmega328PB-AU TQFP-32, 0.8 mm pitch (C132230) | No exposed pad, so hot air *can* do it, but 0.8 mm pitch is easy to bridge; factory placement is much more reliable |
 | U7 | CH340K ESSOP-10 (C968586) | Exposed pad under the package; same as U1 |
 
-**Looked at, but left off (your hot-air station is enough):** U2 (DW01A, SOT-23-6), Q1 (FS8205A, SOT-23-6 in this design — not TSSOP-8), U8 (USBLC6-2SC6, SOT-23-6), Q2/Q3 (SOT-23) and U5/U6 (SOT-23-3). All of those have side-only pins and no bottom-only pad. U4, BT1 and J3 stay hand-soldered / unfitted as before.
+**Looked at, but left off (your hot-air station is enough):** U2 (DW01A, SOT-23-6), Q1 (FS8205A, SOT-23-6 in this design — not TSSOP-8), U8 (USBLC6-2SC6, SOT-23-6), Q2/Q3/Q4 (SOT-23) and U5/U6 (SOT-23-3). All of those have side-only pins and no bottom-only pad. U4, BT1 and J3 stay hand-soldered / unfitted as before.
 
 **Estimated JLC cost for 5 boards (estimate only, not a live quote):** about **$36** before shipping, tax or tariff, using the published Economic PCBA table (setup $8.18, stencil $1.53, $3.07 feeder × 3 extended types, SMT joints, $0.45 confirm-placement) plus ~$2 for 5 bare boards and **$14.35** in parts (qty-1 prices: the 328PB is $1.86 each at qty 5). The TP4056 is a Preferred extended part, so it has no feeder fee. The other three are Extended. Details are in `fab/minimal/cost_estimate.txt`. JLC keeps the Economic stencil; it is not shipped. If you want a stencil for the remaining SMT, order a separate frameless one from JLC (~$3) for hand paste + hot air.
 
@@ -130,7 +129,7 @@ If you have a hot-air station and want JLC to place only the parts that are pain
 | Pin | Port | Arduino | Net | Function |
 |---|---|---|---|---|
 | 1 | PD3 / INT1 | D3 | ENC_B | encoder B (internal pull-up) |
-| 2 | PD4 | D4 | ENC_SW | encoder push (to GND, internal pull-up) |
+| 2 | PD4 | D4 | - | **spare** since 2026-11-11 (was ENC_SW). The wheel press is now read on PC1 / BTN_SENSE (pin 24) |
 | 3 | PE0 | (D23) | GND | tied to GND for ATmega328P drop-in. **Leave as input, no pull-up** |
 | 4 | VCC | | +3V3 | MCU rail (U6), 100 nF C7 |
 | 5 | GND | | GND | |
@@ -150,7 +149,7 @@ If you have a hot-air station and want JLC to place only the parts that are pain
 | 21 | GND | | GND | |
 | 22 | ADC7 | A7 | - | spare (analog only) |
 | 23 | PC0 / ADC0 | A0 | BAT_ADC | battery voltage (VSYS), 47k/12k divider + 100 nF (rev 4.1) |
-| 24 | PC1 / ADC1 | A1 | BTN_SENSE | battery-check button SW2 sense (4.7k/10k divider, rev 4.1; high = pressed; can also be read as ADC1, threshold ≈ 1.3 V) |
+| 24 | PC1 / ADC1 | A1 | BTN_SENSE | **wheel press** (SW3 S → Q4 → VBTN → 4.7k/10k divider; **high = pressed**, no pull-up: `pinMode(A1, INPUT)`; can also be read as ADC1, threshold ≈ 1.3 V). Wakes the MCU via PCINT9 |
 | 25 | PC2 | A2 | CHRG_SENSE | TP4056 nCHRG through Schottky D7; enable the internal pull-up; **low = charging** |
 | 26 | PC3 | A3 | - | spare |
 | 27 | PC4 / SDA0 | A4 (SDA) | SDA | I2C to RDA5807M (1k series R16, 4.7k pull-up R14 to +3V3R) |
@@ -160,7 +159,7 @@ If you have a hot-air station and want JLC to place only the parts that are pain
 | 31 | PD1 / TXD0 | D1 | MCU_TX | to CH340K RXD through 1k R20 |
 | 32 | PD2 / INT0 | D2 | ENC_A | encoder A (internal pull-up) |
 
-**Pin budget:** 17 I/O are used, and PB0, PB2, PB6, PB7, PC3, PD7 and ADC6/7 are spare (not broken out). nSTDBY (full) isn't read: "full" is the same as "USB present, not charging, cell ≥ 4.10 V". The green D4 shows "full" in hardware.
+**Pin budget:** 16 I/O are used, and PB0, PB2, PB6, PB7, PC3, PD4, PD7 and ADC6/7 are spare (not broken out). nSTDBY (full) isn't read: "full" is the same as "USB present, not charging, cell ≥ 4.10 V". The green D4 shows "full" in hardware.
 
 Firmware notes: use the hardware TWI (`Wire`). The RDA5807M uses I2C address 0x10 for sequential access and 0x11 for random access. Before talking to the radio, check that it is powered (switch on), because with only USB present the +3V3R rail and the I2C pull-ups are off. Measure BAT_ADC against the internal 1.1 V reference (`analogReference(INTERNAL)`): V_sys = ADC/1023 x 1.1 x 59/12 (rev 4.1 divider 47k/12k). With these values 4.2 V reads about 0.85 V (ADC ≈ 795 with a nominal 1.1 V reference); calibrate the reference once per board, since it is only guaranteed 1.0-1.2 V. **Don't call `Wire.begin()` while the radio rail is off** (switch off): it enables the AVR's internal pull-ups on SDA/SCL, which would trickle ~80 µA per line into the unpowered RDA5807M; start `Wire` only after V_sys > 3 V, and call `Wire.end()` plus `pinMode(SDA/SCL, INPUT)` before the radio loses power. Keep BOD at 2.7 V (8 MHz needs ≥ ~2.4 V). If you only need it for programming, call `Serial.end()` and leave PD1 as an input when you don't need serial.
 
@@ -168,17 +167,27 @@ Firmware notes: use the hardware TWI (`Wire`). The RDA5807M uses I2C address 0x1
 
 Paper-verified against the Mitsumi SIQ series datasheet ([LCSC copy of the official PDF](https://datasheet.lcsc.com/datasheet/pdf/7bff72617d5a3503f5ed21ab02a77dea.pdf?productCode=C2925423)). Nothing here has been tested on hardware.
 
-The part is a 15-detent quadrature encoder plus a momentary slide/push switch. Terminals A and B are the encoder contacts, S is the push switch, and C is the common for all three (see the datasheet "CIRCUIT" diagram). On this board C is tied to GND, A goes to **D2 / PD2 / INT0**, B to **D3 / PD3 / INT1**, and S to **D4 / PD4**. There are no external pull-ups, no RC filters and no ESD diodes: enable the ATmega328PB internal pull-ups (20–50 kΩ, DS40001906) in `setup()` with `INPUT_PULLUP`. At 3.3 V that is about 66–165 µA per closed contact, under the 0.5 mA / 5 V DC rating. The datasheet does not specify a minimum wetting current or a bounce time.
+The part is a 15-detent quadrature encoder plus a momentary slide/push switch. Terminals A and B are the encoder contacts, S is the push switch, and C is the common for all three (see the datasheet "CIRCUIT" diagram). On this board C is tied to GND, A goes to **D2 / PD2 / INT0** and B to **D3 / PD3 / INT1**. **The push switch S no longer goes to an MCU pin** (2026-11-11, it replaced the battery-check button): S drives the gate of P-FET **Q4** (AO3401A) with a 1 MΩ pull-up R25 to VBAT. Pressing the wheel pulls the gate to GND, Q4 switches VBAT onto VBTN, and the MCU sees the press as **BTN_SENSE high on A1 / PC1** (4.7k/10k divider; no internal pull-up). The same path powers the MCU when the power switch is off, so holding the wheel in is the off-state battery check. The S contact carries only ~4 µA (VBAT / 1 MΩ). A and B have no external pull-ups, no RC filters and no ESD diodes: enable the ATmega328PB internal pull-ups (20–50 kΩ, DS40001906) in `setup()` with `INPUT_PULLUP`. At 3.3 V that is about 66–165 µA per closed contact, under the 0.5 mA / 5 V DC rating. The datasheet does not specify a minimum wetting current or a bounce time.
 
-The output is a 2-bit Gray-code quadrature waveform, **one full cycle (four valid state changes) per detent** (24° ±3°, 15 detents per turn). Clockwise, A leads B. At rest in a detent, A and/or B may already be low, so do **not** use INT0/INT1 low-level interrupts to wake from Power-down — the MCU would never stay asleep. Pin-change interrupts on PD2/PD3/PD4 (`PCINT18/19/20`, PCI2) do wake from Power-down and Standby on any edge, including the push switch (normally open / high). INT0/INT1 any-edge interrupts are fine while awake, but a 1 ms poll of the state table below also debounces, so a timer tick is the simplest approach. Count **one step per detent** (accumulate ±4 transitions), not one step per edge, or volume will jump four units per click.
+The output is a 2-bit Gray-code quadrature waveform, **one full cycle (four valid state changes) per detent** (24° ±3°, 15 detents per turn). Clockwise, A leads B. At rest in a detent, A and/or B may already be low, so do **not** use INT0/INT1 low-level interrupts to wake from Power-down — the MCU would never stay asleep. Pin-change interrupts on PD2/PD3 (`PCINT18/19`, PCI2) for the turn and on PC1 (`PCINT9`, PCI1) for the press do wake from Power-down and Standby on any edge (BTN_SENSE idles low and goes high on a press). INT0/INT1 any-edge interrupts are fine while awake, but a 1 ms poll of the state table below also debounces, so a timer tick is the simplest approach. Count **one step per detent** (accumulate ±4 transitions), not one step per edge, or volume will jump four units per click.
 
-Suggested behaviour: turn = volume, push-and-turn = tune, long press = seek.
+**Wheel behaviour (v1.0, 2026-11-11):**
+
+| Action | Power switch ON | Power switch OFF |
+|---|---|---|
+| Turn | volume | nothing (MCU unpowered, or on USB only) |
+| **Short press** (released < 500 ms, no turn while pressed) | **battery check**: bar shows the level (or the charging animation) for 3 s | — |
+| **Hold pressed** | after 500 ms with no turn: **seek** (next station) | **battery check while held**: the press itself powers the MCU; bar shows level / charging until release |
+| Push and turn | tune (step the frequency); no battery check, no seek | — |
+
+The switch-off case is detected at power-on: a power-on reset with BTN_SENSE already high means "wheel-powered" (see the battery-bar spec). There is no mute function on the wheel (there never was one); add one in firmware if you want it, e.g. double-press.
 
 Example (MiniCore, board "ATmega328PB", 8 MHz internal). Call `encoder_setup()` from `setup()`, and `encoder_poll()` from a 1 ms tick or from `loop()` if you wait on `millis()`.
 
 ```cpp
-// D2=ENC_A (PD2/INT0), D3=ENC_B (PD3/INT1), D4=ENC_SW (PD4). Common = GND.
-const uint8_t PIN_A = 2, PIN_B = 3, PIN_SW = 4;
+// D2=ENC_A (PD2/INT0), D3=ENC_B (PD3/INT1), A1=BTN_SENSE (PC1): wheel press, HIGH = pressed
+// (SW3 S -> Q4 gate; Q4 -> VBTN -> 4.7k/10k divider). Common C = GND. D4 (PD4) is spare.
+const uint8_t PIN_A = 2, PIN_B = 3, PIN_SW = A1;
 // prev<<2|curr -> +1 / -1 for a valid 1-step Gray-code move; 0 = bounce or invalid
 static const int8_t ENC_TAB[16] = {
   0,-1,+1,0, +1,0,0,-1, -1,0,0,+1, 0,+1,-1,0
@@ -186,13 +195,14 @@ static const int8_t ENC_TAB[16] = {
 static uint8_t enc_prev;
 static int8_t  enc_accum;
 static int8_t  enc_step;        // +1 / -1 once per detent; consume in the main loop
-static uint8_t sw_hist, sw_down;
+static uint8_t sw_hist, sw_down, sw_turned;
 static uint16_t sw_ms;
+volatile uint8_t battery_check_request, seek_request;   // consumed by the main loop
 
 void encoder_setup() {
   pinMode(PIN_A, INPUT_PULLUP);
   pinMode(PIN_B, INPUT_PULLUP);
-  pinMode(PIN_SW, INPUT_PULLUP);
+  pinMode(PIN_SW, INPUT);         // external 10k pull-down R7; do NOT enable the pull-up
   enc_prev = (digitalRead(PIN_A) ? 2 : 0) | (digitalRead(PIN_B) ? 1 : 0);
 }
 
@@ -203,57 +213,58 @@ void encoder_poll() {            // call every 1 ms
   if (enc_accum >= 4)  { enc_step += 1; enc_accum = 0; }
   if (enc_accum <= -4) { enc_step -= 1; enc_accum = 0; }
 
-  sw_hist = (sw_hist << 1) | (digitalRead(PIN_SW) ? 1 : 0);
-  if (!sw_down && (sw_hist & 0x1F) == 0x00) { sw_down = 1; sw_ms = 0; }      // 5 ms low
+  sw_hist = (sw_hist << 1) | (digitalRead(PIN_SW) ? 0 : 1);   // 0 = pressed (BTN_SENSE high)
+  if (!sw_down && (sw_hist & 0x1F) == 0x00) { sw_down = 1; sw_ms = 0; sw_turned = 0; }  // 5 ms pressed
   if (sw_down) {
+    if (enc_step) sw_turned = 1;            // push-and-turn = tune (main loop reads enc_step + sw_down)
     if (sw_ms < 60000) sw_ms++;
     if ((sw_hist & 0x1F) == 0x1F) {         // released
-      // sw_ms < 500: short press; sw_ms >= 500: already treated as long press
+      if (sw_ms < 500 && !sw_turned) battery_check_request = 1;   // short press: show the bar for 3 s
       sw_down = 0;
-    } else if (sw_ms == 500) {
-      // long press: start seek
+    } else if (sw_ms == 500 && !sw_turned) {
+      seek_request = 1;                     // long press: start seek
     }
   }
 }
 ```
 
-To sleep in Power-down and wake on a turn or a press, enable PCI2 for PD2/PD3/PD4 (`PCMSK2 |= _BV(PCINT18)|_BV(PCINT19)|_BV(PCINT20); PCICR |= _BV(PCIE2);`) and use an empty `ISR(PCINT2_vect)`. Do not rely on INT0/INT1 level wake.
+To sleep in Power-down and wake on a turn or a press, enable PCI2 for PD2/PD3 and PCI1 for PC1 (`PCMSK2 |= _BV(PCINT18)|_BV(PCINT19); PCMSK1 |= _BV(PCINT9); PCICR |= _BV(PCIE2)|_BV(PCIE1);`) and use empty `ISR(PCINT2_vect)` and `ISR(PCINT1_vect)`. Do not rely on INT0/INT1 level wake. Leave the spare PD4 as `INPUT_PULLUP` (or output low) so it doesn't float. BTN_SENSE reads high above VIH = 0.6 × VCC: full cell 2.86 V vs 1.98 V needed; at the 3.25 V cutoff about 2.2 V vs ~1.7 V (VCC ≈ 2.85 V behind D8/D10 + U6). Same divider and margins as the old button.
 
 ### Firmware spec: battery-level bar (no firmware is included; this is the intended behaviour)
 
 | Item | Behaviour |
 |---|---|
 | Default | All three level LEDs **off**. |
-| Trigger | SW2 (battery-check button, top edge) pressed: BTN_SENSE goes high. Debounce 30 ms. |
-| Show | Light the bar while the button is held and for **3 s** after release. Measure *before* turning the LEDs on: average 16 ADC samples with the LEDs off, and use 50 mV hysteresis between bands. |
+| Trigger | **Short press of the thumbwheel** (BTN_SENSE high, released within 500 ms without turning). Debounce 5–30 ms. With the power switch off, holding the wheel in powers the MCU and is the trigger by itself. |
+| Show | Light the bar for **3 s** after the short press (while held, when wheel-powered with the switch off). Measure *before* turning the LEDs on: average 16 ADC samples with the LEDs off, and use 50 mV hysteresis between bands. |
 | Levels (not charging) | **≥ 3.90 V: ●●●** · **3.60-3.90 V: ●●○** · **3.40-3.60 V: ●○○** · **3.30-3.40 V: LED 1 blinks slowly** (1 Hz) · **< 3.30 V: LED 1 blinks fast** (4 Hz) = very low, charge now. |
 | Very low while playing | When the radio is on and V < 3.30 V, flash LED 1 for 50 ms every 10 s even without a press. Below **3.25 V** (was 3.10 V before the rev 4.2 review), mute the RDA5807M (power-down bit) and sleep the MCU. Reason: the MCU rail is about 0.26 V below the cell (D8 + U6), and the 2.7 V BOD level can trip anywhere from 2.5 to 2.9 V (DS40001906 Table 33-7), so on a worst-case chip a 3.10 V cut-off would never run and the radio would keep playing until the DW01A. The DW01A cuts the cell off at 2.4-2.6 V (typ. 2.5 V) as a backstop. |
 | Charging (CHRG_SENSE low) | The cell reads high while charging: during the ~900 mA constant-current phase it reads about 0.1-0.2 V above its resting voltage. **Estimate = V - 0.15 V.** Light the LEDs for the estimated level solid and **blink the next LED at 1 Hz** ("filling"). If the estimate is already at 3 LEDs, blink LED 3 until charging ends. |
 | Charged (CHRG_SENSE high, V ≥ 4.10 V) | ●●● solid. The firmware can't tell "full on USB" from "just unplugged", and both show 3 LEDs, which is correct. |
 | USB plugged in while on | On a falling edge of CHRG_SENSE, run the charging display once for 3 s. |
 | Switch off, USB only (rev 4) | The MCU runs from USB (BTN_SENSE low, BAT_ADC ≈ 0 V). Keep the RDA5807M off, since it's unpowered anyway. Optionally show the charging animation (CHRG_SENSE low) without a level. With the cell voltage unknown, light LED 1 and blink LED 2. Otherwise sleep. |
-| Switch off, button held | The MCU powers up through D10 (and VSYS through D2) only while SW2 is held. On a power-on reset with BTN_SENSE high, treat it as "button-powered". Add **about +0.1-0.15 V** to the reading for D2's drop (B5819W at ~0.1 mA; calibrate). Show the level or charging state while the button is held, and keep the RDA5807M powered down. The power disappears on release. If power is still there 0.5 s after release, the switch is on: start the radio normally. |
+| Switch off, wheel held in | The MCU powers up through Q4 → D10 (and VSYS through D2) only while the wheel is held in. On a power-on reset with BTN_SENSE high, treat it as "wheel-powered" (battery check only, no seek). Add **about +0.1-0.15 V** to the reading for D2's drop (B5819W at ~0.1 mA; calibrate). Show the level or charging state while the wheel is held, and keep the RDA5807M powered down. The power disappears on release. If power is still there 0.5 s after release, the switch is on: start the radio normally. |
 | Brightness | 100 % is fine indoors. Optional: 25-50 % software PWM (≥ 200 Hz) if you find it too bright in the dark. |
 
-**LED brightness (KT-0603G, C12624):** the datasheet gives Vf 2.6-3.1 V and 210-430 mcd at 5 mA. Its I-V curve gives about 2.4 V at 1 mA for a typical part. With 1k from the 3.3 V pin that's **about 0.85 mA typical, and 0.4 mA for the highest-Vf bin**. From the relative-intensity curve, 1 mA gives roughly 0.3x the 5 mA brightness, so about **40-130 mcd per LED**. That's clearly visible through the 2.4 x 1.4 mm windows indoors and in daylight, and it may be a bit bright in a dark room (use PWM). When button-powered with the switch off on a nearly empty cell, the rail drops to about 3.0-3.1 V and the LEDs get dimmer but stay visible. The TP4056 LEDs run from USB 5 V through 1k: about 3 mA red and 2.4 mA green.
+**LED brightness (KT-0603G, C12624):** the datasheet gives Vf 2.6-3.1 V and 210-430 mcd at 5 mA. Its I-V curve gives about 2.4 V at 1 mA for a typical part. With 1k from the 3.3 V pin that's **about 0.85 mA typical, and 0.4 mA for the highest-Vf bin**. From the relative-intensity curve, 1 mA gives roughly 0.3x the 5 mA brightness, so about **40-130 mcd per LED**. That's clearly visible through the 2.4 x 1.4 mm windows indoors and in daylight, and it may be a bit bright in a dark room (use PWM). When wheel-powered with the switch off on a nearly empty cell, the rail drops to about 3.0-3.1 V and the LEDs get dimmer but stay visible. The TP4056 LEDs run from USB 5 V through 1k: about 3 mA red and 2.4 mA green.
 
 ## Design corrections (carried over from the original pre-release)
 - **Headphone drive:** the module's audio outputs carry a DC bias, so they now go through 100 uF series caps (C10, C11; about 50 Hz corner into 32 ohm) and 600 ohm ferrites (FB1, FB2).
 - **Antenna network:** the headphone ground goes to board GND through ferrite FB3, which makes the cable's ground conductor the antenna. It is coupled into FM_ANT with 1 nF (C12). The module's supply is filtered with 10 ohm + 22 uF + 100 nF.
 - **ADC divider:** it sits on switched VSYS, so it draws nothing when the radio is off. 47k/12k with 100 nF at the pin (rev 4.1; was 100k/33k).
 - **USB-C:** CC1 and CC2 each have their own 5.1k pull-down. VBUS has 10 uF. Charge current is set to about 900 mA (R3 = 1.2k, C22765, Basic; see rev 4.3). Use a ≥ 1 A charger; a laptop USB 2.0 port is only rated 500 mA. Red/green charge LEDs (D3/D4) show through their own light tunnels next to the USB-C.
-- **Battery check with the switch off:** SW2 powers VSYS through Schottky D2 (and, in rev 4, the MCU rail through D10) while you hold it, and firmware shows the battery level on the 3-LED bar.
+- **Battery check with the switch off:** holding the thumbwheel in turns on P-FET Q4 (gate pulled up to VBAT by 1M R25, pulled to GND by the wheel's push switch), which powers VSYS through Schottky D2 and the MCU rail through D10 while you hold it; firmware shows the battery level on the 3-LED bar. (Until 2026-11-11 a separate button, SW2, did this.)
 
 ## 3D-printed case
 - Two halves split at the PCB's bottom face. The PCB is clamped between bosses at the 4 corner holes. **4x M2 x 12 mm screws** go in from the bottom into M2 heat-set inserts (OD 3.2-3.5 mm) in the top half. The nut variant uses M2 x 16 mm screws with M2 nuts on the top face.
 - Outer size **43 x 92 x 33.4 mm**: top half 9.8 mm, bottom half 23.6 mm plus a 1.2 mm lip. Corners are rounded at 5.5 mm in plan view and 2 mm on the top and bottom edges. Walls are 2 mm, floor and ceiling 1.6 mm.
 - Openings, all generated from the real footprint positions:
-  - **Top edge:** 3.5 mm jack hole (6.8 mm, chamfered), battery-check button hole with the printed plunger.
-  - **Front (top) face:** the 3-LED level bar as a vertical column near the jack end (three 2.4 x 1.4 mm rounded windows at 3 mm pitch, 5 mm right of the centre line, 71.6-77.6 mm from the USB-C end) and, at the USB-C end, the two 1.6 mm charge-LED windows just left of the USB-C. Every window has a 0.4 mm rounded rim and its own light tunnel (3.2 x 2.0 mm bore, 0.8 mm walls, ending 0.2 mm above the PCB).
+  - **Top edge:** 3.5 mm jack hole (6.8 mm, chamfered). (The battery-check button hole and printed plunger are gone since 2026-11-11; that part of the wall is solid.)
+  - **Front (top) face:** the 3-LED level bar as a vertical column **centred across the face** near the jack end (three 2.4 x 1.4 mm rounded windows at 2.8 mm pitch on the centre line, window centres 75.3 / 78.1 / 80.9 mm from the USB-C edge of the PCB = 77.8 / 80.6 / 83.4 mm from the case's USB-C end; D1's tunnel leans 2.3 mm from its LED up to the lowest window) and, at the USB-C end, the two 1.6 mm charge-LED windows just left of the USB-C. Every window has a 0.4 mm rounded rim and its own light tunnel (3.2 x 2.0 mm bore, 0.8 mm walls, ending 0.2 mm above the PCB).
   - **Right side:** thumbwheel in a smooth 1 mm-deep pocket; the wheel stands out about 1.35 mm from the pocket floor. Below it is the power-switch slot, with rounded edges inside and out and engraved "OFF" / "ON" labels; the 3.5 x 2.5 mm knob sticks out 2.8 mm.
   - **Bottom edge:** USB-C centred, in a smooth 12.8 x 7.4 mm, 1.5 mm deep pocket for the cable's plug body, with a rounded connector opening.
-- **Fit check** (`case_fit_report.txt`): every fitted part (KiCad STEP models plus this project's meshes, including the switch knob) was intersected with both halves and separately with the LED tunnel walls, with **0 interferences**. The tunnel walls end 0.20 mm above the PCB. The closest parts to the tunnel walls are FB2 (0.40 mm), the LEDs inside them (0.60 mm) and the USB-C shell (0.73 mm). The check was tested by deliberately shrinking the top clearance, which made it flag the jack, switch and wheel.
-- **Print settings (PLA or PETG):** 0.2 mm layers (0.12-0.16 mm gives smoother fillets on the top face), 3 perimeters, 20-25 % infill, no supports. `case_bottom.stl` prints floor-down. `case_top.stl` is exported flipped, so it prints face-down; the light tunnels and the bosses then point up. The windows are on the bed side, so they print clean with no supports. Print the plunger flange-down. For the thin-skin option, set `led_window="skin"`, use white or natural filament, and keep the first two layers at 0.2 mm. Press the heat-set inserts in at about 220 C (PLA) or 245 C (PETG).
+- **Fit check** (`case_fit_report.txt`): every fitted part (KiCad STEP models plus this project's meshes, including the switch knob) was intersected with both halves and separately with the LED tunnel walls, with **0 interferences**. The tunnel walls end 0.20 mm above the PCB. The closest parts to the tunnel walls are D1 inside its slanted tunnel (0.31 mm), the other LEDs inside theirs (0.60 mm) and the USB-C shell (0.73 mm). The check was tested by deliberately shrinking the top clearance, which made it flag the jack, switch and wheel.
+- **Print settings (PLA or PETG):** 0.2 mm layers (0.12-0.16 mm gives smoother fillets on the top face), 3 perimeters, 20-25 % infill, no supports. `case_bottom.stl` prints floor-down. `case_top.stl` is exported flipped, so it prints face-down; the light tunnels and the bosses then point up. The windows are on the bed side, so they print clean with no supports. For the thin-skin option, set `led_window="skin"`, use white or natural filament, and keep the first two layers at 0.2 mm. Press the heat-set inserts in at about 220 C (PLA) or 245 C (PETG).
 - Customise via the tunables at the top of `openald_case.scad` (clearances, `led_window`, tunnel bore/wall/gap, window sizes, pocket depths, label size, `fastener="nut"`). After changing the PCB, run `scripts/build_case.sh`.
 
 ## Known caveats and unverified items
@@ -266,7 +277,7 @@ To sleep in Power-down and wake on a turn or a press, enable PCI2 for PD2/PD3/PD
 7. **Charging while on:** the radio runs from the battery while the TP4056 charges it, so leave it off to charge to full.
 8. **LDO dropout:** 3.3 V starts to sag below about 3.45 V on the battery.
 9. **Plugs** whose overmold is wider than 6.8 mm may not seat fully in the jack.
-10. **3D models:** the models for the jack, button, wheel, USB-C, switch and module are approximations from datasheets. Print one case and test-fit before a batch.
+10. **3D models:** the models for the jack, wheel, USB-C, switch and module are approximations from datasheets. Print one case and test-fit before a batch.
 11. **No firmware** is included. The battery-bar behaviour is specified above. Calibrate the 0.15 V charging offset, the ~0.1-0.15 V D2 drop and the internal 1.1 V reference on your board with a meter.
 12. **Alternatives considered** (not used): XKB SS-12D11G5 (C692484, rated 3 A), a bigger switch, but its 9.2 mm tab offset would need more board depth.
 13. **Charger status:** CHRG_SENSE only says "charging" or "not charging". Confirm on the first board that PC2 reads high with USB unplugged (the TP4056 nCHRG pin is open-drain and high-impedance without input power).
@@ -281,6 +292,27 @@ To sleep in Power-down and wake on a turn or a press, enable PCI2 for PD2/PD3/PD
 ## Pre-release history
 
 OpenALD v1.0 is a rename and version reset of the last pre-release board (FM radio rev 4.3). Nothing electrical changed; the only layout change is the level bar move below. The project was briefly called **OpenALS** before being renamed **OpenALD** (it is a device, not a system). The notes below are kept so the design decisions, reviews, and checklists are not lost. File names in these notes have been updated to the OpenALD paths; silkscreen quotes and revision names are left as they were at the time.
+
+### Wheel press replaces the battery-check button; level bar centred (still v1.0, 2026-11-11)
+Victor asked to drop the separate battery-check button and use the thumbwheel press instead, and to centre the level bar across the board and move it up so it reads clearly above the dock rim. Version stays **v1.0**; case thickness (43 x 92 x 33.4 mm), USB-C (centred), power switch, jack, thumbwheel and battery holder positions are unchanged.
+
+**Circuit (paper design, not built):**
+```
+VBAT --R25 1M--+-- WHEEL_SW_N --- SW3 pin S (wheel push) --- SW3 pin C = GND
+               |
+VBAT ---(S) Q4 AO3401A (G = WHEEL_SW_N) (D)--> VBTN --D10--> VMCU (MCU LDO U6)
+                                                 \--D2--> VSYS ;  VBTN --R6 4.7k-- BTN_SENSE (PC1) --R7 10k-- GND
+```
+* **Removed:** SW2 Panasonic EVQ-P7A01P (C79167, Extended), its 3D model and the case's button hole + printed plunger (`button_plunger.stl` is gone; that stretch of the jack-end wall is now solid).
+* **Added:** Q4 AO3401A P-FET (C15127, Basic, same part and JLC rotation correction as Q2) and R25 1 MΩ (C22935, Basic), at the old SW2 spot on the jack-end edge (Q4 at 29.4, 2.6; R25 at 25.8, 2.2 mm).
+* **Kept, now driven by Q4:** D2 (VBTN → VSYS), D10 (VBTN → VMCU), R6/R7 (BTN_SENSE divider). Nothing else in the circuit changed.
+* **SW3 S moved off PD4.** WHEEL_SW_N sits at VBAT (up to 4.2 V) when released, which is too high for a 3.3 V pin, so the press is read on **BTN_SENSE (PC1, high = pressed)** instead; PD4 is spare. Wake from sleep on PCINT9 (PC1) plus PCINT18/19 (turn).
+* **Current:** released, the gate sits at the source (Vgs = 0): no current except Q4 leakage into R6/R7 (AO3401A IDSS ≤ 1 µA max at 30 V, far lower at 4 V). Pressed: ~4 µA in R25 plus whatever Q4 then powers. Q4's Vgs = −Vcell (−3.0…−4.2 V) is well inside its ±12 V rating and fully enhances it (RDS(on) < 85 mΩ at −2.5 V; the MCU + radio draw < 30 mA).
+* **Wheel mapping:** short press = battery check (3 s), hold = seek, push-and-turn = tune, turn = volume; with the power switch off, holding the wheel in shows the battery level while held (see the encoder firmware spec).
+
+**Level bar centred and moved up:** D6 / D5 / D1 now sit on the board centreline **x = 19.0 mm at y = 6.1 / 8.9 / 14.0 mm** (KiCad, from the top-left; was x = 24.0, y = 9.4 / 12.4 / 15.4). The centreline is also where the holder's − pad (19, 2.5) and its locating-peg hole (19, 11.34, 3.2 mm) are, so D6 sits just below the − pad, D5 just above the peg hole and D1 just below it. The three case windows stay evenly spaced (2.8 mm pitch, centres at board y = 6.1 / 8.9 / 11.7 mm); D1's light tunnel leans 2.3 mm from the LED up to its window. **Height above the dock rim** (window centre, radio standing on the pocket floor, rim 50.8 mm above it): **D6 32.6 mm, D5 29.8 mm, D1 27.0 mm** (previously 29.3 / 26.3 / 23.3 mm), i.e. about 24–30 mm above the bottom of the rim's 3 mm lead-in chamfer. A centred *horizontal* row up there was tried first and rejected: the jack's courtyard reaches x = 16.53 mm, which leaves too little width for three LEDs with printed tunnel walls between them. FB1/FB2 moved from (22.4, 5.0 / 6.8) to (24.0, 10.4 / 12.4) to free the column.
+
+**Re-checked:** ERC 0 errors / 2 accepted warnings; board fully re-routed (Freerouting) → DRC 0 errors, 0 unconnected, 0 parity, 62 silk-only warnings; `jlc_cpl_fit.py --check` OK; case fit 0 interferences (closest: D1 0.31 mm inside its slanted tunnel); fab, minimal set and PCBWay/NextPCB BOMs regenerated (75 placements, 37 lines). **Cost:** −$0.10 per board in parts and one fewer JLC extended-part loading fee (~−$3.07 per order). **Untested:** the press-to-power path, BTN_SENSE timing on release, the slanted D1 tunnel's brightness, and the wheel press feel.
 
 ### Level bar moved for the dock (still v1.0, 2026-11-11)
 The OpenALD Dock holds the radio USB-C-down in a 2 in (50.8 mm) deep pocket, which would hide a bar next to the USB-C. **D1/D5/D6 now form a vertical column at x = 24.0 mm, y = 15.4 / 12.4 / 9.4 mm** (KiCad, from the top-left corner; D1 lowest, D6 nearest the jack, 3 mm pitch). That puts the bar about 20 mm above the dock rim. R11-R13 stay where they were; only the LVL routes changed. Nothing else moved. **The USB-C (still centred), power switch, jack, thumbwheel, battery holder, button and the case thickness (43 x 92 x 33.4 mm) are unchanged.** The TP4056 charge LEDs D3/D4 stay next to the USB-C. They are hidden while docked, so firmware should show charging on the bar (CHRG_SENSE, see the firmware spec). The board was re-routed. Re-checked: ERC 0 errors / 2 accepted warnings, DRC 0 errors / 0 unconnected / 58 silk warnings, case fit 0 interferences, `jlc_cpl_fit.py --check` OK, fab files, vendor BOMs and previews regenerated (`scripts/render_pcb_previews.py`). The dock interface is in `../charging_dock/DOCK_INTERFACE.md`.

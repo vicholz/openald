@@ -15,20 +15,21 @@ map and the decision log.
 
 ## 1. What OpenALD is
 A pocket FM radio for headphones (the headphone cable is the antenna), one 18650 cell, USB-C charging and USB-C
-programming, a thumbwheel for volume/tuning, a slide power switch, a battery-check button and a 3-LED battery-level bar,
+programming, a thumbwheel for volume/tuning (its press is the battery check), a slide power switch and a 3-LED battery-level bar,
 in a 3D-printed case. Plus a 6-slot charging dock and an off-the-shelf (Feather RP2040) variant.
 
 | Subproject | Main files | One-line status |
 |---|---|---|
-| `radio_single_board/` | `kicad/openald.kicad_{sch,pcb,pro}`, `case/openald_case.scad`, `fab/` | v1.0 design complete; ERC 0 err (2 accepted warnings), DRC 0 err/58 silk-only, CPL check OK, case fit 0 interferences |
+| `radio_single_board/` | `kicad/openald.kicad_{sch,pcb,pro}`, `case/openald_case.scad`, `fab/` | v1.0 design complete; ERC 0 err (2 accepted warnings), DRC 0 err/62 silk-only, CPL check OK, case fit 0 interferences |
 | `charging_dock/` | `kicad/openald-dock.*`, `case/openald_dock.scad`, `scripts/geom.py` | v1.0 design complete; ERC 0/0, DRC 0 err/75 silk-only, CPL check OK, dock fit 0 interferences |
 | `radio_adafruit_feather_rp2040/` | `kicad/openald-feather-controls.*`, `case/openald_feather_case.scad`, `scripts/layout.py` | v1.0 design complete; ERC 0/0, DRC 0, CPL check OK, fit PASS; FM-module geometry is estimated |
 
 ## 2. Hard constraints (from Victor — do not violate)
 1. **Never change the single-board radio case thickness** (33.4 mm). Case outer size stays **43 × 92 × 33.4 mm**.
 2. **USB-C stays centred** on the bottom edge (board x = 19.0 mm of 38).
-3. **Keep the positions** of the power switch, headphone jack, thumbwheel, battery holder and battery-check button.
-   (The level-bar LEDs were allowed to move for the dock; they did, once — see §3.)
+3. **Keep the positions** of the power switch, headphone jack, thumbwheel and battery holder. (The battery-check button
+   was on this list until Victor asked to remove it on 2026-11-11; the wheel press does its job now — see §3.)
+   (The level-bar LEDs were allowed to move: once for the dock, then centred and raised on 2026-11-11 — see §3.)
 4. **Version stays v1.0** even when the design changes (record changes in the history instead).
 5. **Don't claim hardware validation.** Everything is datasheet/CAD-checked only.
 6. Dock: 6 radios, 2 rows × 3, **~1 in (25.4 mm) between radios**, radios stand USB-C-down **2 in (50.8 mm)** deep,
@@ -50,50 +51,52 @@ Dates are 2026, America/Los_Angeles. "rev" names are the pre-release names; the 
 | **rev 4.1** | Review fixes: battery ADC divider **47k/12k + 100 nF** (was 100k/33k), button sense divider **4.7k/10k**, docs. |
 | **rev 4.2** | **Battery reverse-polarity protection**: P-FET **Q2 AO3401A** (C15127) in the cell + path, with gate driver **Q3 AO3400A** (C20917) + R23/R24 (1M); reversed cell is harmless; adds ~4.2 µA standby; drop ≤ 62 mV at 730 mA. Two full datasheet reviews. Low-battery firmware cutoff raised from 3.10 V to **3.25 V** (MCU rail ≈ 0.26 V below the cell; BOD can trip 2.5–2.9 V). |
 | **rev 4.3** | **Charge current 730 mA (R3 = 1.5k) → ~900 mA (R3 = 1.2k, C22765, Basic)** using I = 1100/R_PROG (≈ 917 mA; datasheet table 1.2k = 900 mA). 1.3k rejected (Extended part, 846 mA). Charge time ~3.7–4 h for 3000 mAh. Needs a ≥ 1 A charger (USB 2.0 laptop port is 500 mA; for that use R3 = 2.4k C22940 ≈ 460 mA). **Thermal note:** TP4056 dissipates ~1.7–2.0 W at start of CC; inside the closed case it will likely hit thermal regulation (~140–145 °C) and throttle — slower, not damaging; unmeasured. Independent review: no hardware errors. |
-| Vendor BOMs | Filled PCBWay (.xlsx) and NextPCB (.xls) official templates (38 lines, 74 placements/board, U4/BT1/J3 DNP). `scripts/make_vendor_boms.py`. |
+| Vendor BOMs | Filled PCBWay (.xlsx) and NextPCB (.xls) official templates (38 lines, 74 placements/board, U4/BT1/J3 DNP; 37 lines / 75 placements after the 2026-11-11 wheel-press update). `scripts/make_vendor_boms.py`. |
 | Minimal set | `fab/minimal/`: JLC places only J1, U1, U3, U7 (≈ $36 for 5 boards, estimate); LCSC hand-solder list with spares. |
 | **OpenALS** | Project renamed "OpenALS" and reset to **v1.0** (folders, files, silkscreen, docs). Circuit unchanged. |
 | **OpenALD** | Renamed to **OpenALD** ("a device, not a system"). Same v1.0. |
 | Dock + LED move | For the dock the **level bar moved to a vertical column near the jack end**: D1/D5/D6 at x = 24.0, y = 15.4/12.4/9.4 mm (KiCad coords from top-left; D1 lowest, D6 nearest the jack, 3 mm pitch) ≈ 20 mm above the dock rim. Re-routed; nothing else moved; case thickness unchanged. TP4056 LEDs D3/D4 stay beside the USB-C (hidden when docked → firmware shows charging on the bar). **OpenALD Dock v1.0** designed in `charging_dock/`. |
 | Feather variant | `radio_adafruit_feather_rp2040/` designed (see §5). |
 | Repo | This GitHub repo created 2026-11-11; scripts made path-independent (no `/workspace` paths); `tools/` added; CC0 chosen. |
+| **Wheel press = battery check; bar centred** (2026-11-11, still v1.0) | Victor: remove the separate battery-check button and use the wheel press; centre the level bar and move it up for the dock. **SW2 EVQ-P7A01P (C79167) removed** (footprint, 3D model, case hole, printed plunger). The wheel's push switch S now drives the gate of new **P-FET Q4 AO3401A (C15127)** with **R25 1M (C22935)** pull-up to VBAT; Q4 replaces SW2 between VBAT and VBTN, so D2/D10/R6/R7 work as before (switch off: hold the wheel in → MCU powered → bar shows level). S left PD4 (it now sits at VBAT); the press is read as **BTN_SENSE high on PC1** (wake PCINT9); PD4 spare. Mapping: short press = battery check 3 s, hold = seek, push-and-turn = tune. **Bar: D6/D5/D1 at x = 19.0 (centreline), y = 6.1/8.9/14.0**, windows evenly spaced at y = 6.1/8.9/11.7 (D1 tunnel slanted, it has to skip the holder peg hole at (19, 11.34)); window centres 32.6/29.8/27.0 mm above the dock rim. FB1/FB2 moved to (24.0, 10.4/12.4). Re-routed. −$0.10/board parts, one fewer extended-part fee. Backup of the pre-change folder: `/workspace/openald-pre-button-removal-backup` on the build box (not in git; the previous commit 9509ac4 has it too). |
 
 ## 4. Single-board radio (radio_single_board) — key design facts
 **Blocks:** USB-C (HRO TYPE-C-31-M-12, C165948; 5.1k CC pull-downs = default USB power) → TP4056 (C16581, PROG R3 1.2k)
 → DW01A (C351410) + FS8205A (C2830320) protection → Q2/Q3 reverse-polarity → MPD BH-18650-PC holder (bottom side).
 SW1 SK-12E12-G5 switches VBAT → VSYS. U5 XC6206 → +3V3R (radio + I2C pull-ups). U6 XC6206 → +3V3 (MCU only) from
-VMCU = D8 (VSYS) ∪ D9 (VBUS) ∪ D10 (button). RRD-102 module (U4, hand-soldered); audio through 100 µF caps + 600 Ω
+VMCU = D8 (VSYS) ∪ D9 (VBUS) ∪ D10 (VBTN = wheel press via Q4). RRD-102 module (U4, hand-soldered); audio through 100 µF caps + 600 Ω
 ferrites; headphone ground via FB3 = antenna, coupled with 1 nF. Exact LCSC numbers for every part:
 `fab/openald-BOM-human.csv`.
 
-**Pin map (ATmega328PB TQFP-32, MiniCore names):** D3/PD3 ENC_B · D4/PD4 ENC_SW · pin 3 PE0 = GND and pin 6 PE1 = +3V3
+**Pin map (ATmega328PB TQFP-32, MiniCore names):** D3/PD3 ENC_B · D4/PD4 spare (was ENC_SW) · pin 3 PE0 = GND and pin 6 PE1 = +3V3
 (leave as inputs, no pull-up) · D5/PD5 LVL1 (D1, lowest) · D6/PD6 LVL2 (D5) · D9/PB1 LVL3 (D6, top) · PB3/4/5 ISP only ·
-AREF 100 nF (use internal 1.1 V) · **A0/PC0 BAT_ADC** · **A1/PC1 BTN_SENSE** (high = pressed) · **A2/PC2 CHRG_SENSE**
+AREF 100 nF (use internal 1.1 V) · **A0/PC0 BAT_ADC** · **A1/PC1 BTN_SENSE** (wheel press via Q4; high = pressed; `INPUT`, no pull-up) · **A2/PC2 CHRG_SENSE**
 (pull-up on, low = charging) · A4/A5 SDA/SCL (1k series, 4.7k pull-ups to +3V3R) · PC6 RESET (10k, DTR via 100 nF) ·
-PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC3, PD7, ADC6/7. Full table: radio README.
+PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC3, PD4, PD7, ADC6/7. Full table: radio README.
 
 **Formulas**
 * Battery: `V_sys = ADC/1023 × 1.1 × 59/12` (47k/12k divider, internal 1.1 V ref). 4.2 V → ~0.85 V at the pin (ADC ≈ 795).
   The 1.1 V reference is only 1.0–1.2 V: **calibrate once per board**.
-* Button sense: 4.7k/10k divider; read as digital high or ADC1 threshold ≈ 1.3 V.
+* Wheel-press sense (BTN_SENSE): 4.7k/10k divider from VBTN; read as digital high or ADC1 threshold ≈ 1.3 V.
 * Charge current: `I = 1100 V / R_PROG` → 1.2k ≈ 917 mA.
 * LED current: ~0.85 mA typ through 1k from 3.3 V (KT-0603G Vf ≈ 2.4 V at 1 mA).
 * Battery life (paper estimate): radio on ≈ 20–25 mA → ~130 h on a 3000 mAh cell; off ≈ 7–9 µA standby.
 
 **Firmware requirements (no firmware exists yet)** — full spec in the radio README "Firmware spec":
-* **Thumbwheel (SIQ-02FVS3):** A/B/S are switches to common C (GND). Use internal pull-ups; there is no RC or ESD.
+* **Thumbwheel (SIQ-02FVS3):** A/B/S are switches to common C (GND). A/B: internal pull-ups; no RC or ESD. S drives Q4's gate (R25 1M to VBAT) and is read as BTN_SENSE (PC1, high = pressed).
   15 detents, one quadrature cycle (4 Gray-code transitions) per detent; count one step per detent, not per edge.
   1 ms state-table poll debounces. On the single board, PD2/PD3 are INT0/INT1 but at rest A or B may already be
-  low, so wake from Power-down with pin-change (PCINT18/19/20), not INT0/INT1 low-level. Example code is in
+  low, so wake from Power-down with pin-change (PCINT18/19 for the turn, PCINT9 on PC1 for the press), not INT0/INT1 low-level. Example code is in
   `radio_single_board/README.md` (MiniCore) and `radio_adafruit_feather_rp2040/docs/firmware_notes.md` (Arduino-Pico).
-  Behaviour: turn = volume, push-and-turn = tune, long press = seek. Paper-verified only; not hardware-tested.
-* Level bar off by default; show on SW2 press (+3 s). Levels: ≥ 3.90 V ●●● · 3.60–3.90 ●●○ · 3.40–3.60 ●○○ ·
+  Behaviour: turn = volume, **short press = battery check (bar 3 s)**, push-and-turn = tune, hold ≥ 0.5 s = seek; switch
+  off: holding the wheel in powers the MCU and shows the level while held. Paper-verified only; not hardware-tested.
+* Level bar off by default; show on a short wheel press (3 s). Levels: ≥ 3.90 V ●●● · 3.60–3.90 ●●○ · 3.40–3.60 ●○○ ·
   3.30–3.40 LED1 slow blink · < 3.30 LED1 fast blink. Sample ADC with LEDs off, 16-sample average, 50 mV hysteresis.
 * **Low-battery cutoff 3.25 V**: mute/power down the RDA5807M and sleep the MCU (DW01A at ~2.5 V is the backstop).
 * **Don't call `Wire.begin()` while the radio rail is off** (AVR pull-ups would back-feed ~80 µA/line into the
   unpowered RDA5807M); start Wire only when V_sys > 3 V, `Wire.end()` + SDA/SCL as inputs before power-off.
 * **V_sys < 2.5 V with BTN_SENSE low = USB-only power** (switch off, MCU on VBUS): cell voltage unknown; keep radio off.
-* Button-powered (switch off, SW2 held): add ~0.1–0.15 V for D2's drop (calibrate).
+* Wheel-powered (switch off, wheel held in): add ~0.1–0.15 V for D2's drop (calibrate).
 * While charging the reading is ~0.15 V high: estimate = V − 0.15 V; show "filling" blink.
 * **Show charging on the level bar** — D3/D4 (TP4056 LEDs) are hidden inside the dock pocket.
 * Keep `Serial` closed in normal use (UART back-feed into unpowered CH340K). BOD 2.7 V. Internal 8 MHz. RDA5807M I2C 0x10/0x11.
@@ -143,14 +146,14 @@ for the case fit checks: `tools/fetch_kicad3d.sh && export KICAD9_3DMODEL_DIR=$P
 **Quick check (non-destructive):** `tools/check_all.sh` → expected:
 ```
 radio_single_board  ERC 0 errors / 2 warnings   (pin_to_pin U3 pin 3 PE0–GND and pin 6 PE1–+3V3: intentional 328P drop-in)
-                    DRC 58 = 8 silk_edge_clearance + 22 silk_over_copper + 28 silk_overlap; 0 unconnected; 0 parity
+                    DRC 62 = 8 silk_edge_clearance + 24 silk_over_copper + 30 silk_overlap; 0 unconnected; 0 parity
 charging_dock       ERC 0/0; DRC 75 = 2 silk_edge_clearance + 39 silk_over_copper + 34 silk_overlap; 0 unconnected; 0 parity
 feather_controls    ERC 0/0; DRC 0; 0 unconnected; 0 parity
 each                jlc_cpl_fit.py --check -> "correction table: OK"
 ALL CHECKS PASSED
 ```
 **Case fit:** `tools/check_all.sh --case` (or each `build_case.sh`) → `INTERFERENCES: 0` (radio: closest to tunnel
-walls FB2 0.40 mm; dock: outer 191.8 × 111.72 × 62.5); feather `RESULT: PASS (0 interferences)`. Takes ~3 min (radio),
+walls D1 0.31 mm inside its slanted tunnel; dock: outer 191.8 × 111.72 × 62.5); feather `RESULT: PASS (0 interferences)`. Takes ~3 min (radio),
 longer for the dock; rewrites STLs/previews (diffs are mesh-ordering/timestamp noise).
 
 **Per subproject** (run from the subproject folder):
@@ -168,6 +171,9 @@ to reuse `fab/lcsc_lookup.json`. With fixed inputs, fab outputs regenerate byte-
 fresh clone). Re-routing with Freerouting is **not deterministic** — after `run_all_pcb.sh` re-run DRC, `jlc_cpl_fit.py
 --check`, `make_fab.py`, `build_case.sh` and re-inspect the layout. Scratch files go to `/tmp`. `FREEROUTING`, `JAVA`,
 `EASYEDA_CACHE`, `KICAD9_3DMODEL_DIR`, `REF_CASE_DIR` (feather dock check) are the env overrides.
+Freerouting is not in git: `route_pcb.py` defaults to `<repo>/tools/freerouting.jar`; on the original build box it is
+`/workspace/tools/freerouting.jar`, so run `FREEROUTING=/path/to/freerouting.jar scripts/run_all_pcb.sh` (without it the
+SES import fails and DRC reports ~113 unconnected pads).
 `tools/make_packages.sh` builds the release zips into `dist/`.
 
 ## 8. Hardware bring-up test checklist
@@ -180,10 +186,12 @@ Build **one** board of each kind first. Single-board radio:
 6. **Audio L/R**: confirm the headphone tip is the left channel / module pin 2 = R, pin 3 = L **before fitting U4 on
    all boards** (a swap can be fixed in firmware). Check FM reception with the headphone-cable antenna.
 7. **ADC calibration**: measure the cell with a meter vs BAT_ADC; calibrate the 1.1 V reference, the D2 drop
-   (button-powered) and the 0.15 V charging offset. Confirm CHRG_SENSE reads high with USB unplugged.
+   (wheel-powered) and the 0.15 V charging offset. Confirm CHRG_SENSE reads high with USB unplugged.
 8. **Charge current ≈ 900 mA and temperatures**: TP4056 and cell temperature in the closed case on a full charge
    from ~3.0 V; note throttling and total charge time. Use a ≥ 1 A charger.
-9. Level-bar visibility through the windows, light bleed between tunnels; wheel, button plunger and switch knob feel.
+9. Level-bar visibility through the windows (D1's slanted tunnel may look dimmer), light bleed between tunnels; wheel
+   turn/press feel and switch knob. **Wheel press with the switch off powers the MCU (Q4) and shows the bar; with it on,
+   BTN_SENSE goes high on a press and low within a few ms of release; standby current unchanged (≈ 7–9 µA).**
 10. Case: print one, test-fit jack plug overmold (≤ 6.8 mm), inserts, screws.
 
 Dock: 11. With a ≥ 45 W PD charger: green LED, 5.0–5.2 V on each slot VBUS; 5 V-only charger → red only, no slot voltage.

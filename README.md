@@ -14,7 +14,7 @@ constraints, open TODOs, test checklist and exact regeneration commands.
 
 | Folder | What it is | Status |
 |---|---|---|
-| [`radio_single_board/`](radio_single_board/README.md) | **OpenALD v1.0** single-board radio: ATmega328PB + RDA5807M, CH340K USB-C programming, TP4056 ~900 mA charging with DW01A/FS8205A protection and reverse-cell protection, thumbwheel, slide switch, battery-check button, vertical 3-LED level bar. 38 × 87 mm 2-layer PCB; case 43 × 92 × 33.4 mm | Designed; ERC/DRC/JLC-CPL/case fit pass; not built |
+| [`radio_single_board/`](radio_single_board/README.md) | **OpenALD v1.0** single-board radio: ATmega328PB + RDA5807M, CH340K USB-C programming, TP4056 ~900 mA charging with DW01A/FS8205A protection and reverse-cell protection, thumbwheel (press = battery check), slide switch, centred vertical 3-LED level bar. 38 × 87 mm 2-layer PCB; case 43 × 92 × 33.4 mm | Designed; ERC/DRC/JLC-CPL/case fit pass; not built |
 | [`charging_dock/`](charging_dock/README.md) | **OpenALD Dock v1.0**: 6 radios (2 × 3, 1 in apart) stand USB-C-down in 2 in pockets; one rear USB-C PD input (≥ 45 W charger, 15 V or 20 V); HUSB238 + 2 × SY8205 bucks + SY6280 limit per slot. 192 × 112 × 62.5 mm | Designed; ERC/DRC/JLC-CPL/fit pass; not built |
 | [`radio_adafruit_feather_rp2040/`](radio_adafruit_feather_rp2040/README.md) | **OpenALD Feather RP2040 v1.0**: Feather RP2040 + RDA5807M breakout with jack + 18650 holder + small controls PCB (wheel, switch, charge-mirror LEDs) in a printed frame; same dock footprint at the base | Designed; ERC/DRC/JLC-CPL/fit pass; FM-module dimensions are estimates; not built |
 

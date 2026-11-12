@@ -7,8 +7,7 @@ cd case
 S=openald_case.scad
 openscad -D 'part="top"'        -o case_top.stl       $S 2>/dev/null &
 openscad -D 'part="bottom"'     -o case_bottom.stl    $S 2>/dev/null &
-openscad -D 'part="plunger"'    -o button_plunger.stl $S 2>/dev/null &
-rm -f led_spacer.stl ../previews/closeup_led.png    # rev 3: no 5 mm LED / spacer any more
+rm -f led_spacer.stl ../previews/closeup_led.png button_plunger.stl    # rev 3: no 5 mm LED / spacer; 2026-11-11: no button SW2 / plunger
 mkdir -p nut_variant
 openscad -D 'part="top"'    -D 'fastener="nut"' -o nut_variant/case_top_nut.stl    $S 2>/dev/null &
 openscad -D 'part="bottom"' -D 'fastener="nut"' -o nut_variant/case_bottom_nut.stl $S 2>/dev/null &
@@ -28,7 +27,7 @@ wait
 openscad $P --camera=41,23,4,85,0,90,40  -D 'part="closed"' -o $R/closeup_power_switch.png $S 2>/dev/null &
 openscad $P --camera=41,61,4,80,0,90,55  -D 'part="closed"' -o $R/closeup_thumbwheel.png $S 2>/dev/null &
 openscad $P --camera=19,-2,4,80,0,0,45   -D 'part="closed"' -o $R/closeup_usb_c.png $S 2>/dev/null &
-openscad $P --camera=24,74.6,9,0,0,0,45   -D 'part="closed"' -o $R/closeup_led_bar.png $S 2>/dev/null &
+openscad $P --camera=19,78,9,0,0,0,45   -D 'part="closed"' -o $R/closeup_led_bar.png $S 2>/dev/null &
 openscad $P --camera=19,8,5,62,0,0,62    -D 'part="closed"' -o $R/closeup_front_usb_leds.png $S 2>/dev/null &
 python3 -c "
 import trimesh,re

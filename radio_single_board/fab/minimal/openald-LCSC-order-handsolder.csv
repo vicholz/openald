@@ -5,16 +5,15 @@ C22765,15,1,5,10,"0603 passive: +10 spares (cheap, easy to lose)",R3,1.2k,0603WA
 C21190,55,9,45,10,"0603 passive: +10 spares (cheap, easy to lose)","R5,R11,R12,R13,R16,R17,R20,R21,R22",1k,0603WAF1001T5E,R_0603_1608Metric,Basic,0.0017,https://www.lcsc.com/product-detail/C21190.html
 C2286,8,1,5,3,LED: +3 spares (easy to lose or overheat),D3,Red (charging),KT-0603R,LED_0603_1608Metric,Basic,0.0077,https://www.lcsc.com/product-detail/C2286.html
 C12624,23,4,20,3,LED: +3 spares (easy to lose or overheat),"D1,D4,D5,D6",Green (charged) / Green (level bar),KT-0603G,LED_0603_1608Metric,Extended,0.0119,https://www.lcsc.com/product-detail/C12624.html
-C15127,6,1,5,1,SOT-23 / SOT-23-3 / SOT-23-6: +1 spare (hot air can lift them),Q2,AO3401A,AOS AO3401A,SOT-23,Basic,0.0813,https://www.lcsc.com/product-detail/C15127.html
+C15127,11,2,10,1,SOT-23 / SOT-23-3 / SOT-23-6: +1 spare (hot air can lift them),"Q2,Q4",AO3401A,AOS AO3401A,SOT-23,Basic,0.0813,https://www.lcsc.com/product-detail/C15127.html
 C20917,6,1,5,1,SOT-23 / SOT-23-3 / SOT-23-6: +1 spare (hot air can lift them),Q3,AO3400A,AOS AO3400A,SOT-23,Basic,0.0802,https://www.lcsc.com/product-detail/C20917.html
 C25804,30,4,20,10,"0603 passive: +10 spares (cheap, easy to lose)","R7,R10,R19,R23",10k,0603WAF1002T5E,R_0603_1608Metric,Basic,0.0022,https://www.lcsc.com/product-detail/C25804.html
-C22935,15,1,5,10,"0603 passive: +10 spares (cheap, easy to lose)",R24,1M,0603WAF1004T5E,R_0603_1608Metric,Basic,0.0018,https://www.lcsc.com/product-detail/C22935.html
+C22935,20,2,10,10,"0603 passive: +10 spares (cheap, easy to lose)","R24,R25",1M,0603WAF1004T5E,R_0603_1608Metric,Basic,0.0018,https://www.lcsc.com/product-detail/C22935.html
 C351410,6,1,5,1,SOT-23 / SOT-23-3 / SOT-23-6: +1 spare (hot air can lift them),U2,DW01A,DW01A (PUOLOP),SOT-23-6,Extended,0.0532,https://www.lcsc.com/product-detail/C351410.html
 C2830320,6,1,5,1,SOT-23 / SOT-23-3 / SOT-23-6: +1 spare (hot air can lift them),Q1,FS8205A,FS8205A (TECH PUBLIC),SOT-23-6,Extended,0.0499,https://www.lcsc.com/product-detail/C2830320.html
 C22775,15,1,5,10,"0603 passive: +10 spares (cheap, easy to lose)",R4,100,0603WAF1000T5E,R_0603_1608Metric,Basic,0.002,https://www.lcsc.com/product-detail/C22775.html
 C14663,55,9,45,10,"0603 passive: +10 spares (cheap, easy to lose)","C3,C6,C7,C9,C13,C14,C15,C16,C19",100nF,CC0603KRX7R9BB104,C_0603_1608Metric,Basic,0.006,https://www.lcsc.com/product-detail/C14663.html
 C136720,6,1,5,1,+1 spare,SW1,POWER (SK-12E12-G5),HRO SK-12E12-G5,SW_Slide_SPDT_Angled_HRO_SK-12E12-G5,Extended,0.1132,https://www.lcsc.com/product-detail/C136720.html
-C79167,6,1,5,1,+1 spare,SW2,BATT CHECK (EVQP7A01P),Panasonic EVQ-P7A01P,SW_SPST_EVQP7A,Extended,0.1867,https://www.lcsc.com/product-detail/C79167.html
 C8598,28,5,25,3,SOD-123 diode: +3 spares,"D2,D7,D8,D9,D10",B5819W,B5819W SL,D_SOD-123,Basic,0.0262,https://www.lcsc.com/product-detail/C8598.html
 C23162,25,3,15,10,"0603 passive: +10 spares (cheap, easy to lose)","R6,R14,R15",4.7k,0603WAF4701T5E,R_0603_1608Metric,Basic,0.0028,https://www.lcsc.com/product-detail/C23162.html
 C5446,11,2,10,1,SOT-23 / SOT-23-3 / SOT-23-6: +1 spare (hot air can lift them),"U5,U6",XC6206P332MR,XC6206P332MR-G,SOT-23-3,Basic,0.1262,https://www.lcsc.com/product-detail/C5446.html

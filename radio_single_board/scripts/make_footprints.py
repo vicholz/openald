@@ -101,10 +101,9 @@ wrl("RRD-102_RDA5807M_Module",[box((0,0,0.4),(11,11,0.8),(0.1,0.55,0.2)),box((0,
 wrl("SIQ-02FVS3",[box((0,-1.7,1.0),(10.3,11.1,2.0),(0.75,0.75,0.78)),cyl((0,0,3.0),7.25,2.0,"z",(0.12,0.12,0.12)),cyl((0,0,3.0),3.5,2.05,"z",(0.3,0.3,0.3))])
 wrl("SW_Slide_HRO_SK-12E12-G5",[box((0,0,3.0),(12.9,5.6,6.0),(0.78,0.78,0.8)),        # VRML y = -footprint y
       box((-1.25,-5.3,3.5),(3.5,5.0,2.5),(0.1,0.1,0.1))])                           # knob, shown in pos.1 (OFF)
-for old in ("LED_RGB_5mm_XL-A504_on_spacer.wrl","LED_RGB_3mm_bent.wrl","LED_RGB_5mm_FlatTop_on_spacer.wrl"):
+for old in ("LED_RGB_5mm_XL-A504_on_spacer.wrl","LED_RGB_3mm_bent.wrl","LED_RGB_5mm_FlatTop_on_spacer.wrl","EVQP7A.wrl"):   # EVQP7A: button SW2 removed 2026-11-11
     if os.path.exists(os.path.join(M3D,old)): os.remove(os.path.join(M3D,old))
 # generic PJ-320D style jack (mouth toward -x in footprint coords)
 wrl("PJ-320D-4A",[box((-0.2,0,2.5),(12.0,6.1,5.0),(0.1,0.1,0.1)),cyl((-7.3,0,2.5),2.5,2.2,"x",(0.1,0.1,0.1))])
-wrl("EVQP7A",[box((0,0,1.75),(3.5,2.9,3.5),(0.75,0.75,0.78)),box((0,-1.8,1.75),(1.7,0.7,1.6),(0.2,0.2,0.2))])
 wrl("USB_C_HRO_31-M-12",[box((0,0,1.63),(8.94,7.3,3.26),(0.8,0.8,0.82))])
 print("footprints written:",os.listdir(OUT))

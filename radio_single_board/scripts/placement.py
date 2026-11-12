@@ -5,21 +5,27 @@ BOARD_W, BOARD_H, CORNER_R = 38.0, 87.0, 3.0
 HOLES = [(3.2,3.2),(34.8,3.2),(3.2,83.8),(34.8,83.8)]
 PL = {
  "H1":(3.2,3.2,0),"H2":(34.8,3.2,0),"H3":(3.2,83.8,0),"H4":(34.8,83.8,0),
- # --- top edge: headphone jack, battery-check button
- "J2":(11.5,8.4,-90), "SW2":(29.4,1.6,180),
+ # --- top edge: headphone jack; wheel-press power FET Q4 + gate pull-up R25 where the old battery-check button SW2
+ #     (29.4,1.6) sat (removed 2026-11-11, still v1.0: the wheel press does the battery check now)
+ "J2":(11.5,8.4,-90), "Q4":(29.4,2.6,0), "R25":(25.8,2.2,0),
  # --- protection next to the cell negative terminal (BT1 pin 2 at x=19,y=6.05)
  "Q1":(28.8,9.6,0), "U2":(33.4,9.6,0), "C3":(33.4,12.9,0), "R4":(33.4,14.6,0), "R5":(29.0,12.9,0),
  # --- rev 4.2 reverse-polarity protection: Q3 (orientation sense) by the cell - terminal / DW01A, Q2 (series P-FET) by the
  #     cell + terminal (BT1 pin 1 at x=19,y=75.4) next to the TP4056, R23/R24 at the left edge below R3
  "Q3":(29.2,17.4,0), "Q2":(11.3,76.0,0), "R23":(2.9,75.7,0), "R24":(2.9,78.5,0),
- # --- battery level bar (dock update, still v1.0): 3x 0603 LED in a VERTICAL column near the jack end, so it stays
- #     visible when the radio stands USB-C-down in the 6-slot charging dock (bottom 50.8 mm hidden). Lowest level (D1)
- #     nearest the USB-C end, full (D6) nearest the jack end. Free strip between FB1/FB2, the holder peg hole (19,11.34),
- #     Q3/R5 and C10/C11; each LED still sits in its own printed light tunnel. R11-R13 stay at their old spot.
- "D6":(24.0,9.4,0), "D5":(24.0,12.4,0), "D1":(24.0,15.4,0),
+ # --- battery level bar (2026-11-11 update, still v1.0): 3x 0603 LED in a VERTICAL column CENTRED across the board
+ #     (x = 19.0, the board/case centreline) and moved up toward the jack end, so the whole bar sits ~25-32 mm above the
+ #     dock rim when the radio stands USB-C-down in the dock. The centreline is shared with the holder's - pad (19,2.5,
+ #     3.0 pad) and its locating-peg hole (19,11.34, 3.2 NPTH), so the LEDs go D6 (full) just below the - pad, D5 just
+ #     above the peg hole and D1 (lowest level) just below it. A centred HORIZONTAL row up here was tried and rejected:
+ #     the jack's courtyard (to x = 16.53) leaves too little width for three LEDs with printed tunnel walls.
+ #     The case windows are evenly spaced (BAR_WIN_Y, 2.8 mm pitch); D1's light tunnel leans 2.3 mm up to its window.
+ #     Previous spot (dock update): x = 24.0, y = 15.4/12.4/9.4. R11-R13 stay where they were.
+ "D6":(19.0,6.1,0), "D5":(19.0,8.9,0), "D1":(19.0,14.0,0),
  "R11":(26.4,68.2,90), "R12":(28.1,68.2,90), "R13":(29.8,68.2,90),
  # --- FM module + audio / antenna network
- "U4":(10.5,23.6,0), "FB1":(22.4,5.0,0), "FB2":(22.4,6.8,0), "FB3":(4.2,12.2,90), "C12":(4.2,8.6,90),
+ # FB1/FB2 moved from (22.4,5.0/6.8) into the old LED column (2026-11-11) to free the centred LED row
+ "U4":(10.5,23.6,0), "FB1":(24.0,10.4,0), "FB2":(24.0,12.4,0), "FB3":(4.2,12.2,90), "C12":(4.2,8.6,90),
  "C10":(19.6,20.0,90), "C11":(22.6,20.0,90), "R18":(12.4,31.6,0), "C8":(5.6,31.8,0), "C9":(9.2,31.6,0),
  "R16":(2.0,20.2,90), "R17":(2.0,23.6,90),
  # --- right edge: thumbwheel encoder (wheel overhangs edge) and recessed power switch
@@ -46,6 +52,8 @@ PL = {
 }
 # Battery holder on the bottom: pad 1 (+) at (19, 75.4), pad 2 (-) at (19, 2.5); body spans y 0.87..78.57,
 # leaving room for the centred USB-C receptacle (signal pads at y~79.3, shell pegs from y 79.2)
+# level-bar window centres in the case top (board y, same x as the LED): evenly spaced, D1's tunnel is slanted
+BAR_WIN_Y={"D6":6.1,"D5":8.9,"D1":11.7}
 BT1_PAD1=(19.0,75.4); BT1_PAD2=(19.0,2.5)
 # rev 4.2 cell-polarity silkscreen marks: (text, x, y, size mm, layer).  Bottom marks sit in the strips beside the holder
 # (holder courtyard x 7.77..30.24), level with the + contact (USB end) and the - contact (jack end).

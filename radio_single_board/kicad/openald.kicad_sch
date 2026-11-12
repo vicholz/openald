@@ -1962,108 +1962,6 @@
               (font
                 (size 1.27 1.27))))))
       (embedded_fonts no))
-    (symbol "Switch:SW_Push"
-      (pin_numbers
-        (hide yes))
-      (pin_names
-        (offset 1.016)
-        (hide yes))
-      (exclude_from_sim no)
-      (in_bom yes)
-      (on_board yes)
-      (property "Reference" "SW"
-        (at 1.27 2.54 0)
-        (effects
-          (font
-            (size 1.27 1.27))
-          (justify left)))
-      (property "Value" "SW_Push"
-        (at 0 -1.524 0)
-        (effects
-          (font
-            (size 1.27 1.27))))
-      (property "Footprint" ""
-        (at 0 5.08 0)
-        (effects
-          (font
-            (size 1.27 1.27))
-          (hide yes)))
-      (property "Datasheet" "~"
-        (at 0 5.08 0)
-        (effects
-          (font
-            (size 1.27 1.27))
-          (hide yes)))
-      (property "Description" "Push button switch, generic, two pins"
-        (at 0 0 0)
-        (effects
-          (font
-            (size 1.27 1.27))
-          (hide yes)))
-      (property "ki_keywords" "switch normally-open pushbutton push-button"
-        (at 0 0 0)
-        (effects
-          (font
-            (size 1.27 1.27))
-          (hide yes)))
-      (symbol "SW_Push_0_1"
-        (circle
-          (center -2.032 0)
-          (radius 0.508)
-          (stroke
-            (width 0)
-            (type default))
-          (fill
-            (type none)))
-        (polyline
-          (pts
-            (xy 0 1.27)
-            (xy 0 3.048))
-          (stroke
-            (width 0)
-            (type default))
-          (fill
-            (type none)))
-        (circle
-          (center 2.032 0)
-          (radius 0.508)
-          (stroke
-            (width 0)
-            (type default))
-          (fill
-            (type none)))
-        (polyline
-          (pts
-            (xy 2.54 1.27)
-            (xy -2.54 1.27))
-          (stroke
-            (width 0)
-            (type default))
-          (fill
-            (type none)))
-        (pin passive line
-          (at -5.08 0 0)
-          (length 2.54)
-          (name "1"
-            (effects
-              (font
-                (size 1.27 1.27))))
-          (number "1"
-            (effects
-              (font
-                (size 1.27 1.27)))))
-        (pin passive line
-          (at 5.08 0 180)
-          (length 2.54)
-          (name "2"
-            (effects
-              (font
-                (size 1.27 1.27))))
-          (number "2"
-            (effects
-              (font
-                (size 1.27 1.27))))))
-      (embedded_fonts no))
     (symbol "Regulator_Linear:XC6206PxxxMR"
       (pin_names
         (offset 0.254))
@@ -6744,7 +6642,7 @@
         (font
           (size 1.27 1.27))
         (hide yes))))
-  (text "Power switch, battery-check button, radio 3.3 V LDO (+3V3R), battery ADC"
+  (text "Power switch, wheel-press power FET (Q4), radio 3.3 V LDO (+3V3R), battery ADC"
     (exclude_from_sim no)
     (at 155 99 0)
     (effects
@@ -6857,106 +6755,229 @@
           (size 1.27 1.27))
         (hide yes))))
   (symbol
-    (lib_id "Switch:SW_Push")
-    (at 204.47 111.76 0)
+    (lib_id "Transistor_FET:AO3401A")
+    (at 210.82 123.19 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
     (on_board yes)
     (dnp no)
-    (uuid "a1bdb019-db33-5982-b20c-3faadc6a80ce")
-    (property "Reference" "SW2"
-      (at 204.47 107.49 0)
+    (uuid "66278958-0624-56d9-a3ca-40e9a46caf7f")
+    (property "Reference" "Q4"
+      (at 210.82 113.84 0)
       (effects
         (font
           (size 1.27 1.27))))
-    (property "Value" "BATT CHECK (EVQP7A01P)"
-      (at 204.47 116.03 0)
+    (property "Value" "AO3401A"
+      (at 210.82 132.54 0)
       (effects
         (font
           (size 1.27 1.27))))
-    (property "Footprint" "Button_Switch_SMD:SW_SPST_EVQP7A"
-      (at 204.47 111.76 0)
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+      (at 210.82 123.19 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
-    (property "Datasheet" "~"
-      (at 204.47 111.76 0)
+    (property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf"
+      (at 210.82 123.19 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
-    (property "LCSC" "C79167"
-      (at 204.47 111.76 0)
+    (property "LCSC" "C15127"
+      (at 210.82 123.19 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
-    (property "MPN" "Panasonic EVQ-P7A01P"
-      (at 204.47 111.76 0)
+    (property "MPN" "AOS AO3401A"
+      (at 210.82 123.19 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (pin "1"
-      (uuid "8f5dc1ef-680e-55d9-bad7-9477e1a42528"))
+      (uuid "ec1b4c45-dc69-5e19-8075-66d727ed1e3f"))
+    (pin "3"
+      (uuid "2c0251c6-ba34-547f-8fc5-c8d5893e402d"))
     (pin "2"
-      (uuid "1d955ed3-4cbc-53ef-a36a-4820a6ca5553"))
+      (uuid "3d1c780f-6e7c-57ac-9303-72dbacdd14bb"))
     (instances
       (project "openald"
         (path "/5f5c76d9-8617-547e-b58c-221be2c81335"
-          (reference "SW2")
+          (reference "Q4")
           (unit 1)))))
   (wire
     (pts
-      (xy 199.39 111.76)
-      (xy 196.85 111.76))
+      (xy 205.74 123.19)
+      (xy 203.2 123.19))
     (stroke
       (width 0)
       (type default))
-    (uuid "f5d66107-4801-5583-8463-81396f3c46dd"))
-  (global_label "VBAT"
+    (uuid "2e5fd9df-84f3-51d7-8a49-a974f8289d9f"))
+  (global_label "WHEEL_SW_N"
     (shape passive)
-    (at 196.85 111.76 180)
+    (at 203.2 123.19 180)
     (fields_autoplaced yes)
     (effects
       (font
         (size 1.27 1.27))
       (justify right))
-    (uuid "f2676908-9c29-50d7-8286-98c6e439a0da")
+    (uuid "873dfd4f-5906-5928-89b0-5624aaa9780d")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 196.85 111.76 0)
+      (at 203.2 123.19 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 209.55 111.76)
-      (xy 212.09 111.76))
+      (xy 213.36 118.11)
+      (xy 213.36 115.57))
     (stroke
       (width 0)
       (type default))
-    (uuid "7087dfca-6fb8-52c6-8ff1-79f0f9402955"))
+    (uuid "0a2eb5f0-991b-5de7-af59-1853d86cd40e"))
   (global_label "VBTN"
     (shape passive)
-    (at 212.09 111.76 0)
+    (at 213.36 115.57 90)
     (fields_autoplaced yes)
     (effects
       (font
         (size 1.27 1.27))
       (justify left))
-    (uuid "b805764e-d953-580e-9d27-91333dd6f82f")
+    (uuid "481e11a3-5847-55bc-ad0a-05b812997811")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 212.09 111.76 0)
+      (at 213.36 115.57 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 213.36 128.27)
+      (xy 213.36 130.81))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "23180e78-4691-5161-ab29-7de106407310"))
+  (global_label "VBAT"
+    (shape passive)
+    (at 213.36 130.81 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27))
+      (justify right))
+    (uuid "ded3672a-6ac8-5489-8666-de854f0d2308")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 213.36 130.81 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (hide yes))))
+  (symbol
+    (lib_id "Device:R")
+    (at 223.52 121.92 0)
+    (unit 1)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (uuid "8124875c-6ac5-5bb5-88a7-4d2949f1302f")
+    (property "Reference" "R25"
+      (at 223.52 113.84 0)
+      (effects
+        (font
+          (size 1.27 1.27))))
+    (property "Value" "1M"
+      (at 223.52 130 0)
+      (effects
+        (font
+          (size 1.27 1.27))))
+    (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+      (at 223.52 121.92 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (hide yes)))
+    (property "Datasheet" "~"
+      (at 223.52 121.92 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (hide yes)))
+    (property "LCSC" "C22935"
+      (at 223.52 121.92 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (hide yes)))
+    (property "MPN" "0603WAF1004T5E"
+      (at 223.52 121.92 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (hide yes)))
+    (pin "1"
+      (uuid "344903b7-785b-565b-9cf3-1826b59320de"))
+    (pin "2"
+      (uuid "74bdf4a2-b593-51ea-b1c2-6511896698cf"))
+    (instances
+      (project "openald"
+        (path "/5f5c76d9-8617-547e-b58c-221be2c81335"
+          (reference "R25")
+          (unit 1)))))
+  (wire
+    (pts
+      (xy 223.52 118.11)
+      (xy 223.52 115.57))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "759f5383-095d-580a-8b5b-25e95942a281"))
+  (global_label "VBAT"
+    (shape passive)
+    (at 223.52 115.57 90)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27))
+      (justify left))
+    (uuid "76c56e77-c34e-5887-8d9b-4a1ea56451f3")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 223.52 115.57 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (hide yes))))
+  (wire
+    (pts
+      (xy 223.52 125.73)
+      (xy 223.52 128.27))
+    (stroke
+      (width 0)
+      (type default))
+    (uuid "56c3be42-d2b5-5d6a-83f9-68a7f603b4e9"))
+  (global_label "WHEEL_SW_N"
+    (shape passive)
+    (at 223.52 128.27 270)
+    (fields_autoplaced yes)
+    (effects
+      (font
+        (size 1.27 1.27))
+      (justify right))
+    (uuid "ad62e7b3-7171-509e-bc10-f6f0e83d0c19")
+    (property "Intersheetrefs" "${INTERSHEET_REFS}"
+      (at 223.52 128.27 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (symbol
     (lib_id "Device:D_Schottky")
-    (at 237.49 111.76 0)
+    (at 243.84 111.76 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -6964,35 +6985,35 @@
     (dnp no)
     (uuid "f20f6744-edb5-525f-a2da-04d2a48884e1")
     (property "Reference" "D2"
-      (at 237.49 107.49 0)
+      (at 243.84 107.49 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Value" "B5819W"
-      (at 237.49 116.03 0)
+      (at 243.84 116.03 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Footprint" "Diode_SMD:D_SOD-123"
-      (at 237.49 111.76 0)
+      (at 243.84 111.76 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "Datasheet" "~"
-      (at 237.49 111.76 0)
+      (at 243.84 111.76 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "LCSC" "C8598"
-      (at 237.49 111.76 0)
+      (at 243.84 111.76 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "MPN" "B5819W SL"
-      (at 237.49 111.76 0)
+      (at 243.84 111.76 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7008,15 +7029,15 @@
           (unit 1)))))
   (wire
     (pts
-      (xy 233.68 111.76)
-      (xy 231.14 111.76))
+      (xy 240.03 111.76)
+      (xy 237.49 111.76))
     (stroke
       (width 0)
       (type default))
     (uuid "f346bda0-4842-5430-98a5-996f4d89472a"))
   (global_label "VSYS"
     (shape passive)
-    (at 231.14 111.76 180)
+    (at 237.49 111.76 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7024,22 +7045,22 @@
       (justify right))
     (uuid "2e902eee-a965-5d1a-9727-b5adb943ab4f")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 231.14 111.76 0)
+      (at 237.49 111.76 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 241.3 111.76)
-      (xy 243.84 111.76))
+      (xy 247.65 111.76)
+      (xy 250.19 111.76))
     (stroke
       (width 0)
       (type default))
     (uuid "74370a73-3a9d-5923-bd1f-68897cb4603d"))
   (global_label "VBTN"
     (shape passive)
-    (at 243.84 111.76 0)
+    (at 250.19 111.76 0)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7047,14 +7068,14 @@
       (justify left))
     (uuid "68609efa-7cf7-5afc-b39a-0c9bc84b387c")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 243.84 111.76 0)
+      (at 250.19 111.76 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (symbol
     (lib_id "Device:R")
-    (at 257.81 121.92 0)
+    (at 264.16 121.92 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -7062,35 +7083,35 @@
     (dnp no)
     (uuid "996c270c-d4a3-5613-a26e-e9a6533a20f1")
     (property "Reference" "R6"
-      (at 257.81 113.84 0)
+      (at 264.16 113.84 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Value" "4.7k"
-      (at 257.81 130 0)
+      (at 264.16 130 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-      (at 257.81 121.92 0)
+      (at 264.16 121.92 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "Datasheet" "~"
-      (at 257.81 121.92 0)
+      (at 264.16 121.92 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "LCSC" "C23162"
-      (at 257.81 121.92 0)
+      (at 264.16 121.92 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "MPN" "0603WAF4701T5E"
-      (at 257.81 121.92 0)
+      (at 264.16 121.92 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7106,15 +7127,15 @@
           (unit 1)))))
   (wire
     (pts
-      (xy 257.81 118.11)
-      (xy 257.81 115.57))
+      (xy 264.16 118.11)
+      (xy 264.16 115.57))
     (stroke
       (width 0)
       (type default))
     (uuid "c7b23a24-8fd7-59ab-a7a1-a069ea42f1d5"))
   (global_label "VBTN"
     (shape passive)
-    (at 257.81 115.57 90)
+    (at 264.16 115.57 90)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7122,22 +7143,22 @@
       (justify left))
     (uuid "6cc9dabc-1361-53d4-9213-855de617b780")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 257.81 115.57 0)
+      (at 264.16 115.57 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 257.81 125.73)
-      (xy 257.81 128.27))
+      (xy 264.16 125.73)
+      (xy 264.16 128.27))
     (stroke
       (width 0)
       (type default))
     (uuid "cc6b9ee6-d785-59d6-9dde-13cabef5491b"))
   (global_label "BTN_SENSE"
     (shape passive)
-    (at 257.81 128.27 270)
+    (at 264.16 128.27 270)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7145,14 +7166,14 @@
       (justify right))
     (uuid "72a3f4a7-f023-546e-9865-9073f8053778")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 257.81 128.27 0)
+      (at 264.16 128.27 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (symbol
     (lib_id "Device:R")
-    (at 267.97 125.73 0)
+    (at 274.32 125.73 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -7160,35 +7181,35 @@
     (dnp no)
     (uuid "799c917c-0065-5d40-8254-6e1a5c2f73f0")
     (property "Reference" "R7"
-      (at 267.97 117.65 0)
+      (at 274.32 117.65 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Value" "10k"
-      (at 267.97 133.81 0)
+      (at 274.32 133.81 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-      (at 267.97 125.73 0)
+      (at 274.32 125.73 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "Datasheet" "~"
-      (at 267.97 125.73 0)
+      (at 274.32 125.73 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "LCSC" "C25804"
-      (at 267.97 125.73 0)
+      (at 274.32 125.73 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "MPN" "0603WAF1002T5E"
-      (at 267.97 125.73 0)
+      (at 274.32 125.73 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7204,15 +7225,15 @@
           (unit 1)))))
   (wire
     (pts
-      (xy 267.97 121.92)
-      (xy 267.97 119.38))
+      (xy 274.32 121.92)
+      (xy 274.32 119.38))
     (stroke
       (width 0)
       (type default))
     (uuid "73d59692-9d61-531b-9cf5-9b1269ecb5f4"))
   (global_label "BTN_SENSE"
     (shape passive)
-    (at 267.97 119.38 90)
+    (at 274.32 119.38 90)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7220,22 +7241,22 @@
       (justify left))
     (uuid "654efae9-2776-5022-aead-25b93183bb9c")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 267.97 119.38 0)
+      (at 274.32 119.38 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 267.97 129.54)
-      (xy 267.97 132.08))
+      (xy 274.32 129.54)
+      (xy 274.32 132.08))
     (stroke
       (width 0)
       (type default))
     (uuid "28291b81-dffa-532b-84e7-eeb0cd5b58a6"))
   (global_label "GND"
     (shape passive)
-    (at 267.97 132.08 270)
+    (at 274.32 132.08 270)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7243,14 +7264,14 @@
       (justify right))
     (uuid "c2127c1c-64f3-50fb-8f57-4e068d0ea613")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 267.97 132.08 0)
+      (at 274.32 132.08 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (symbol
     (lib_id "Regulator_Linear:XC6206PxxxMR")
-    (at 172.72 152.4 0)
+    (at 172.72 153.67 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -7258,35 +7279,35 @@
     (dnp no)
     (uuid "16f54d22-b479-5d11-9605-b0ce3774ec4b")
     (property "Reference" "U5"
-      (at 172.72 148.13 0)
+      (at 172.72 149.4 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Value" "XC6206P332MR"
-      (at 172.72 164.29 0)
+      (at 172.72 165.56 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Footprint" "Package_TO_SOT_SMD:SOT-23-3"
-      (at 172.72 152.4 0)
+      (at 172.72 153.67 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "Datasheet" "https://www.torexsemi.com/file/xc6206/XC6206.pdf"
-      (at 172.72 152.4 0)
+      (at 172.72 153.67 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "LCSC" "C5446"
-      (at 172.72 152.4 0)
+      (at 172.72 153.67 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "MPN" "XC6206P332MR-G"
-      (at 172.72 152.4 0)
+      (at 172.72 153.67 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7304,15 +7325,15 @@
           (unit 1)))))
   (wire
     (pts
-      (xy 165.1 152.4)
-      (xy 162.56 152.4))
+      (xy 165.1 153.67)
+      (xy 162.56 153.67))
     (stroke
       (width 0)
       (type default))
     (uuid "8888890f-f07d-551e-9514-961e99933e9e"))
   (global_label "VSYS"
     (shape passive)
-    (at 162.56 152.4 180)
+    (at 162.56 153.67 180)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7320,22 +7341,22 @@
       (justify right))
     (uuid "ff3142c0-cb53-5961-9ec4-5fc330654a39")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 162.56 152.4 0)
+      (at 162.56 153.67 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 172.72 160.02)
-      (xy 172.72 162.56))
+      (xy 172.72 161.29)
+      (xy 172.72 163.83))
     (stroke
       (width 0)
       (type default))
     (uuid "0cd173e9-e1f4-5302-9189-e398a315413f"))
   (global_label "GND"
     (shape passive)
-    (at 172.72 162.56 270)
+    (at 172.72 163.83 270)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7343,22 +7364,22 @@
       (justify right))
     (uuid "46ac66cf-2c11-55e6-80a7-4d240d29819a")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 172.72 162.56 0)
+      (at 172.72 163.83 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 180.34 152.4)
-      (xy 182.88 152.4))
+      (xy 180.34 153.67)
+      (xy 182.88 153.67))
     (stroke
       (width 0)
       (type default))
     (uuid "666646f8-89f8-5c48-8943-42cb0800da2a"))
   (global_label "+3V3R"
     (shape passive)
-    (at 182.88 152.4 0)
+    (at 182.88 153.67 0)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7366,7 +7387,7 @@
       (justify left))
     (uuid "1807afa9-afd8-5481-910b-77ad307da1c6")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 182.88 152.4 0)
+      (at 182.88 153.67 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7471,7 +7492,7 @@
         (hide yes))))
   (symbol
     (lib_id "Device:C")
-    (at 208.28 162.56 0)
+    (at 208.28 163.83 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -7479,35 +7500,35 @@
     (dnp no)
     (uuid "689ae53c-63f6-53fd-a60b-520e7dbbd27c")
     (property "Reference" "C5"
-      (at 208.28 154.48 0)
+      (at 208.28 155.75 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Value" "10uF"
-      (at 208.28 170.64 0)
+      (at 208.28 171.91 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-      (at 208.28 162.56 0)
+      (at 208.28 163.83 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "Datasheet" "~"
-      (at 208.28 162.56 0)
+      (at 208.28 163.83 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "LCSC" "C19702"
-      (at 208.28 162.56 0)
+      (at 208.28 163.83 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "MPN" "CL10A106KP8NNNC"
-      (at 208.28 162.56 0)
+      (at 208.28 163.83 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7523,15 +7544,15 @@
           (unit 1)))))
   (wire
     (pts
-      (xy 208.28 158.75)
-      (xy 208.28 156.21))
+      (xy 208.28 160.02)
+      (xy 208.28 157.48))
     (stroke
       (width 0)
       (type default))
     (uuid "f4c4ab54-ede5-51ab-bf4a-0c003c33d982"))
   (global_label "+3V3R"
     (shape passive)
-    (at 208.28 156.21 90)
+    (at 208.28 157.48 90)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7539,22 +7560,22 @@
       (justify left))
     (uuid "fb9ddf9a-b4d1-525a-8bd4-f43b804527f8")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 208.28 156.21 0)
+      (at 208.28 157.48 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 208.28 166.37)
-      (xy 208.28 168.91))
+      (xy 208.28 167.64)
+      (xy 208.28 170.18))
     (stroke
       (width 0)
       (type default))
     (uuid "0b5f1805-bcd2-5966-8e50-d7b9c39e6d94"))
   (global_label "GND"
     (shape passive)
-    (at 208.28 168.91 270)
+    (at 208.28 170.18 270)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7562,7 +7583,7 @@
       (justify right))
     (uuid "4e3b36f7-f07d-50c6-9fe5-e39810718b3f")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 208.28 168.91 0)
+      (at 208.28 170.18 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7667,7 +7688,7 @@
         (hide yes))))
   (symbol
     (lib_id "Device:R")
-    (at 228.6 165.1 0)
+    (at 228.6 166.37 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -7675,35 +7696,35 @@
     (dnp no)
     (uuid "56784c56-96ee-59d4-845b-c3f46deddd26")
     (property "Reference" "R9"
-      (at 228.6 157.02 0)
+      (at 228.6 158.29 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Value" "12k"
-      (at 228.6 173.18 0)
+      (at 228.6 174.45 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-      (at 228.6 165.1 0)
+      (at 228.6 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "Datasheet" "~"
-      (at 228.6 165.1 0)
+      (at 228.6 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "LCSC" "C22790"
-      (at 228.6 165.1 0)
+      (at 228.6 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "MPN" "0603WAF1202T5E"
-      (at 228.6 165.1 0)
+      (at 228.6 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7719,15 +7740,15 @@
           (unit 1)))))
   (wire
     (pts
-      (xy 228.6 161.29)
-      (xy 228.6 158.75))
+      (xy 228.6 162.56)
+      (xy 228.6 160.02))
     (stroke
       (width 0)
       (type default))
     (uuid "8321b34e-8bf7-5f28-b024-cb7b2e5dfe34"))
   (global_label "BAT_ADC"
     (shape passive)
-    (at 228.6 158.75 90)
+    (at 228.6 160.02 90)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7735,22 +7756,22 @@
       (justify left))
     (uuid "fa976185-3eef-51f5-87d1-eb75a2ff8357")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 228.6 158.75 0)
+      (at 228.6 160.02 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 228.6 168.91)
-      (xy 228.6 171.45))
+      (xy 228.6 170.18)
+      (xy 228.6 172.72))
     (stroke
       (width 0)
       (type default))
     (uuid "b7fa25a8-43bb-5cf6-bb80-79d9a8beb60a"))
   (global_label "GND"
     (shape passive)
-    (at 228.6 171.45 270)
+    (at 228.6 172.72 270)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7758,14 +7779,14 @@
       (justify right))
     (uuid "c1cf4c51-832e-5b82-a18c-5c212200f155")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 228.6 171.45 0)
+      (at 228.6 172.72 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (symbol
     (lib_id "Device:C")
-    (at 238.76 165.1 0)
+    (at 238.76 166.37 0)
     (unit 1)
     (exclude_from_sim no)
     (in_bom yes)
@@ -7773,35 +7794,35 @@
     (dnp no)
     (uuid "2e64a012-d7f9-52ee-a3bc-0aa6f9c0f1b5")
     (property "Reference" "C6"
-      (at 238.76 157.02 0)
+      (at 238.76 158.29 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Value" "100nF"
-      (at 238.76 173.18 0)
+      (at 238.76 174.45 0)
       (effects
         (font
           (size 1.27 1.27))))
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
-      (at 238.76 165.1 0)
+      (at 238.76 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "Datasheet" "~"
-      (at 238.76 165.1 0)
+      (at 238.76 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "LCSC" "C14663"
-      (at 238.76 165.1 0)
+      (at 238.76 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes)))
     (property "MPN" "CC0603KRX7R9BB104"
-      (at 238.76 165.1 0)
+      (at 238.76 166.37 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -7817,15 +7838,15 @@
           (unit 1)))))
   (wire
     (pts
-      (xy 238.76 161.29)
-      (xy 238.76 158.75))
+      (xy 238.76 162.56)
+      (xy 238.76 160.02))
     (stroke
       (width 0)
       (type default))
     (uuid "e1cd7841-6b1e-5758-965e-4c226a366ca0"))
   (global_label "BAT_ADC"
     (shape passive)
-    (at 238.76 158.75 90)
+    (at 238.76 160.02 90)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7833,22 +7854,22 @@
       (justify left))
     (uuid "2ae40201-2c1a-5d61-9cf7-bdadf9d19689")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 238.76 158.75 0)
+      (at 238.76 160.02 0)
       (effects
         (font
           (size 1.27 1.27))
         (hide yes))))
   (wire
     (pts
-      (xy 238.76 168.91)
-      (xy 238.76 171.45))
+      (xy 238.76 170.18)
+      (xy 238.76 172.72))
     (stroke
       (width 0)
       (type default))
     (uuid "3edd91c2-6e14-5f0d-a8c4-7d23fb8bc335"))
   (global_label "GND"
     (shape passive)
-    (at 238.76 171.45 270)
+    (at 238.76 172.72 270)
     (fields_autoplaced yes)
     (effects
       (font
@@ -7856,7 +7877,7 @@
       (justify right))
     (uuid "9c523b89-37b2-53b1-8274-215e561a8493")
     (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 238.76 171.45 0)
+      (at 238.76 172.72 0)
       (effects
         (font
           (size 1.27 1.27))
@@ -8486,29 +8507,9 @@
         (font
           (size 1.27 1.27))
         (hide yes))))
-  (wire
-    (pts
-      (xy 55.88 259.08)
-      (xy 58.42 259.08))
-    (stroke
-      (width 0)
-      (type default))
-    (uuid "80981d10-7868-5faa-99c1-f40d28cb08a0"))
-  (global_label "ENC_SW"
-    (shape passive)
-    (at 58.42 259.08 0)
-    (fields_autoplaced yes)
-    (effects
-      (font
-        (size 1.27 1.27))
-      (justify left))
-    (uuid "dc74af63-c225-520d-b3df-3538b1b4efd4")
-    (property "Intersheetrefs" "${INTERSHEET_REFS}"
-      (at 58.42 259.08 0)
-      (effects
-        (font
-          (size 1.27 1.27))
-        (hide yes))))
+  (no_connect
+    (at 55.88 259.08)
+    (uuid "77e846c3-798f-52fe-bd97-7c287972ae03"))
   (wire
     (pts
       (xy 55.88 261.62)
@@ -10051,7 +10052,7 @@
       (width 0)
       (type default))
     (uuid "81c6e647-4d12-51bf-82e4-44da637e4262"))
-  (global_label "ENC_SW"
+  (global_label "WHEEL_SW_N"
     (shape passive)
     (at 208.28 228.6 0)
     (fields_autoplaced yes)

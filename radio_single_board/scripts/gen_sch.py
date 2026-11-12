@@ -13,7 +13,7 @@ def snap(v): return round(v/1.27)*1.27
 GROUPS=[("usb","USB-C input (power + USB 2.0 data, CC 5.1k pull-downs)",(15,25,135)),
         ("chg","TP4056 Li-ion charger (~900 mA) + charge LEDs",(15,105,135)),
         ("bat","18650 + reverse-polarity FETs (Q2/Q3) + DW01A / FS8205A protection",(155,25,125)),
-        ("pwr","Power switch, battery-check button, radio 3.3 V LDO (+3V3R), battery ADC",(155,105,125)),
+        ("pwr","Power switch, wheel-press power FET (Q4), radio 3.3 V LDO (+3V3R), battery ADC",(155,105,125)),
         ("mcu","ATmega328PB MCU (internal 8 MHz) + AVR ISP pogo pads",(15,185,150)),
         ("ui","Battery level bar (3x LED) + thumbwheel encoder",(170,185,120)),
         ("fm","RRD-102 (RDA5807M) FM module, headphone out, headphone-ground antenna",(295,25,115)),

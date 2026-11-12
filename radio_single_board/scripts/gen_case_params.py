@@ -37,11 +37,10 @@ def mind(hx,hy,side):
     return d
 topclr=min(mind(x,y,'F') for x,y in holes); botclr=min(mind(x,y,'B') for x,y in holes)
 jack=tf('J2',-8.4,0)          # mouth face centre (tube end) in local coords
-btn=tf('SW2',0,2.15)          # actuator tip (local +y in footprint coords)
 wheel=tf('SW3')               # wheel centre
 usb=tf('J1',0,0)
 d3=tf('D3'); d4=tf('D4')
-bar=[tf(r) for r in ('D1','D5','D6')]   # 3x 0603 level-bar LEDs (low -> full, left -> right)
+bar=[tf(r) for r in ('D1','D5','D6')]   # 3x 0603 level-bar LEDs (low -> full, bottom -> top, vertical column centred at x=19)
 # OS102011MA1Q (KiCad footprint = C&K drawing): actuator 2x2 mm, sticks out 4.0 mm from the body face at
 # local y=+2.2, spans local x 0..2 (pos.1, pins 1-2) or 2..4 (pos.2, pins 2-3 = ON); 1.6..3.6 mm above PCB
 sw_on=tf('SW1',1.25,0); sw_off=tf('SW1',-1.25,0); sw_tip=tf('SW1',0,7.8); sw_face=tf('SW1',0,2.8)   # SK-12E12-G5: knob +-1.25 travel, 2.8..7.8 from pin line
@@ -53,8 +52,10 @@ p("pcb_w",round(W,3)); p("pcb_h",round(H,3)); p("pcb_r",3.0); p("pcb_t",1.6)
 p("holes",[list(h) for h in holes])
 p("top_boss_room",round(topclr,2)); p("bot_boss_room",round(botclr,2))
 p("jack_xy",list(jack)); p("jack_axis_h",2.5)          # PJ-320D datasheet: dia-5 barrel, body 5.0 tall
-p("btn_xy",list(btn)); p("btn_axis_h",1.75)            # EVQ-P7A: actuator centre 1.75 above PCB
 p("wheel_xy",list(wheel)); p("wheel_r",7.25); p("wheel_z0",2.0); p("wheel_z1",4.0)
+import sys; sys.path.insert(0,HERE); import placement as _PL
+barwin=[[tf(r)[0],round(H-_PL.BAR_WIN_Y[r],3)] for r in ('D1','D5','D6')]   # window centres (tunnel tops), case XY
+p("bar_win_xy",barwin)
 p("bar_leds",[list(q) for q in bar]); p("led_rot",[round(fps[r].GetOrientationDegrees()) for r in ('D1','D5','D6','D3','D4')])   # 0603 LEDs, 1.6 x 0.8 x 0.6 mm
 p("sw_on_y",sw_on[1]); p("sw_off_y",sw_off[1]); p("sw_tip_x",sw_tip[0]); p("sw_face_x",sw_face[0])
 p("sw_act_w",3.5); p("sw_act_z0",2.25); p("sw_act_z1",4.75); p("sw_body_h",6.0)

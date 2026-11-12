@@ -50,7 +50,7 @@ for p in design.P:
         f.SetField("LCSC",p["lcsc"]); fld=f.GetFieldByName("LCSC"); fld.SetVisible(False); fld.SetLayer(pcbnew.F_Fab)
     f.SetField("MPN",p.get("mpn","")); f.GetFieldByName("MPN").SetVisible(False); f.GetFieldByName("MPN").SetLayer(pcbnew.F_Fab)
     rt=f.Reference(); rt.SetTextSize(pcbnew.VECTOR2I(mm(0.8),mm(0.8))); rt.SetTextThickness(mm(0.12))
-    MODELS={"J2":"PJ-320D-4A","SW2":"EVQP7A","J1":"USB_C_HRO_31-M-12"}
+    MODELS={"J2":"PJ-320D-4A","J1":"USB_C_HRO_31-M-12"}
     if ref in MODELS:
         m=pcbnew.FP_3DMODEL(); m.m_Filename="${KIPRJMOD}/openald.3dshapes/"+MODELS[ref]+".wrl"; f.Models().clear(); f.Models().append(m)
     if ref=="BT1":
@@ -79,6 +79,8 @@ for p in design.P:
         n=pinnet.get((ref,num))
         if n and not n.startswith("unconnected-"): pad.SetNet(net(n))
         elif n: pad.SetNet(net(n))
+# Q4 sits against the jack-end edge: put its reference below the part instead of clipped by the board edge
+_q4=board.FindFootprintByReference("Q4"); _q4.Reference().SetPosition(P(31.9,5.0)) if _q4 else None
 # power-switch position labels (SK-12E12: knob toward pin 3 joins 2-3 = VBAT->VSYS = ON)
 def silk(txt,x,y,sz=0.9,ang=0):
     t=pcbnew.PCB_TEXT(board); t.SetText(txt); t.SetPosition(P(x,y)); t.SetLayer(pcbnew.F_SilkS)
@@ -102,6 +104,6 @@ for (txt,x,y,sz,layer) in PLm.POL_MARKS:
     board.Add(t)
 pcbnew.SaveBoard(PRJ+"openald.kicad_pcb",board)
 print("saved; footprints:",len(board.GetFootprints()),"nets:",len(nets))
-for ref in ("BT1","J2","SW3","SW1","J1","D1","D5","D6","SW2"):
+for ref in ("BT1","J2","SW3","SW1","J1","D1","D5","D6","Q4"):
     f=board.FindFootprintByReference(ref)
     print(ref,[(q.GetNumber(),round(pcbnew.ToMM(q.GetPosition().x)-OX,2),round(pcbnew.ToMM(q.GetPosition().y)-OY,2)) for q in f.Pads() if q.GetNumber() not in ("","MP")][:6])

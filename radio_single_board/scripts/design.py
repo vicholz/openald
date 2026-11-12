@@ -24,7 +24,7 @@ P+=[dict(ref="BT1",lib="Device:Battery_Cell",val="18650 holder",fp="Battery:Batt
         pins={"1":"BAT_P","2":"BATN"},hand=True)]
 # ---------------- rev 4.2: reverse-polarity protection (high-side P-FET, gated by an orientation-sensing N-FET) ----------------
 # Q2 (AO3401A) sits between the holder + contact (BAT_P) and every other battery node (VBAT: TP4056 BAT, DW01A VCC via R4,
-# SW1, SW2, C2).  Q3 (AO3400A) senses the cell itself: its gate sees BAT_P and its source BATN (cell -), so it is on only
+# SW1, Q4, C2).  Q3 (AO3400A) senses the cell itself: its gate sees BAT_P and its source BATN (cell -), so it is on only
 # when BAT_P is above BATN (cell the right way round).  Q3 then pulls Q2's gate to BATN -> Q2 fully on (Vgs = -Vcell),
 # conducting in both directions (load and TP4056 charge current).  Reversed cell: Q3 Vgs = -Vcell -> off, R24 holds Q2's
 # gate at its source -> Q2 off and its body diode (anode BAT_P) is reverse biased, so no loop through the board exists,
@@ -42,13 +42,20 @@ P+=[dict(ref="U2",lib="Battery_Management:DW01A",val="DW01A",fp="Package_TO_SOT_
     R("R4","100","C22775","VBAT","DW_VCC","bat","0603WAF1000T5E"),
     C("C3","100nF","C14663","DW_VCC","BATN","bat",mpn="CC0603KRX7R9BB104"),
     R("R5","1k","C21190","CS","GND","bat","0603WAF1001T5E")]
-# ---------------- power switch, battery-check button, LDO ----------------
+# ---------------- power switch, wheel-press power path (Q4), LDO ----------------
 P+=[dict(ref="SW1",lib="Switch:SW_SPDT",val="POWER (SK-12E12-G5)",fp="openald:SW_Slide_SPDT_Angled_HRO_SK-12E12-G5",lcsc="C136720",mpn="HRO SK-12E12-G5",grp="pwr",tht=True,
         pins={"1":None,"2":"VBAT","3":"VSYS"}),
-    dict(ref="SW2",lib="Switch:SW_Push",val="BATT CHECK (EVQP7A01P)",fp="Button_Switch_SMD:SW_SPST_EVQP7A",lcsc="C79167",mpn="Panasonic EVQ-P7A01P",grp="pwr",
-        pins={"1":"VBAT","2":"VBTN"}),
+    # v1.0 wheel-press update (2026-11-11): the separate battery-check button SW2 (EVQ-P7A01P, C79167) is gone. The
+    # thumbwheel's push switch (SW3 S -> C = GND) now does its job: R25 holds WHEEL_SW_N (Q4 gate) at VBAT, pressing the
+    # wheel pulls it to GND, P-FET Q4 turns on and drives VBTN from VBAT exactly like SW2 did (D2 -> VSYS, D10 -> VMCU,
+    # R6/R7 -> BTN_SENSE). So "hold the wheel in with the switch off" still powers the MCU for the battery check, and
+    # with the switch on the MCU reads every wheel press on BTN_SENSE (PC1). Released: no current (gate at source).
+    # Pressed: 4.2 uA in R25. PD4 is no longer connected (WHEEL_SW_N sits at VBAT, up to 4.2 V, too high for a 3.3 V pin).
+    dict(ref="Q4",lib="Transistor_FET:AO3401A",val="AO3401A",fp="Package_TO_SOT_SMD:SOT-23",lcsc="C15127",mpn="AOS AO3401A",grp="pwr",
+        pins={"1":"WHEEL_SW_N","2":"VBAT","3":"VBTN"}),   # AO3401A SOT-23: 1 G, 2 S, 3 D (same as Q2)
+    R("R25","1M","C22935","VBAT","WHEEL_SW_N","pwr","0603WAF1004T5E"),
     dict(ref="D2",lib="Device:D_Schottky",val="B5819W",fp="Diode_SMD:D_SOD-123",lcsc="C8598",mpn="B5819W SL",grp="pwr",pins={"1":"VSYS","2":"VBTN"}),
-    # rev 4.1: 4.7k/10k (was 47k/100k). VBTN floats when SW2 is open, and D2/D10 (B5819W) reverse leakage (JSCJ datasheet:
+    # rev 4.1: 4.7k/10k (was 47k/100k). VBTN floats when SW2 (now Q4) is open, and D2/D10 (B5819W) reverse leakage (JSCJ datasheet:
     # ~5 uA each at 25 C, ~10x at 75 C) into 147k gave ~1 V on PC1 at room temperature (above VIL max) -> false "pressed".
     R("R6","4.7k","C23162","VBTN","BTN_SENSE","pwr","0603WAF4701T5E"), R("R7","10k","C25804","BTN_SENSE","GND","pwr","0603WAF1002T5E"),
     dict(ref="U5",lib="Regulator_Linear:XC6206PxxxMR",val="XC6206P332MR",fp="Package_TO_SOT_SMD:SOT-23-3",lcsc="C5446",mpn="XC6206P332MR-G",grp="pwr",
@@ -63,7 +70,7 @@ P+=[dict(ref="SW1",lib="Switch:SW_SPDT",val="POWER (SK-12E12-G5)",fp="openald:SW
 # firmware must leave PE0/PE1 as inputs without pull-ups (Microchip AN42559 / AT15007).
 P+=[dict(ref="U3",lib="MCU_Microchip_ATmega:ATmega328PB-A",val="ATmega328PB-AU",fp="Package_QFP:TQFP-32_7x7mm_P0.8mm",lcsc="C132230",mpn="ATMEGA328PB-AU",grp="mcu",
         pins={"4":"+3V3","18":"+3V3","6":"+3V3","5":"GND","21":"GND","3":"GND","20":"AREF",
-              "32":"ENC_A","1":"ENC_B","2":"ENC_SW",                 # PD2/INT0 (D2), PD3/INT1 (D3), PD4 (D4)
+              "32":"ENC_A","1":"ENC_B","2":None,                     # PD2/INT0 (D2), PD3/INT1 (D3), PD4 (D4) spare: wheel press is read on BTN_SENSE (PC1)
               "9":"LVL1","10":"LVL2","13":"LVL3",                    # PD5/OC0B (D5), PD6/OC0A (D6), PB1/OC1A (D9): hardware PWM
               "15":"MOSI","16":"MISO","17":"SCK",                    # PB3/PB4/PB5 (D11/D12/D13): ISP only
               "23":"BAT_ADC","24":"BTN_SENSE","25":"CHRG_SENSE",     # PC0/ADC0 (A0), PC1 (A1), PC2 (A2)
@@ -93,7 +100,7 @@ P+=[dict(ref="U8",lib="Power_Protection:USBLC6-2SC6",val="USBLC6-2SC6",fp="Packa
     # MCU-only 3.3 V rail: diode-OR of switched VSYS and USB VBUS into a second XC6206. The radio stays on U5 / VSYS.
     dict(ref="D8",lib="Device:D_Schottky",val="B5819W",fp="Diode_SMD:D_SOD-123",lcsc="C8598",mpn="B5819W SL",grp="ser",pins={"1":"VMCU","2":"VSYS"}),
     dict(ref="D9",lib="Device:D_Schottky",val="B5819W",fp="Diode_SMD:D_SOD-123",lcsc="C8598",mpn="B5819W SL",grp="ser",pins={"1":"VMCU","2":"VBUS"}),
-    # battery-check button straight into the MCU rail (one diode drop, like rev 3), so the bar still works on a nearly empty cell
+    # wheel press (via Q4, formerly button SW2) straight into the MCU rail (one diode drop, like rev 3), so the bar still works on a nearly empty cell
     dict(ref="D10",lib="Device:D_Schottky",val="B5819W",fp="Diode_SMD:D_SOD-123",lcsc="C8598",mpn="B5819W SL",grp="ser",pins={"1":"VMCU","2":"VBTN"}),
     dict(ref="U6",lib="Regulator_Linear:XC6206PxxxMR",val="XC6206P332MR",fp="Package_TO_SOT_SMD:SOT-23-3",lcsc="C5446",mpn="XC6206P332MR-G",grp="ser",
         pins={"1":"GND","2":"+3V3","3":"VMCU"}),
@@ -106,7 +113,7 @@ P+=[dict(LEDG,ref="D1",val="Green (level bar)",pins={"1":"GND","2":"LVL1_A"}),
     R("R11","1k","C21190","LVL1","LVL1_A","ui","0603WAF1001T5E"), R("R12","1k","C21190","LVL2","LVL2_A","ui","0603WAF1001T5E"),
     R("R13","1k","C21190","LVL3","LVL3_A","ui","0603WAF1001T5E"),
     dict(ref="SW3",lib="openald:SIQ-02FVS3",val="SIQ-02FVS3",fp="openald:Mitsumi_SIQ-02FVS3",lcsc="C2925423",mpn="Mitsumi SIQ-02FVS3",grp="ui",
-        pins={"A":"ENC_A","B":"ENC_B","C":"GND","S":"ENC_SW"})]
+        pins={"A":"ENC_A","B":"ENC_B","C":"GND","S":"WHEEL_SW_N"})]
 # ---------------- FM module + headphone/antenna ----------------
 P+=[dict(ref="U4",lib="openald:RRD-102",val="RRD-102V2.0 (RDA5807M)",fp="openald:RRD-102_RDA5807M_Module",lcsc="",mpn="RRD-102V2.0 RDA5807M module",grp="fm",
         pins={"10":"FM_VDD","1":"GND","6":"FM_SDA","7":"FM_SCL","5":"FM_ANT","4":None,"3":"FM_L","2":"FM_R","8":None,"9":None},hand=True),

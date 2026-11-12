@@ -1,14 +1,13 @@
 // OpenALD enclosure - two halves split at the PCB bottom face, rounded corners.
 // All component cutouts come from case_params.scad, generated from the KiCad
 // board by scripts/gen_case_params.py.  Frame: X = PCB x, Y = 0 at the USB-C edge,
-// Y = pcb_h at the jack/LED/button edge, Z = 0 at PCB bottom face.
+// Y = pcb_h at the jack edge, Z = 0 at PCB bottom face.
 //
 //   openscad -D 'part="top"'    -o case_top.stl    openald_case.scad
 //   openscad -D 'part="bottom"' -o case_bottom.stl openald_case.scad
-//   openscad -D 'part="plunger"' -o button_plunger.stl openald_case.scad
 include <case_params.scad>
 
-part      = "assembly";  // "top" | "bottom" | "plunger" | "assembly" | "print"
+part      = "assembly";  // "top" | "bottom" | "assembly" | "print"
 fastener  = "insert";    // "insert" (M2 heat-set insert in top) | "nut" (M2 hex nut pocket on top face)
 
 // ---------------- tunables ----------------
@@ -106,11 +105,8 @@ module cutouts() {
     cylinder(d=6.8,h=wall+1);
     translate([0,0,wall-0.8]) cylinder(d1=6.8,d2=8.6,h=0.9);
   }
-  // battery-check button: plunger hole + inner counterbore for the plunger flange
-  translate([btn_xy[0], in_y1-0.1, zc+btn_axis_h]) rotate([-90,0,0]) {
-    cylinder(d=2.5,h=wall+1);
-    translate([0,0,-1]) cylinder(d=4.4,h=1+1.0+0.1);
-  }
+  // (2026-11-11: the battery-check button hole + plunger counterbore are gone; the wheel press does the battery check.
+  //  The jack-end wall is now solid there.)
   // ---- thumbwheel (right side): smooth pocket that thins the wall to 1 mm, slot through its floor
   ch = sqrt(pow(wheel_r,2)-pow(in_x1-wheel_xy[0],2));  // half-chord where the wheel meets the inner wall
   wz = zc+(wheel_z0+wheel_z1)/2;
@@ -141,20 +137,37 @@ module switch_labels() {
 
 // ---- LED light tunnels: every 0603 LED gets its own walled bore from the ceiling down to tun_gap above the
 // PCB, so each window only sees its own LED (no bleed between the bar segments or into the case).
-module tunnel_walls(pts) {
+module tunnel_walls(pts, bore=tun_in, w=tun_wall) {
   z0 = pcb_t + tun_gap;
   difference() {
-    for (p=pts) translate([p[0],p[1],z0]) linear_extrude(top_in-z0+0.01) rr2d(tun_in[0]+2*tun_wall, tun_in[1]+2*tun_wall, 0.6);
-    for (p=pts) translate([p[0],p[1],z0-1]) linear_extrude(top_in-z0+1) rr2d(tun_in[0], tun_in[1], 0.3);
+    for (p=pts) translate([p[0],p[1],z0]) linear_extrude(top_in-z0+0.01) rr2d(bore[0]+2*w, bore[1]+2*w, 0.6);
+    for (p=pts) translate([p[0],p[1],z0-1]) linear_extrude(top_in-z0+1) rr2d(bore[0], bore[1], 0.3);
+  }
+}
+// level-bar tunnels: each runs from its LED (bar_leds) straight or slanted up to its window (bar_win_xy). The LEDs
+// straddle the holder's peg hole on the centreline, so D1 sits lower than the evenly spaced windows: its tunnel is a hull
+// from the LED footprint at the bottom to the window position at the ceiling.
+module bar_tunnels() {
+  z0 = pcb_t + tun_gap;
+  difference() {
+    for (i=[0:len(bar_leds)-1]) hull() {
+      translate([bar_leds[i][0],bar_leds[i][1],z0]) linear_extrude(0.01) rr2d(tun_in[0]+2*tun_wall, tun_in[1]+2*tun_wall, 0.6);
+      translate([bar_win_xy[i][0],bar_win_xy[i][1],top_in]) linear_extrude(0.01) rr2d(tun_in[0]+2*tun_wall, tun_in[1]+2*tun_wall, 0.6);
+    }
+    for (i=[0:len(bar_leds)-1]) hull() {
+      translate([bar_leds[i][0],bar_leds[i][1],z0-1]) linear_extrude(0.01) rr2d(tun_in[0], tun_in[1], 0.3);
+      translate([bar_leds[i][0],bar_leds[i][1],z0-1]) linear_extrude(1.01) rr2d(tun_in[0], tun_in[1], 0.3);
+      translate([bar_win_xy[i][0],bar_win_xy[i][1],top_in]) linear_extrude(1) rr2d(tun_in[0], tun_in[1], 0.3);
+    }
   }
 }
 module led_window(p,w,h,cr) {
   if (led_window=="skin") translate([p[0],p[1],top_in-0.01]) linear_extrude(floor_t-skin_t+0.01) rr2d(w,h,cr);
   else translate([p[0],p[1],top_in]) filleted_hole(w,h,cr,floor_t,win_fillet);
 }
-module led_tunnels()  { tunnel_walls(bar_leds); tunnel_walls(chg_leds); }
+module led_tunnels()  { bar_tunnels(); tunnel_walls(chg_leds); }
 module led_windows()  {
-  for (p=bar_leds) led_window(p,bar_win[0],bar_win[1],bar_win[2]);
+  for (p=bar_win_xy) led_window(p,bar_win[0],bar_win[1],bar_win[2]);
   for (p=chg_leds) led_window(p,chg_win_d,chg_win_d,chg_win_d/2);
 }
 
@@ -219,10 +232,6 @@ module bottom_half() {
   }
 }
 
-module plunger() {  // print 1x, flange down; sits inside the counterbore behind the button hole
-  cylinder(d=4.0,h=0.8);
-  cylinder(d=2.2,h=0.8+1.0+1.0);   // 1.0 through remaining wall + 1.0 proud of the case
-}
 
 module pcb_ghost() {
   color("green",0.6) rrect(0,0,pcb_w,pcb_h,pcb_r,pcb_t);
@@ -232,7 +241,6 @@ module pcb_ghost() {
 
 if (part=="top")         translate([0,0,Ht]) rotate([180,0,0]) top_half();       // ceiling on the bed
 else if (part=="bottom") translate([0,0,Hb]) bottom_half();                       // floor on the bed
-else if (part=="plunger") plunger();
 else if (part=="tunnels_raw") led_tunnels();     // tunnel walls only, assembly pose (fit check)
 else if (part=="closed") {   // closed case with the assembled PCB (needs /tmp/pcb_assembly.stl from check_case_fit.py)
   color("lightgray") bottom_half(); color("lightsteelblue") top_half();

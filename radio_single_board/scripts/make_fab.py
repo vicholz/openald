@@ -17,7 +17,7 @@ GB=FAB+"gerbers/"
 # origin at Mid X/Y and rotates it by Rotation, so CPL = KiCad position + R(kicad_rot)*(dx,dy), rotation + drot.
 # Derived by scripts/jlc_cpl_fit.py, which fits each EasyEDA footprint (easyeda.com/api/products/<LCSC>/components,
 # JLCEDA/EasyEDA official library) onto the KiCad pads; `python3 jlc_cpl_fit.py --check` re-verifies this table.
-# Parts not listed (0603/0805/1206 R, C, L, LEDs, SOD-123 diodes, EVQ-P7A) need no correction (checked the same way).
+# Parts not listed (0603/0805/1206 R, C, L, LEDs, SOD-123 diodes; EVQ-P7A until SW2 was removed) need no correction (checked the same way).
 JLC_CORR={
  ("C95562", "Jack_3.5mm_KoreanHropartsElec_PJ-320D-4A_Horizontal"): ( 0.800, 0.000,  90),  # J2  EasyEDA origin = pad bbox centre, mouth along -Y
  ("C136720","SW_Slide_SPDT_Angled_HRO_SK-12E12-G5"):                 (-0.076, 0.000, 270),  # SW1 EasyEDA pins along Y, knob +X
@@ -33,12 +33,12 @@ JLC_CORR={
  ("C968586","SSOP-10-1EP_3.9x4.9mm_P1mm_EP2.1x3.3mm"):               ( 0.000, 0.000, 270),  # U7  CH340K ESSOP-10, EasyEDA pin 1 bottom-left
  ("C7519",  "SOT-23-6"):                                             ( 0.000, 0.000, 270),  # U8  USBLC6-2SC6, EasyEDA pin 1 bottom-left
  # rev 4.2 reverse-polarity FETs (overlays in previews/cpl_overlay_Q2.png, cpl_overlay_Q3.png)
- ("C15127", "SOT-23"):                                               ( 0.071, 0.000, 180),  # Q2  AO3401A, EasyEDA origin = pad bbox centre (pins 1/2 right)
+ ("C15127", "SOT-23"):                                               ( 0.071, 0.000, 180),  # Q2/Q4 AO3401A, EasyEDA origin = pad bbox centre (pins 1/2 right)
  ("C20917", "SOT-23"):                                               ( 0.021, 0.000, 180),  # Q3  AO3400A, same, slightly different land length
 }
 
 # Parts that really need factory reflow / a hotplate: exposed-pad SO packages, 0.8 mm-pitch TQFP, and the mid-mount USB-C.
-# SOT-23 / SOT-23-6 (U2 DW01A, Q1 FS8205A, U8 USBLC6, Q2/Q3, U5/U6) are left off: all pins are on the sides, no
+# SOT-23 / SOT-23-6 (U2 DW01A, Q1 FS8205A, U8 USBLC6, Q2/Q3/Q4, U5/U6) are left off: all pins are on the sides, no
 # bottom-only pad, and they are routine with an iron or a hot-air station. This project's FS8205A is SOT-23-6, not TSSOP-8.
 MINIMAL_REFS = ("J1", "U1", "U3", "U7")
 

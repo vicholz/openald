@@ -8,6 +8,10 @@ All dimensions in mm. Any OpenALD radio variant (single-board, Feather RP2040, .
 * Radio stands **vertically, USB-C end down**, inserted 50.8 mm (2.00 in) into its pocket.
 * **Front face** = the radio's top half (LED/silkscreen side, the face with the level-bar windows) faces the user.
 * Thumbwheel side (single-board radio: right side when looking at the front face) is on the user's right.
+* **Single-board radio level bar** (updated 2026-11-11, still v1.0): 3 windows (2.4 × 1.4) on the **centreline of the front
+  face** (21.50 from either side face), window centres **77.8 / 80.6 / 83.4 above the case bottom face** = **27.0 / 29.8 / 32.6
+  above the rim** (D1 lowest level … D6 full; ~24–30 above the bottom of the 3.0 lead-in chamfer). Nothing in the dock
+  covers the front face above the rim. Previous position: 5 mm right of the centreline, 23.3–29.3 above the rim.
 
 ## 2. Outer envelope (bottom 52 mm of the case)
 | Item | Value |
