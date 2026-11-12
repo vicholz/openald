@@ -99,7 +99,7 @@ All are in `scripts/layout.py`. Then run `case/build_case.sh`.
 * The 0.1 mm gap between the holder top and the deck relies on the datasheet height of 21.31 mm.
 * The STAT tap is a fine-wire solder joint on a Feather 0603 resistor pad.
 * Off-state drain is about 0.4 mA through the Feather's EN pull-up. Charging is slow: 200 mA, about 18 h for 3500 mAh.
-* The wheel has no RC debounce, so debounce in firmware. The SIQ-02FVS3 locating bosses are assumed not to protrude more than 1.1 mm below the 1.6 mm controls board.
+* The wheel has no RC debounce or ESD diode. Debounce in firmware (quadrature state table, one step per detent); see `docs/firmware_notes.md` for the decode notes and an Arduino-Pico example. The SIQ-02FVS3 locating bosses are assumed not to protrude more than 1.1 mm below the 1.6 mm controls board.
 * The battery is changed by lifting the frame stack. Not tool-free.
 * The top end is held only by the lip, with no screws.
 

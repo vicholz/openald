@@ -164,7 +164,63 @@ If you have a hot-air station and want JLC to place only the parts that are pain
 
 Firmware notes: use the hardware TWI (`Wire`). The RDA5807M uses I2C address 0x10 for sequential access and 0x11 for random access. Before talking to the radio, check that it is powered (switch on), because with only USB present the +3V3R rail and the I2C pull-ups are off. Measure BAT_ADC against the internal 1.1 V reference (`analogReference(INTERNAL)`): V_sys = ADC/1023 x 1.1 x 59/12 (rev 4.1 divider 47k/12k). With these values 4.2 V reads about 0.85 V (ADC ≈ 795 with a nominal 1.1 V reference); calibrate the reference once per board, since it is only guaranteed 1.0-1.2 V. **Don't call `Wire.begin()` while the radio rail is off** (switch off): it enables the AVR's internal pull-ups on SDA/SCL, which would trickle ~80 µA per line into the unpowered RDA5807M; start `Wire` only after V_sys > 3 V, and call `Wire.end()` plus `pinMode(SDA/SCL, INPUT)` before the radio loses power. Keep BOD at 2.7 V (8 MHz needs ≥ ~2.4 V). If you only need it for programming, call `Serial.end()` and leave PD1 as an input when you don't need serial.
 
+### Firmware spec: thumbwheel encoder (SIQ-02FVS3)
+
+Paper-verified against the Mitsumi SIQ series datasheet ([LCSC copy of the official PDF](https://datasheet.lcsc.com/datasheet/pdf/7bff72617d5a3503f5ed21ab02a77dea.pdf?productCode=C2925423)). Nothing here has been tested on hardware.
+
+The part is a 15-detent quadrature encoder plus a momentary slide/push switch. Terminals A and B are the encoder contacts, S is the push switch, and C is the common for all three (see the datasheet "CIRCUIT" diagram). On this board C is tied to GND, A goes to **D2 / PD2 / INT0**, B to **D3 / PD3 / INT1**, and S to **D4 / PD4**. There are no external pull-ups, no RC filters and no ESD diodes: enable the ATmega328PB internal pull-ups (20–50 kΩ, DS40001906) in `setup()` with `INPUT_PULLUP`. At 3.3 V that is about 66–165 µA per closed contact, under the 0.5 mA / 5 V DC rating. The datasheet does not specify a minimum wetting current or a bounce time.
+
+The output is a 2-bit Gray-code quadrature waveform, **one full cycle (four valid state changes) per detent** (24° ±3°, 15 detents per turn). Clockwise, A leads B. At rest in a detent, A and/or B may already be low, so do **not** use INT0/INT1 low-level interrupts to wake from Power-down — the MCU would never stay asleep. Pin-change interrupts on PD2/PD3/PD4 (`PCINT18/19/20`, PCI2) do wake from Power-down and Standby on any edge, including the push switch (normally open / high). INT0/INT1 any-edge interrupts are fine while awake, but a 1 ms poll of the state table below also debounces, so a timer tick is the simplest approach. Count **one step per detent** (accumulate ±4 transitions), not one step per edge, or volume will jump four units per click.
+
+Suggested behaviour: turn = volume, push-and-turn = tune, long press = seek.
+
+Example (MiniCore, board "ATmega328PB", 8 MHz internal). Call `encoder_setup()` from `setup()`, and `encoder_poll()` from a 1 ms tick or from `loop()` if you wait on `millis()`.
+
+```cpp
+// D2=ENC_A (PD2/INT0), D3=ENC_B (PD3/INT1), D4=ENC_SW (PD4). Common = GND.
+const uint8_t PIN_A = 2, PIN_B = 3, PIN_SW = 4;
+// prev<<2|curr -> +1 / -1 for a valid 1-step Gray-code move; 0 = bounce or invalid
+static const int8_t ENC_TAB[16] = {
+  0,-1,+1,0, +1,0,0,-1, -1,0,0,+1, 0,+1,-1,0
+};
+static uint8_t enc_prev;
+static int8_t  enc_accum;
+static int8_t  enc_step;        // +1 / -1 once per detent; consume in the main loop
+static uint8_t sw_hist, sw_down;
+static uint16_t sw_ms;
+
+void encoder_setup() {
+  pinMode(PIN_A, INPUT_PULLUP);
+  pinMode(PIN_B, INPUT_PULLUP);
+  pinMode(PIN_SW, INPUT_PULLUP);
+  enc_prev = (digitalRead(PIN_A) ? 2 : 0) | (digitalRead(PIN_B) ? 1 : 0);
+}
+
+void encoder_poll() {            // call every 1 ms
+  uint8_t now = (digitalRead(PIN_A) ? 2 : 0) | (digitalRead(PIN_B) ? 1 : 0);
+  enc_accum += ENC_TAB[(enc_prev << 2) | now];
+  enc_prev = now;
+  if (enc_accum >= 4)  { enc_step += 1; enc_accum = 0; }
+  if (enc_accum <= -4) { enc_step -= 1; enc_accum = 0; }
+
+  sw_hist = (sw_hist << 1) | (digitalRead(PIN_SW) ? 1 : 0);
+  if (!sw_down && (sw_hist & 0x1F) == 0x00) { sw_down = 1; sw_ms = 0; }      // 5 ms low
+  if (sw_down) {
+    if (sw_ms < 60000) sw_ms++;
+    if ((sw_hist & 0x1F) == 0x1F) {         // released
+      // sw_ms < 500: short press; sw_ms >= 500: already treated as long press
+      sw_down = 0;
+    } else if (sw_ms == 500) {
+      // long press: start seek
+    }
+  }
+}
+```
+
+To sleep in Power-down and wake on a turn or a press, enable PCI2 for PD2/PD3/PD4 (`PCMSK2 |= _BV(PCINT18)|_BV(PCINT19)|_BV(PCINT20); PCICR |= _BV(PCIE2);`) and use an empty `ISR(PCINT2_vect)`. Do not rely on INT0/INT1 level wake.
+
 ### Firmware spec: battery-level bar (no firmware is included; this is the intended behaviour)
+
 | Item | Behaviour |
 |---|---|
 | Default | All three level LEDs **off**. |

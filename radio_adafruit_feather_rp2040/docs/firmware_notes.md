@@ -15,9 +15,55 @@ There is no firmware in this package yet. These notes cover what firmware has to
 * Volume is the 4-bit register value, 0–15.
 
 ## Thumbwheel (Mitsumi SIQ-02FVS3)
-* A = D24 (GP24), B = D25 (GP25), push = D4 (GP6). Common goes to GND, so set `INPUT_PULLUP` on all three.
-* The board has no RC filter. Debounce in firmware: a quadrature state table with 1–2 ms sampling, or PIO.
+
+Paper-verified against the Mitsumi SIQ series datasheet ([LCSC copy of the official PDF](https://datasheet.lcsc.com/datasheet/pdf/7bff72617d5a3503f5ed21ab02a77dea.pdf?productCode=C2925423)). Nothing here has been tested on hardware.
+
+* **Wiring:** A = D24 (GP24), B = D25 (GP25), push = D4 (GP6), common C = GND, via controls-board J1 pads 1 / 2 / 3 / 5. These are ordinary Feather RP2040 GPIOs (not QSPI, and not the STEMMA QT I2C pins GP2/GP3). They all support pin interrupts and PIO. Enable `INPUT_PULLUP` in `setup()` before you read them: at reset the RP2040 defaults these pads to pull-down. There is no RC filter and no ESD diode on the board, so debounce in firmware (the datasheet does not specify bounce time).
+* **Electrical:** the RP2040 internal pull-ups are 50–80 kΩ (RP2040 datasheet, GPIO pad characteristics), so a closed contact draws about 41–66 µA at 3.3 V, under the 0.5 mA / 5 V DC rating. The datasheet does not specify a minimum wetting current. Do not also configure D24/D25 as UART1 or I2C0; `Wire` / `board.STEMMA_I2C()` already uses GP2/GP3.
+* **Decode:** 15 detents, one quadrature cycle (four valid Gray-code transitions) per detent, A leading B for clockwise. Count **one step per detent** (accumulate ±4), not one step per edge. A 1 ms state-table poll debounces; PIO quadrature is also fine.
 * Suggested behaviour, the same as the single-board radio: turn changes the volume, push and turn tunes, a long press runs seek.
+
+Example (Earle Philhower Arduino-Pico, board "Adafruit Feather RP2040"). Use the silk names `D24` / `D25` / `D4` — on this board D4 is GP6, not GPIO 4. Call `encoder_setup()` from `setup()`, and `encoder_poll()` every 1 ms.
+
+```cpp
+// D24=ENCA (GP24), D25=ENCB (GP25), D4=ENCSW (GP6). Common = GND.
+const uint8_t PIN_A = 24, PIN_B = 25, PIN_SW = 4;
+static const int8_t ENC_TAB[16] = {
+  0,-1,+1,0, +1,0,0,-1, -1,0,0,+1, 0,+1,-1,0
+};
+static uint8_t enc_prev;
+static int8_t  enc_accum;
+static int8_t  enc_step;        // +1 / -1 once per detent; consume in the main loop
+static uint8_t sw_hist, sw_down;
+static uint16_t sw_ms;
+
+void encoder_setup() {
+  pinMode(PIN_A, INPUT_PULLUP);
+  pinMode(PIN_B, INPUT_PULLUP);
+  pinMode(PIN_SW, INPUT_PULLUP);
+  enc_prev = (digitalRead(PIN_A) ? 2 : 0) | (digitalRead(PIN_B) ? 1 : 0);
+}
+
+void encoder_poll() {            // call every 1 ms
+  uint8_t now = (digitalRead(PIN_A) ? 2 : 0) | (digitalRead(PIN_B) ? 1 : 0);
+  enc_accum += ENC_TAB[(enc_prev << 2) | now];
+  enc_prev = now;
+  if (enc_accum >= 4)  { enc_step += 1; enc_accum = 0; }
+  if (enc_accum <= -4) { enc_step -= 1; enc_accum = 0; }
+
+  sw_hist = (sw_hist << 1) | (digitalRead(PIN_SW) ? 1 : 0);
+  if (!sw_down && (sw_hist & 0x1F) == 0x00) { sw_down = 1; sw_ms = 0; }      // 5 ms low
+  if (sw_down) {
+    if (sw_ms < 60000) sw_ms++;
+    if ((sw_hist & 0x1F) == 0x1F) {         // released
+      // sw_ms < 500: short press; sw_ms >= 500: already treated as long press
+      sw_down = 0;
+    } else if (sw_ms == 500) {
+      // long press: start seek
+    }
+  }
+}
+```
 
 ## Battery voltage (the Feather has no battery monitor)
 * A0 (GP26) reads VBAT/2 through 220 k / 220 k (R1/R2) with 100 nF (C1).

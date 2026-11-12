@@ -81,6 +81,12 @@ PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC
 * Battery life (paper estimate): radio on ≈ 20–25 mA → ~130 h on a 3000 mAh cell; off ≈ 7–9 µA standby.
 
 **Firmware requirements (no firmware exists yet)** — full spec in the radio README "Firmware spec":
+* **Thumbwheel (SIQ-02FVS3):** A/B/S are switches to common C (GND). Use internal pull-ups; there is no RC or ESD.
+  15 detents, one quadrature cycle (4 Gray-code transitions) per detent; count one step per detent, not per edge.
+  1 ms state-table poll debounces. On the single board, PD2/PD3 are INT0/INT1 but at rest A or B may already be
+  low, so wake from Power-down with pin-change (PCINT18/19/20), not INT0/INT1 low-level. Example code is in
+  `radio_single_board/README.md` (MiniCore) and `radio_adafruit_feather_rp2040/docs/firmware_notes.md` (Arduino-Pico).
+  Behaviour: turn = volume, push-and-turn = tune, long press = seek. Paper-verified only; not hardware-tested.
 * Level bar off by default; show on SW2 press (+3 s). Levels: ≥ 3.90 V ●●● · 3.60–3.90 ●●○ · 3.40–3.60 ●○○ ·
   3.30–3.40 LED1 slow blink · < 3.30 LED1 fast blink. Sample ADC with LEDs off, 16-sample average, 50 mV hysteresis.
 * **Low-battery cutoff 3.25 V**: mute/power down the RDA5807M and sleep the MCU (DW01A at ~2.5 V is the backstop).
