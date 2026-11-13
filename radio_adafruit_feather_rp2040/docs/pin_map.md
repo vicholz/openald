@@ -20,7 +20,25 @@ Nothing here has been hardware-validated yet. There is no controls PCB: the whee
 
 Spare pins remain free: A1–A3, D5, D6, D9–D13, SCK, MOSI, MISO, TX and RX. The red LED is D13 / GP13 and the NeoPixel is GP16. Both are visible through the top windows (undocked).
 
-Unchanged from the controls-board version: the GPIO assignment (A = D24, B = D25, push = D4, C = GND, switch common = EN, OFF = GND, divider on A0). Only the physical path changed (wires instead of PCB traces), so `firmware_notes.md` applies as before.
+Unchanged from the controls-board version: the GPIO assignment (A = D24, B = D25, push = D4, C = GND, switch common = EN, OFF = GND, divider on A0). Only the physical path changed (wires instead of PCB traces).
+
+Diagram: [`wiring_diagram.png`](wiring_diagram.png) / `.svg`. KiCad schematic: [`wiring_schematic/openald-feather-wiring.pdf`](wiring_schematic/openald-feather-wiring.pdf).
+
+## Firmware pin table (`firmware/openald_feather/openald_feather.ino`)
+arduino-pico uses RP2040 GPIO numbers as pin numbers, so the sketch uses the GP numbers, not the silk names.
+
+| Signal (net) | Feather silk | RP2040 GPIO | Sketch constant | Mode | Wire to |
+|---|---|---|---|---|---|
+| ENC_A | D24 | 24 | `PIN_ENC_A = 24` | `INPUT_PULLUP` | wheel A |
+| ENC_B | D25 | 25 | `PIN_ENC_B = 25` | `INPUT_PULLUP` | wheel B |
+| ENC_SW (push, low = pressed) | D4 | **6** | `PIN_ENC_SW = 6` | `INPUT_PULLUP` | wheel S |
+| VBAT_SENSE (VBAT / 2) | A0 | 26 (ADC0) | `PIN_VBAT = 26` | analog, 12 bit | 220k/220k divider middle, 100 nF to GND |
+| SDA / SCL | STEMMA QT | 2 / 3 (i2c1, `Wire`) | `Wire.setSDA(2)`, `Wire.setSCL(3)` | I2C 100 kHz | RDA5807M SDA / SCL |
+| NeoPixel | (on board) | 16 | `PIN_PIXEL = 16` | Adafruit_NeoPixel | — |
+| Red LED | D13 (on board) | 13 | `PIN_RED_LED = 13` | output, kept low | — |
+| EN | EN | — | — | hardware | switch middle lug |
+| VBUS, STAT | USB, R2 tap | — | — | hardware | optional charge LEDs |
+| GND | GND (JP1.13) | — | — | — | GND splice: wheel C, divider bottom, 100 nF, green LED K |
 
 ## Mitsumi SIQ-02FVS3 tabs (as mounted)
 The four solder tabs are on the body edge facing into the case (toward the FM module), in this order from the USB end toward the top end:
@@ -32,7 +50,7 @@ The four solder tabs are on the body edge facing into the case (toward the FM mo
 | 3 | **S** (push) | 64.0 | D4 |
 | 4 | **A** | 66.5 | D24 |
 
-Check the A/B/S/C markings printed on your part's datasheet drawing ("A PUSH COM B" in the land pattern) before soldering. If A and B are swapped, the wheel just counts the other way; swap `PIN_A` / `PIN_B` in firmware.
+Check the A/B/S/C markings printed on your part's datasheet drawing ("A PUSH COM B" in the land pattern) before soldering. If A and B are swapped, the wheel just counts the other way; swap `PIN_ENC_A` / `PIN_ENC_B` in the firmware.
 
 ## SS-12F16 switch lugs (left wall, screwless groove; knob toward the top end = ON)
 | Lug | To |

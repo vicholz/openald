@@ -1,132 +1,201 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="1120" viewBox="0 0 1640 1120" font-family="DejaVu Sans, Arial, sans-serif">
-<rect width="1640" height="1120" fill="white"/>
-<text x="30" y="42" font-size="26" font-weight="bold">OpenALD Feather RP2040 v1.0 - wiring (direct-mount wheel and switch, no controls board)</text>
-<text x="30" y="70" font-size="15" fill="#555">All wires are hand-soldered (28-30 AWG silicone). Not hardware-validated. Colours are suggestions. Dashed = optional. FM module pin order: check your silkscreen.</text>
-<rect x="520" y="150" width="330" height="640" rx="10" fill="#e8f4ea" stroke="#333" stroke-width="2" />
-<text x="685.0" y="178" font-size="19" font-weight="bold" text-anchor="middle">Adafruit Feather RP2040</text>
-<text x="685.0" y="200" font-size="13" fill="#333" text-anchor="middle">(#4884, components up,</text>
-<text x="685.0" y="218" font-size="13" fill="#333" text-anchor="middle">USB-C at the dock end)</text>
-<circle cx="520" cy="365" r="6" fill="#d4a017" stroke="#333"/>
-<text x="532" y="370" font-size="14">BAT (VBAT)</text>
-<circle cx="520" cy="405" r="6" fill="#d4a017" stroke="#333"/>
-<text x="532" y="410" font-size="14">EN</text>
-<circle cx="520" cy="445" r="6" fill="#d4a017" stroke="#333"/>
-<text x="532" y="450" font-size="14">USB (VBUS)</text>
-<circle cx="520" cy="485" r="6" fill="#d4a017" stroke="#333"/>
-<text x="532" y="490" font-size="14">STAT tap: R2 pad (STAT side)</text>
-<circle cx="520" cy="590" r="6" fill="#d4a017" stroke="#333"/>
-<text x="532" y="595" font-size="14">JST PH battery +</text>
-<circle cx="520" cy="630" r="6" fill="#d4a017" stroke="#333"/>
-<text x="532" y="635" font-size="14">JST PH battery -</text>
-<circle cx="850" cy="365" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="370" font-size="14" text-anchor="end">GND (only one pin)</text>
-<circle cx="850" cy="405" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="410" font-size="14" text-anchor="end">A0 (GP26)</text>
-<circle cx="850" cy="445" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="450" font-size="14" text-anchor="end">D24 (GP24)</text>
-<circle cx="850" cy="485" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="490" font-size="14" text-anchor="end">D25 (GP25)</text>
-<circle cx="850" cy="525" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="530" font-size="14" text-anchor="end">D4 (GP6)</text>
-<circle cx="850" cy="630" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="635" font-size="14" text-anchor="end">STEMMA QT 3V3</text>
-<circle cx="850" cy="670" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="675" font-size="14" text-anchor="end">STEMMA QT GND</text>
-<circle cx="850" cy="710" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="715" font-size="14" text-anchor="end">STEMMA QT SDA (GP2)</text>
-<circle cx="850" cy="750" r="6" fill="#d4a017" stroke="#333"/>
-<text x="838" y="755" font-size="14" text-anchor="end">STEMMA QT SCL (GP3)</text>
-<text x="685.0" y="242" font-size="13" fill="#333" text-anchor="middle">MCP73831 charger 200 mA, CHG LED, red D13, NeoPixel</text>
-<text x="685.0" y="260" font-size="13" fill="#333" text-anchor="middle">(seen through top windows when undocked).</text>
-<text x="685.0" y="278" font-size="13" fill="#333" text-anchor="middle">EN low = 3.3 V regulator off (radio off).</text>
-<rect x="60" y="500" width="300" height="170" rx="10" fill="#f6eee0" stroke="#333" stroke-width="2" />
-<text x="210.0" y="528" font-size="19" font-weight="bold" text-anchor="middle">18650 holder (BH-18650-PC)</text>
-<text x="210.0" y="550" font-size="13" fill="#333" text-anchor="middle">protected button-top cell</text>
-<text x="210.0" y="568" font-size="13" fill="#333" text-anchor="middle">+ pin at the USB end, - at the jack end</text>
-<circle cx="360" cy="590" r="6" fill="#d4a017" stroke="#333"/>
-<text x="348" y="595" font-size="14" text-anchor="end">+ (red)</text>
-<circle cx="360" cy="630" r="6" fill="#d4a017" stroke="#333"/>
-<text x="348" y="635" font-size="14" text-anchor="end">- (black)</text>
-<path d="M360,590 L470,590 L470,590 L520,590" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" />
-<text x="372" y="582" font-size="12" fill="#222">JST PH cable (#261) red</text>
-<path d="M360,630 L490,630 L490,630 L520,630" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
-<text x="372" y="650" font-size="12" fill="#222">black</text>
-<rect x="60" y="180" width="300" height="200" rx="10" fill="#eef" stroke="#333" stroke-width="2" />
-<text x="210.0" y="208" font-size="19" font-weight="bold" text-anchor="middle">RDA5807M FM module</text>
-<text x="210.0" y="230" font-size="13" fill="#333" text-anchor="middle">26.9 x 26.9, 3.5 mm jack on board</text>
-<text x="210.0" y="248" font-size="13" fill="#333" text-anchor="middle">I2C 0x10 / 0x11, 3.3 V</text>
-<circle cx="360" cy="270" r="6" fill="#d4a017" stroke="#333"/>
-<text x="348" y="275" font-size="14" text-anchor="end">VCC</text>
-<circle cx="360" cy="300" r="6" fill="#d4a017" stroke="#333"/>
-<text x="348" y="305" font-size="14" text-anchor="end">GND</text>
-<circle cx="360" cy="330" r="6" fill="#d4a017" stroke="#333"/>
-<text x="348" y="335" font-size="14" text-anchor="end">SDA</text>
-<circle cx="360" cy="360" r="6" fill="#d4a017" stroke="#333"/>
-<text x="348" y="365" font-size="14" text-anchor="end">SCL</text>
-<path d="M850,630 L880,630 L880,820 L400,820 L400,270 L360,270" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" />
-<path d="M850,670 L894,670 L894,834 L414,834 L414,300 L360,300" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
-<path d="M850,710 L908,710 L908,848 L428,848 L428,330 L360,330" fill="none" stroke="#27c" stroke-width="4" stroke-linejoin="round" />
-<path d="M850,750 L922,750 L922,862 L442,862 L442,360 L360,360" fill="none" stroke="#cc0" stroke-width="4" stroke-linejoin="round" />
-<text x="685.0" y="900" font-size="13" fill="#222" text-anchor="middle">STEMMA QT cable (#4210, one end cut, soldered to the FM module): red 3V3, black GND, blue SDA, yellow SCL</text>
-<rect x="992" y="190" width="16" height="330" fill="#444" rx="6"/>
-<text x="1000" y="180" font-size="13" fill="#222" text-anchor="middle">GND splice (heat-shrink, in the right channel)</text>
-<path d="M850,365 L1000,365" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
-<rect x="1180" y="110" width="400" height="220" rx="10" fill="#e6eefb" stroke="#333" stroke-width="2" />
-<text x="1380.0" y="138" font-size="19" font-weight="bold" text-anchor="middle">Mitsumi SIQ-02FVS3 thumbwheel</text>
-<text x="1380.0" y="160" font-size="13" fill="#333" text-anchor="middle">glued in the frame cradle; 4 tabs on the inner edge</text>
-<text x="1380.0" y="178" font-size="13" fill="#333" text-anchor="middle">order along +Y (USB end -> top end): B, C, S, A</text>
-<circle cx="1180" cy="190" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="195" font-size="14">A</text>
-<circle cx="1180" cy="220" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="225" font-size="14">B</text>
-<circle cx="1180" cy="250" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="255" font-size="14">S (push)</text>
-<circle cx="1180" cy="280" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="285" font-size="14">C (common)</text>
-<path d="M850,445 L970,445 L970,190 L1180,190" fill="none" stroke="#7a3" stroke-width="4" stroke-linejoin="round" />
-<path d="M850,485 L986,485 L986,220 L1180,220" fill="none" stroke="#3a7" stroke-width="4" stroke-linejoin="round" />
-<path d="M850,525 L1002,525 L1002,250 L1180,250" fill="none" stroke="#a73" stroke-width="4" stroke-linejoin="round" />
-<path d="M1000,280 L1180,280" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
-<rect x="1180" y="370" width="400" height="200" rx="10" fill="#e6eefb" stroke="#333" stroke-width="2" />
-<text x="1380.0" y="398" font-size="19" font-weight="bold" text-anchor="middle">SS-12F16 slide switch (SPDT)</text>
-<text x="1380.0" y="420" font-size="13" fill="#333" text-anchor="middle">in a groove in the LEFT wall, no screws</text>
-<text x="1380.0" y="438" font-size="13" fill="#333" text-anchor="middle">knob toward the USB end = OFF</text>
-<circle cx="1180" cy="450" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="455" font-size="14">lug at the OFF end (USB side)</text>
-<circle cx="1180" cy="490" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="495" font-size="14">middle lug (common)</text>
-<circle cx="1180" cy="530" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="535" font-size="14">lug at the ON end: unused</text>
-<path d="M1000,450 L1180,450" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
-<path d="M520,405 L480,405 L480,120 L1100,120 L1100,490 L1180,490" fill="none" stroke="#f80" stroke-width="4" stroke-linejoin="round" />
-<text x="1180" y="592" font-size="13" fill="#222" text-anchor="start">Check with a meter before soldering: with the knob at the OFF end,</text>
-<text x="1180" y="610" font-size="13" fill="#222" text-anchor="start">the OFF-end lug must connect to the middle lug.</text>
-<text x="1180" y="356" font-size="12" fill="#222" text-anchor="start">OFF lug GND: splice to battery (-) lead (same net)</text>
-<rect x="1180" y="640" width="400" height="170" rx="10" fill="#f3f3f3" stroke="#333" stroke-width="2" />
-<text x="1380.0" y="668" font-size="19" font-weight="bold" text-anchor="middle">Battery divider (inline, heat-shrink)</text>
-<text x="1380.0" y="690" font-size="13" fill="#333" text-anchor="middle">BAT - 220k - A0 - 220k - GND, 100 nF A0 to GND</text>
-<text x="1380.0" y="708" font-size="13" fill="#333" text-anchor="middle">needed for the battery gauge (Feather has none)</text>
-<circle cx="1180" cy="720" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="725" font-size="14">top (BAT)</text>
-<circle cx="1180" cy="750" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="755" font-size="14">middle (A0)</text>
-<circle cx="1180" cy="780" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="785" font-size="14">bottom (GND)</text>
-<path d="M520,365 L460,365 L460,860 L1080,860 L1080,720 L1180,720" fill="none" stroke="#c55" stroke-width="4" stroke-linejoin="round" />
-<path d="M850,405 L930,405 L930,750 L1180,750" fill="none" stroke="#888" stroke-width="4" stroke-linejoin="round" />
-<path d="M1000,520 L1000,780 L1180,780" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" />
-<rect x="1180" y="860" width="400" height="230" rx="10" fill="#fff6f6" stroke="#333" stroke-width="2" stroke-dasharray='8,5'/>
-<text x="1380.0" y="888" font-size="19" font-weight="bold" text-anchor="middle">Optional dock-visible charge LEDs</text>
-<text x="1380.0" y="910" font-size="13" fill="#333" text-anchor="middle">two 3 mm THT LEDs in the top-half sockets</text>
-<text x="1380.0" y="928" font-size="13" fill="#333" text-anchor="middle">VBUS - 1.5k - red(A>K) - STAT - 1.5k - green(A>K) - GND</text>
-<circle cx="1180" cy="960" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="965" font-size="14">VBUS (via 1.5k to red anode)</text>
-<circle cx="1180" cy="1000" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="1005" font-size="14">STAT (red K, 1.5k to green A)</text>
-<circle cx="1180" cy="1040" r="6" fill="#d4a017" stroke="#333"/>
-<text x="1192" y="1045" font-size="14">GND (green cathode)</text>
-<path d="M520,445 L440,445 L440,960 L1180,960" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" stroke-dasharray='10,6'/>
-<path d="M520,485 L420,485 L420,1000 L1180,1000" fill="none" stroke="#a0a" stroke-width="4" stroke-linejoin="round" stroke-dasharray='10,6'/>
-<path d="M1000,780 L1000,1040 L1180,1040" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-dasharray='10,6'/>
-<text x="30" y="1100" font-size="13" fill="#222" text-anchor="start">STAT tap = 32-36 AWG enamel wire to the STAT end of Feather R2 (10k in series with the CHG LED), case position (25.92, 7.77). Skip it and the two LEDs if you don't need dock-visible charge status.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1270" viewBox="0 0 1800 1270" font-family="DejaVu Sans, Arial, sans-serif">
+<rect width="1800" height="1270" fill="white"/>
+<text x="30" y="42" font-size="26" fill="#222" text-anchor="start" font-weight="bold">OpenALD Feather RP2040 v1.0 — wiring diagram (direct-mount wheel and switch, no controls board)</text>
+<text x="30" y="70" font-size="14" fill="#555" text-anchor="start">Every line is a hand-soldered wire (28–30 AWG silicone unless noted). Wire colours are suggestions. Dashed = optional. Designed from datasheets only — NOT built or tested on hardware.</text>
+<rect x="700" y="140" width="300" height="820" rx="10" fill="#e8f4ea" stroke="#333" stroke-width="2"/>
+<text x="850.0" y="166" font-size="18" fill="#222" text-anchor="middle" font-weight="bold">Adafruit Feather RP2040</text>
+<text x="850.0" y="186" font-size="12.5" fill="#444" text-anchor="middle">#4884, components up,</text>
+<text x="850.0" y="203" font-size="12.5" fill="#444" text-anchor="middle">USB-C at the dock end</text>
+<circle cx="700" cy="230" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="712" y="235" font-size="14" fill="#222" text-anchor="start">STEMMA QT 3V3</text>
+<text x="712" y="251" font-size="11" fill="#666" text-anchor="start">red wire of the QT cable</text>
+<circle cx="700" cy="270" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="712" y="275" font-size="14" fill="#222" text-anchor="start">STEMMA QT GND</text>
+<circle cx="700" cy="310" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="712" y="315" font-size="14" fill="#222" text-anchor="start">STEMMA QT SDA</text>
+<text x="712" y="331" font-size="11" fill="#666" text-anchor="start">GP2 (Wire, i2c1)</text>
+<circle cx="700" cy="350" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="712" y="355" font-size="14" fill="#222" text-anchor="start">STEMMA QT SCL</text>
+<text x="712" y="371" font-size="11" fill="#666" text-anchor="start">GP3</text>
+<circle cx="700" cy="503" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="712" y="508" font-size="14" fill="#222" text-anchor="start">EN</text>
+<text x="712" y="524" font-size="11" fill="#666" text-anchor="start">JP3.2 (left header)</text>
+<circle cx="700" cy="750" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="712" y="755" font-size="14" fill="#222" text-anchor="start">JST PH BAT +</text>
+<circle cx="700" cy="700" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="712" y="705" font-size="14" fill="#222" text-anchor="start">JST PH BAT −</text>
+<circle cx="1000" cy="230" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="235" font-size="14" fill="#222" text-anchor="end">D24 = GP24</text>
+<text x="988" y="251" font-size="11" fill="#666" text-anchor="end">JP1.8</text>
+<circle cx="1000" cy="270" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="275" font-size="14" fill="#222" text-anchor="end">D25 = GP25</text>
+<text x="988" y="291" font-size="11" fill="#666" text-anchor="end">JP1.7</text>
+<circle cx="1000" cy="310" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="315" font-size="14" fill="#222" text-anchor="end">D4 = GP6</text>
+<text x="988" y="331" font-size="11" fill="#666" text-anchor="end">JP1.1 (NOT GPIO 4)</text>
+<circle cx="1000" cy="430" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="435" font-size="14" fill="#222" text-anchor="end">GND</text>
+<text x="988" y="451" font-size="11" fill="#666" text-anchor="end">JP1.13, the only GND pin</text>
+<circle cx="1000" cy="520" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="525" font-size="14" fill="#222" text-anchor="end">BAT (VBAT)</text>
+<text x="988" y="541" font-size="11" fill="#666" text-anchor="end">JP3.1 (left header)</text>
+<circle cx="1000" cy="600" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="605" font-size="14" fill="#222" text-anchor="end">A0 = GP26 / ADC0</text>
+<text x="988" y="621" font-size="11" fill="#666" text-anchor="end">JP1.12</text>
+<circle cx="1000" cy="760" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="765" font-size="14" fill="#222" text-anchor="end">USB (VBUS, 5 V)</text>
+<text x="988" y="781" font-size="11" fill="#666" text-anchor="end">JP3.3 (left header)</text>
+<circle cx="1000" cy="860" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="988" y="865" font-size="14" fill="#222" text-anchor="end">STAT tap (no pad)</text>
+<text x="988" y="881" font-size="11" fill="#666" text-anchor="end">STAT end of R2, case (25.92, 6.87)</text>
+<text x="850.0" y="905" font-size="12" fill="#444" text-anchor="middle">on board: NeoPixel GP16 (battery level), red LED</text>
+<text x="850.0" y="922" font-size="12" fill="#444" text-anchor="middle">GP13, CHG LED, MCP73831 charger (200 mA).</text>
+<text x="850.0" y="939" font-size="12" fill="#444" text-anchor="middle">EN low = 3.3 V regulator off.</text>
+<text x="850.0" y="800" font-size="12" fill="#444" text-anchor="middle">JST+ = BAT, JST− = GND</text>
+<text x="850.0" y="816" font-size="12" fill="#444" text-anchor="middle">(joined on the Feather)</text>
+<rect x="70" y="140" width="310" height="250" rx="10" fill="#eef0ff" stroke="#333" stroke-width="2"/>
+<text x="225.0" y="166" font-size="18" fill="#222" text-anchor="middle" font-weight="bold">RDA5807M FM module</text>
+<text x="225.0" y="186" font-size="12.5" fill="#444" text-anchor="middle">26.9 × 26.9 mm, 3.5 mm jack on board</text>
+<text x="225.0" y="203" font-size="12.5" fill="#444" text-anchor="middle">I2C 0x10 / 0x11, 3.3 V</text>
+<text x="225.0" y="220" font-size="12.5" fill="#444" text-anchor="middle">headphone cable = antenna</text>
+<circle cx="380" cy="230" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="235" font-size="14" fill="#222" text-anchor="end">VCC</text>
+<path d="M380,230 L700,230" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="380" cy="270" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="275" font-size="14" fill="#222" text-anchor="end">GND</text>
+<path d="M380,270 L700,270" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="380" cy="310" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="315" font-size="14" fill="#222" text-anchor="end">SDA</text>
+<path d="M380,310 L700,310" fill="none" stroke="#27c" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="380" cy="350" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="355" font-size="14" fill="#222" text-anchor="end">SCL</text>
+<path d="M380,350 L700,350" fill="none" stroke="#d8b800" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="540.0" y="216" font-size="12.5" fill="#444" text-anchor="middle">STEMMA QT cable #4210, one end cut</text>
+<text x="80" y="376" font-size="11.5" fill="#a40" text-anchor="start">No I2C found? add 4.7k SDA→3V3, SCL→3V3</text>
+<rect x="70" y="410" width="310" height="180" rx="10" fill="#e6eefb" stroke="#333" stroke-width="2"/>
+<text x="225.0" y="436" font-size="18" fill="#222" text-anchor="middle" font-weight="bold">SS-12F16 slide switch</text>
+<text x="225.0" y="456" font-size="12.5" fill="#444" text-anchor="middle">left-wall groove, no screws</text>
+<text x="225.0" y="473" font-size="12.5" fill="#444" text-anchor="middle">knob at the USB end = OFF</text>
+<path d="M110,503 L380,503" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="110" cy="503" r="6.5" fill="#111"/>
+<path d="M110,503 L175,539" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="180" cy="545" r="4.5" fill="white" stroke="#111" stroke-width="2"/>
+<path d="M185,545 L380,545" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="180" cy="573" r="4.5" fill="white" stroke="#111" stroke-width="2"/>
+<text x="192" y="577" font-size="11" fill="#666" text-anchor="start">ON-end lug: not connected</text>
+<text x="90" y="553" font-size="10.5" fill="#666" text-anchor="start">shown OFF</text>
+<circle cx="380" cy="503" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="494" font-size="13" fill="#222" text-anchor="end">middle lug (common)</text>
+<circle cx="380" cy="545" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="536" font-size="13" fill="#222" text-anchor="end">OFF-end lug</text>
+<path d="M380,503 L700,503" fill="none" stroke="#f80" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="540.0" y="491" font-size="12.5" fill="#444" text-anchor="middle">EN wire (left channel → deck slot)</text>
+<rect x="70" y="610" width="310" height="180" rx="10" fill="#f6eee0" stroke="#333" stroke-width="2"/>
+<text x="225.0" y="636" font-size="18" fill="#222" text-anchor="middle" font-weight="bold">18650 holder BH-18650-PC</text>
+<text x="225.0" y="656" font-size="12.5" fill="#444" text-anchor="middle">protected button-top cell</text>
+<text x="225.0" y="673" font-size="12.5" fill="#444" text-anchor="middle">+ at the USB end, − at the jack end</text>
+<path d="M120,700 L380,700" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M120,700 L120,718" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M109,718 L131,718" fill="none" stroke="#111" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M98,730 L142,730" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M120,730 L120,750 L380,750" fill="none" stroke="#d22" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="140" y="714" font-size="16" fill="#222" text-anchor="start" font-weight="bold">−</text>
+<text x="150" y="748" font-size="16" fill="#222" text-anchor="start" font-weight="bold">+</text>
+<circle cx="380" cy="750" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="755" font-size="14" fill="#222" text-anchor="end">+</text>
+<circle cx="380" cy="700" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="368" y="705" font-size="14" fill="#222" text-anchor="end">−</text>
+<path d="M380,750 L700,750" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M380,700 L700,700" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="630" y="688" font-size="12.5" fill="#444" text-anchor="middle">JST PH #261</text>
+<text x="470" y="774" font-size="12.5" fill="#444" text-anchor="middle">JST PH cable #261 (cut): black −, red +</text>
+<path d="M380,545 L560,545 L560,700" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="560" cy="700" r="6.5" fill="#111"/>
+<text x="550" y="642" font-size="12" fill="#444" text-anchor="end">splice in the left</text>
+<text x="550" y="658" font-size="12" fill="#444" text-anchor="end">channel (heat-shrink):</text>
+<text x="550" y="674" font-size="12" fill="#444" text-anchor="end">OFF lug → black lead</text>
+<rect x="1738" y="345" width="14" height="425" rx="6" fill="#444"/>
+<text x="1790" y="318" font-size="13" fill="#222" text-anchor="end" font-weight="bold">GND splice</text>
+<text x="1790" y="335" font-size="11" fill="#444" text-anchor="end">(heat-shrink)</text>
+<path d="M1000,430 L1745,430" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1080" y="420" font-size="12.5" fill="#444" text-anchor="start">GND (one wire to the Feather's GND pin)</text>
+<rect x="1400" y="140" width="290" height="250" rx="10" fill="#e6eefb" stroke="#333" stroke-width="2"/>
+<text x="1545.0" y="166" font-size="18" fill="#222" text-anchor="middle" font-weight="bold">Mitsumi SIQ-02FVS3 wheel</text>
+<text x="1545.0" y="186" font-size="12.5" fill="#444" text-anchor="middle">glued in the frame cradle</text>
+<text x="1545.0" y="203" font-size="12.5" fill="#444" text-anchor="middle">tab order USB end → top: B, C, S, A</text>
+<text x="1545.0" y="220" font-size="12.5" fill="#444" text-anchor="middle">S closes to C when pushed</text>
+<circle cx="1400" cy="230" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="1412" y="235" font-size="14" fill="#222" text-anchor="start">A</text>
+<path d="M1000,230 L1400,230" fill="none" stroke="#3a3" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1400" cy="270" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="1412" y="275" font-size="14" fill="#222" text-anchor="start">B</text>
+<path d="M1000,270 L1400,270" fill="none" stroke="#1a8a7a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1400" cy="310" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="1412" y="315" font-size="14" fill="#222" text-anchor="start">S (push)</text>
+<path d="M1000,310 L1400,310" fill="none" stroke="#b06a1a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1690" cy="350" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
+<text x="1678" y="355" font-size="14" fill="#222" text-anchor="end">C (common)</text>
+<path d="M1690,350 L1745,350" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1200" y="218" font-size="12.5" fill="#444" text-anchor="middle">internal pull-ups, no RC filter</text>
+<rect x="1080" y="470" width="630" height="180" rx="8" fill="#f5f5f5" stroke="#888" stroke-width="2"/>
+<text x="1095" y="490" font-size="13" fill="#222" text-anchor="start" font-weight="bold">Battery divider — inline in heat-shrink (needed for the battery gauge)</text>
+<path d="M1000,520 L1133.0,520" fill="none" stroke="#c33" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1197.0,520 L1330,520" fill="none" stroke="#c33" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="1133.0" y="509" width="64" height="22" fill="white" stroke="#111" stroke-width="2.5"/>
+<text x="1165.0" y="502" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">R1 220k</text>
+<circle cx="1330" cy="520" r="6.5" fill="#111"/>
+<path d="M1330,520 L1505.5,520" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1569.5,520 L1745,520" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="1505.5" y="509" width="64" height="22" fill="white" stroke="#111" stroke-width="2.5"/>
+<text x="1537.5" y="502" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">R2 220k</text>
+<path d="M1330,520 L1330,600" fill="none" stroke="#777" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1330" cy="600" r="6.5" fill="#777"/>
+<path d="M1000,600 L1330,600" fill="none" stroke="#777" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1330,600 L1531.5,600" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1543.5,600 L1745,600" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1531.5,584 L1531.5,616" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1543.5,584 L1543.5,616" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1537.5" y="576" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">C1 100 nF</text>
+<text x="1095" y="640" font-size="12" fill="#444" text-anchor="start">A0 = VBAT / 2   (≈ 9.5 µA always, also when switched off)</text>
+<rect x="1080" y="680" width="630" height="220" rx="8" fill="#fff6f6" stroke="#b44" stroke-width="2" stroke-dasharray="9,6"/>
+<text x="1095" y="700" font-size="13" fill="#222" text-anchor="start" font-weight="bold">OPTIONAL dock-visible charge LEDs (3 mm, top-half sockets) — hardware only</text>
+<path d="M1000,760 L1083.0,760" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<path d="M1147.0,760 L1230,760" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<rect x="1083.0" y="749" width="64" height="22" fill="white" stroke="#111" stroke-width="2.5"/>
+<text x="1115.0" y="742" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">R3 1.5k</text>
+<path d="M1230,760 L1321.0,760" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<path d="M1349.0,760 L1440,760" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<polygon points="1321.0,745 1321.0,775 1349.0,760" fill="#f55" stroke="#111" stroke-width="2"/>
+<path d="M1349.0,745 L1349.0,775" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1333.0,742 L1343.0,730" fill="none" stroke="#111" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1343.0,742 L1353.0,730" fill="none" stroke="#111" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1335.0" y="796" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">D1 red “CHG”</text>
+<text x="1311.0" y="754" font-size="10" fill="#666" text-anchor="middle">A</text>
+<text x="1359.0" y="754" font-size="10" fill="#666" text-anchor="middle">K</text>
+<circle cx="1440" cy="760" r="6.5" fill="#a0a"/>
+<path d="M1440,760 L1478.0,760" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<path d="M1542.0,760 L1580,760" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<rect x="1478.0" y="749" width="64" height="22" fill="white" stroke="#111" stroke-width="2.5"/>
+<text x="1510.0" y="742" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">R4 1.5k</text>
+<path d="M1580,760 L1648.5,760" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<path d="M1676.5,760 L1745,760" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<polygon points="1648.5,745 1648.5,775 1676.5,760" fill="#3c3" stroke="#111" stroke-width="2"/>
+<path d="M1676.5,745 L1676.5,775" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1660.5,742 L1670.5,730" fill="none" stroke="#111" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M1670.5,742 L1680.5,730" fill="none" stroke="#111" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="1662.5" y="796" font-size="13" fill="#222" text-anchor="middle" font-weight="bold">D2 green “FULL”</text>
+<text x="1638.5" y="754" font-size="10" fill="#666" text-anchor="middle">A</text>
+<text x="1686.5" y="754" font-size="10" fill="#666" text-anchor="middle">K</text>
+<path d="M1000,860 L1440,860 L1440,760" fill="none" stroke="#a0a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="10,7"/>
+<text x="1100" y="850" font-size="12.5" fill="#444" text-anchor="start">STAT tap: 32–36 AWG enamel / wire-wrap</text>
+<text x="1095" y="885" font-size="12" fill="#444" text-anchor="start">Charging: STAT low → red on.  Full: STAT high → green on.  On battery (no USB): both off.</text>
+<text x="30" y="1000" font-size="18" fill="#222" text-anchor="start" font-weight="bold">Notes</text>
+<text x="40" y="1030" font-size="14" fill="#222" text-anchor="start">• Polarity: check the + mark next to the Feather's JST PH socket before plugging the battery in. Red = holder + pin (USB end).</text>
+<text x="40" y="1056" font-size="14" fill="#222" text-anchor="start">• Switch: before soldering, check with a meter which outer lug connects to the middle lug with the knob at the OFF (USB) end; that lug goes to GND.</text>
+<text x="40" y="1082" font-size="14" fill="#222" text-anchor="start">• Wheel: check the A / B / S / C tab markings on your part's datasheet drawing. If A and B are swapped, the wheel just counts the other way (swap PIN_ENC_A / PIN_ENC_B).</text>
+<text x="40" y="1108" font-size="14" fill="#222" text-anchor="start">• Use the silkscreen names: D4 is RP2040 GPIO 6 on this board. The firmware uses GPIO numbers 24, 25, 6, 26 (A0), 2/3 (I2C), 16 (NeoPixel).</text>
+<text x="40" y="1134" font-size="14" fill="#222" text-anchor="start">• With the switch OFF (EN low) the 3.3 V rail is off: Feather, FM module and NeoPixel are unpowered. Charging still works (MCP73831 runs from VBUS).</text>
+<text x="40" y="1160" font-size="14" fill="#222" text-anchor="start">• No wheel-push battery check with the switch OFF (the single board can; the Feather cannot). The firmware flashes the level at power-on and on a short press.</text>
+<text x="40" y="1186" font-size="14" fill="#222" text-anchor="start">• Wire lengths ~120 mm per lead; route JP1/JP3 wires down the right channel slot, the battery and EN wires up the left channel, as in the README.</text>
+<text x="40" y="1212" font-size="14" fill="#222" text-anchor="start">• Part numbers, prices and sources: docs/BOM.md. Pin table: docs/pin_map.md. KiCad schematic: docs/wiring_schematic/ (ERC-checked).</text>
 </svg>

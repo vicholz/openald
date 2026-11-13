@@ -22,11 +22,19 @@ The bottom 2 in of the case is a copy of the single-board radio's case, so it fi
 |---|---|
 | `case/` | OpenSCAD source (`openald_feather_case.scad`) and generated parameters. `stl/` holds `case_top.stl`, `case_bottom.stl` and `frame.stl` in print orientation, plus fit and dock reports |
 | `previews/` | Renders: exploded, closed, back, print layout, close-ups (incl. `closeup_wheel.png`, `closeup_switch_left.png`, `inside_left_wall_switch.png`, `switch_groove_bottom_half.png`, `switch_backing_closeup.png`, `closeup_usb_end.png`, `closeup_usb_recess.png`, `inside_right_wall_wheel.png`, `wheel_cradle.png`), sections (incl. `section_wheel_y62.png`, `section_switch_y72.png`, `section_switch_rib_y77.png`, `section_frame_tab_y42.png`) |
-| `docs/` | `wiring_diagram.svg/.png`, `pin_map.md`, `firmware_notes.md`, `BOM.md/.csv` |
-| `scripts/` | `layout.py` (single source of truth for the mechanical layout), `feather_data.py`, `gen_case_params.py`, `check_fit.py`, `check_dock.py`, `make_wiring.py` |
+| `docs/` | `wiring_diagram.svg/.png` (every hand-soldered wire), `wiring_schematic/` (KiCad 9 schematic + PDF, ERC 0/0), `pin_map.md`, `firmware_notes.md`, `BOM.md/.csv` |
+| `firmware/` | **Arduino firmware** `openald_feather/` (arduino-pico core), `build.sh` (arduino-cli), prebuilt `openald_feather_v1.0.uf2`. Compiles; **not tested on hardware** |
+| `scripts/` | `layout.py` (single source of truth for the mechanical layout), `feather_data.py`, `gen_case_params.py`, `check_fit.py`, `check_dock.py`, `make_wiring.py`, `make_schematic.py` (+ `sexp.py`, `symlib.py`) |
 | `ref/` | Adafruit Feather RP2040 Eagle board (CC BY-SA, from github.com/adafruit/Adafruit-Feather-RP2040-PCB), the parsed mechanical data, and `models/SIQ-02FVS3.wrl` (wheel model for the fit check) |
 | `archive/controls_board_pcb/` | The **retired** controls PCB (KiCad, Gerbers, JLC BOM/CPL, generators) from before the direct-mount change. Not used, not maintained; see its README |
-| `make_all.sh` | Rebuilds everything: Feather data → wiring diagram → case params → STLs → fit + dock checks → renders |
+| `make_all.sh` | Rebuilds everything: Feather data → wiring diagram + schematic (ERC) → case params → STLs → fit + dock checks → renders (firmware: `firmware/build.sh`) |
+
+## Firmware and wiring (added 2026-11-12)
+* **Wiring:** [`docs/wiring_diagram.png`](docs/wiring_diagram.png) (and `.svg`) shows every hand-soldered wire; [`docs/wiring_schematic/openald-feather-wiring.pdf`](docs/wiring_schematic/openald-feather-wiring.pdf) is the same circuit as a KiCad 9 schematic (ERC 0 errors / 0 warnings); the pin table is in [`docs/pin_map.md`](docs/pin_map.md).
+* **Firmware:** [`firmware/openald_feather/`](firmware/openald_feather/) is an Arduino sketch for Earle Philhower's arduino-pico core (board "Adafruit Feather RP2040") plus the Adafruit NeoPixel library. `firmware/build.sh` compiles it with arduino-cli; `firmware/openald_feather_v1.0.uf2` is a prebuilt image (double-tap RESET through the pin-hole, copy the .uf2 to the RPI-RP2 drive). **It compiles; it has not been run on hardware.**
+* **Wheel:** turn = volume (0 mutes, 1–15), short press = battery level on the NeoPixel for 3 s, hold ≥ 0.5 s without turning = seek up, push and turn = tune (200 kHz per detent by default). The last frequency and volume are saved to flash 5 s after the last change. The battery level is also shown for 3 s at power-on.
+* **Battery level colours** (NeoPixel, 50 mV hysteresis, same thresholds as the single board's 3-LED bar): green ≥ 3.90 V, yellow 3.60–3.90, orange 3.40–3.60, red slow blink 3.30–3.40, red fast blink < 3.30. Below 3.30 V a 50 ms red flash every 10 s; below 3.25 V the radio is powered down (it restarts above 3.45 V). Blue blink = seeking; magenta blink = no FM module found on I2C.
+* **Differences from the single board:** no wheel-press battery check with the switch OFF (EN holds the Feather's regulator off, so nothing can run); the level is a NeoPixel colour, not a 3-LED bar, and the NeoPixel is hidden while docked; the firmware cannot see the charge state (STAT only drives the optional LEDs).
 
 ## Size and the dock interface
 | | Width × thickness | Y range (from the bottom face) |
@@ -87,7 +95,7 @@ Mounting plate 19.5–19.7 × 5.6–5.7 × 0.4–0.5 mm (two M2 holes 15 mm apar
 * The frame deck has **six tabs** (left wall at Y 25 and at the switch, right wall at Y 25, 42 and 79, top end wall at X 33) that sit in **notches cut into the bottom half's wall at the parting line** (0.9 mm deep, 0.15 mm clearance each side). The notch floors carry the frame at Z −1.0; the switch backing blocks carry the long left tab.
 * The top half has a **plug** over each tab that presses on its top face at the split line (Z 0, zero nominal clearance), so when the case is screwed shut the frame is clamped between the halves. If a printed frame rattles, set `clamp_crush` (e.g. 0.1) in the .scad to lower the plugs.
 * The eight posts still support the deck in between (one keeps the wheel tenon).
-* **Holder seat:** the holder sits in a 0.2 mm floor pocket, and the deck has a 0.4 mm underside relief over it, so the **holder-to-deck gap is 0.7 mm** (was 0.1). A holder up to ~0.6 mm taller than the datasheet, or thin tape under it, can no longer push the frame up. Use **thin double-sided tape (≤ 0.2 mm) or glue dots**, not foam tape.
+* **Holder seat:** the holder sits in a 0.2 mm floor pocket. **The deck underside over the holder is flat** (2026-11-12, print feedback: the old 0.4 mm underside relief was too shallow for the slicer to support and printed stringy and rough). Instead the underside has an **engraved locating outline** of the holder footprint: a **0.9 mm wide, 0.4 mm deep groove** whose inner edge is 0.1 mm outside the holder (outline 21.1 × 77.9 mm inside, 22.9 × 79.7 mm outside), plus a 4 mm engraved **"+"** 9 mm in from the holder's + (USB) end. The frame prints deck-down, so the groove is on the bed face: the first 0.4 mm of layers leave the 0.9 mm line open and the layer above bridges 0.9 mm, which needs no supports. The outline is interrupted where it crosses the USB-shell-leg holes and the FM-board opening. `CELL_MARK_W`, `CELL_MARK_D` in `scripts/layout.py`; `DECK_RELIEF` (now 0) brings the old relief back. The **holder-to-deck gap is now 0.3 mm** (0.1 + 0.2 floor pocket; was 0.7 with the relief). Use **thin double-sided tape (≤ 0.2 mm) or glue dots**, not foam tape.
 * The frame still drops straight in from above and the top half still lowers straight down; both paths are checked.
 
 ### Wires
@@ -110,7 +118,7 @@ The Feather's own LEDs sit inside the dock pocket. The old controls board carrie
 
 ## Inside the case (front face up, USB-C end down)
 * **Bottom half, back:** the 18650 holder lies flat on the floor with the cell opening up and + at the USB end. Its PC pins are bent flat into floor grooves and soldered to wires just past each end of the holder. A 0.2 mm floor pocket and corner fences locate the holder; thin double-sided tape (≤ 0.2 mm) or glue dots hold it. Eight posts beside the holder carry the deck (one has the tenon for the wheel cradle). The **power switch** sits in its groove in the left wall above the dock line, backed by a solid block from the floor to the deck. Six notches at the top of the walls take the frame's clamp tabs.
-* **Frame:** a 1 mm deck over the holder (0.6 mm over the holder's footprint, for the 0.7 mm clearance), six clamp tabs at the parting line, with pegs for the Feather, a 0.6 mm ledge, corner stops and a +X rail for the FM module, the **wheel cradle**, wire slots, and reliefs for the USB shell legs.
+* **Frame:** a flat 1 mm deck over the holder (engraved holder outline underneath, 0.3 mm clearance), six clamp tabs at the parting line, with pegs for the Feather, a 0.6 mm ledge, corner stops and a +X rail for the FM module, the **wheel cradle**, wire slots, and reliefs for the USB shell legs.
 * **On the deck:** the Feather at the USB end (Y 0.3 – 51.1), the FM module at the top left with its jack out through the top end wall, the wheel in its cradle on the right with the dial through the right wall.
 * Four M2 × 12 screws go in from the back into heat-set inserts in the top half: two at the USB end and two at the taper. A perimeter lip seals the joint. **There are no screws at the top end**, because there is no room; the lip and the FM hold-downs keep it closed.
 
@@ -133,7 +141,7 @@ All are in `scripts/layout.py`. Then run `case/build_case.sh`.
 | `FM_JACK_X` | board-edge centre (**estimate**) | jack axis X; the case X = FM left edge (−1.25) + offset |
 | `FM_JACK_AXIS_H`, `FM_JACK_BODY_H` | 2.5, 5.0 | jack axis height above the board top, body height |
 | component height on the FM top | assumed ≤ 5.5 mm (ceiling at Z 8.2) | tallest part |
-| holder height | 21.31 (datasheet) | with the cell fitted, must stay below the deck (0.7 mm margin incl. 0.2 floor pocket and 0.4 deck relief; tape counts) |
+| holder height | 21.31 (datasheet) | with the cell fitted, must stay below the deck (0.3 mm margin incl. the 0.2 floor pocket; tape counts) |
 | wheel push travel | 1.0 (assumed) | how far the dial moves when pushed (`WHEEL_PUSH`) |
 | Feather position | `FEATHER_DY` = −0.9 | if a cable still does not seat, or the dock plug bottoms out: receptacle mouth = 2.5 + `FEATHER_DY` mm inside the bottom face |
 | switch knob height | `SW_L` = 4.0 (G4) | knob height above the plate |
@@ -148,14 +156,14 @@ All are in `scripts/layout.py`. Then run `case/build_case.sh`.
 ## Known risks and limits
 * Nothing has been printed or built. Fit is CAD-only, from datasheet dimensions.
 * FM-module geometry is estimated: hole positions, jack position, bottom-side pin length, I2C pull-ups.
-* The holder-to-deck gap is 0.7 mm with the datasheet height of 21.31 mm; the frame no longer rests on the holder (it is clamped by the tabs), so only a holder more than ~0.7 mm taller would touch the deck.
+* The holder-to-deck gap is 0.3 mm with the datasheet height of 21.31 mm (it was 0.7 mm while the deck had the underside relief, removed 2026-11-12). The frame is clamped by the tabs, so a holder (plus tape) more than ~0.3 mm taller would press on the deck. If yours does, set `DECK_RELIEF` back to 0.4 or use thinner tape.
 * **Wheel:** the push travel (1.0 mm assumed) and the strength of a glued joint under 3–6 N pushes are untested. Soldering 30 AWG wire to the small SMD tabs is fiddly; strain-relieve the wires with a dab of glue on the deck. The cradle clearances (0.15 mm) may need sanding or a small `cradle`/`peg_hole_d` change for your printer.
 * **Switch (screwless):** the grip relies on printed features: a 1.2 mm skin with a 6.6 mm slot, solid backing blocks and 0.25 mm crush bumps. The backing was made solid after the first print let the switch be pushed in; the new version is not printed yet. Printer tolerance matters (a groove printed narrower than ~0.5 mm will not take a 0.6 mm plate; then sand or raise `SW_GROOVE`). The skin over the 20 mm groove is only joined at its ends and bottom (the top-half tongue backs it up once closed). Repeated hard pushes on the knob are untested. Which outer lug is "OFF" must be checked with a meter. Clones vary (plate 19.5–19.7 × 0.4–0.6).
 * **USB-C depth / dock:** the receptacle mouth is 1.6 mm inside the bottom face (was 2.5). Cables should now seat fully; this is from datasheet geometry, not a reprint. In the dock the plug reaches 6.0 mm (4.0 mm pads since 2026-11-12). **Assembly (fixed 2026-11-12):** the receptacle reaches 0.4 mm into the end wall, so the top half's receptacle opening now continues at full width down to the split (`usb_notch()`); before that its lower rounded corners overlapped the receptacle by ~0.05 mm³ while the top half was lowered (a scrape, possibly a snag on a tight print). The fit check now tests this path.
 * **Optional LEDs:** 3 mm LED lengths vary; adjust `LED3_ABOVE_FLANGE`. The STAT tap is a fine-wire solder joint on a Feather 0603 resistor pad.
 * The battery divider (if fitted) is inline resistors in heat-shrink, not on a board.
 * Off-state drain is about 0.4 mA through the Feather's EN pull-up. Charging is slow: 200 mA, about 18 h for 3500 mAh.
-* The wheel has no RC debounce or ESD diode. Debounce in firmware; see `docs/firmware_notes.md`.
+* The wheel has no RC debounce or ESD diode. The firmware debounces it (1 ms poll); see `docs/firmware_notes.md`.
 * The battery is changed by lifting the frame stack (now with the wheel and its wires on it). Not tool-free.
 * The top end is held only by the lip, with no screws. The frame clamp at the top-end tab and the R79 / switch tabs therefore depends on the lip and the FM hold-downs keeping that end closed.
 * **Frame clamp:** zero nominal clearance between the plugs and the tabs; real prints may leave a few tenths of play or need the tab tops sanded. The six notches interrupt the alignment lip for 6–21 mm each.
