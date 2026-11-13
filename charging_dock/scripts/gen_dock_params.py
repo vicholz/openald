@@ -6,6 +6,8 @@ def v(n, x): L.append(f"{n} = {x};")
 for n in ("RW RD USB_FROM_FRONT MOUTH_UP GAP OUT_W OUT_D WALL POCKET_DEPTH CLR_GUIDE GUIDE_H CLR_UPPER POCKET_WALL CHAMFER "
           "BASE_T STANDOFF PCB_T PCB_Z0 PCB_Z1 PAD_T FLOOR_Z PLUG_H PLUG_TOP TOP_Z PCB_X0 PCB_Y0 PCB_X1 PCB_Y1").split():
     v(n, round(getattr(G, n), 4))
+v("RISER_SB", G.RISER["single_board"]); v("RISER_FEATHER", G.RISER["feather"]); v("RISER_OFF", G.RISER_OFF)
+v("MOUTH_FEATHER", G.MOUTHS["feather"])
 v("radios", [list(G.radio_box(c, r)[:2]) for (c, r) in G.SLOTS])
 v("plugs", [list(G.usb_xy(c, r)) for (c, r) in G.SLOTS])
 v("holes", [[round(a, 3) for a in G.d(x, y)] for (x, y) in PL.HOLES])

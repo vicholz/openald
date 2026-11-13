@@ -8,6 +8,7 @@ import geom as G, design
 T = "/tmp/dock_%s.stl"
 case = {n: trimesh.load(T % n) for n in ("shell_raw", "base_raw", "pads_raw")}
 radios = trimesh.load(T % "radios"); plugs = trimesh.load(T % "plugs")
+shims = trimesh.load(T % "shims_raw"); radios_f = trimesh.load(T % "radios_feather")   # Feather riser shims + Feather radios on them
 def inter(a, b):
     try: return trimesh.boolean.intersection([a, b], engine="manifold").volume
     except Exception as e: return float("nan")
@@ -46,6 +47,11 @@ for n, c in case.items():
 rep("plugs x radios (plug inside USB-C cavity)", inter(plugs, radios))
 rep("shell x pads", inter(case["shell_raw"], case["pads_raw"])); rep("shell x base", inter(case["shell_raw"], case["base_raw"]))
 rep("pads x base", inter(case["pads_raw"], case["base_raw"]))
+for n, c in case.items():
+    rep(f"Feather shims x {n}", inter(shims, c)); rep(f"Feather radios x {n}", inter(radios_f, c))
+rep("Feather shims x plugs", inter(shims, plugs)); rep("Feather shims x PCB", inter(shims, pcb))
+rep("Feather radios x shims", inter(radios_f, shims))
+rep("plugs x Feather radios (plug inside USB-C cavity)", inter(plugs, radios_f))
 from scipy.spatial import cKDTree
 _sh = case['shell_raw']; _tree = cKDTree(np.vstack([_sh.sample(400000), _sh.vertices]))
 worst = (1e9, None)
@@ -57,6 +63,13 @@ for r, m in sorted(comps.items()):
     if d < worst[0]: worst = (d, r)
 out.append(f"closest PCB part to the top shell: {worst[1]} at {worst[0]:.2f} mm (part boxes)")
 out.append(f"insertion past the receptacle mouth: {G.INSERTION:.2f} mm (plug top Z {G.PLUG_TOP:.2f}, radio floor Z {G.FLOOR_Z:.2f})")
+_smax = G.SEAT_NOM + G.SEAT_TOL
+for r, m in G.MOUTHS.items():
+    std = G.insertion(r, 0.0)
+    out.append(f"  {r:12s} mouth {m:.2f} inside, riser shim {G.RISER[r]:.2f} -> insertion {G.insertion(r):.2f} mm; standard pad alone {std:.2f}"
+               + (f" (> {_smax:.2f} max full seat: plug would bottom out, radio on the plug)" if std > _smax + 1e-6 else ""))
+out.append(f"  USB-C full seat (spec effective receptacle shell) {G.SEAT_NOM:.2f} +/- {G.SEAT_TOL:.2f}; design target {G.TARGET_INSERTION:.2f}")
+_ss = shims.bounds; out.append(f"Feather riser shim top Z {_ss[1][2]:.2f} (pad top {G.FLOOR_Z:.2f}); Feather radio bottom Z {radios_f.bounds[0][2]:.2f}")
 out.append(f"radio-to-guide clearance {G.CLR_GUIDE:.2f}/side for {G.GUIDE_H:.0f} mm, {G.CLR_UPPER:.2f}/side above; pocket depth {G.POCKET_DEPTH:.1f}")
 out.append(f"outer size {G.OUT_W:.1f} x {G.OUT_D:.2f} x {G.TOP_Z:.1f} mm; radio gap {G.GAP:.1f} mm")
 out.append(f"INTERFERENCES: {bad}")

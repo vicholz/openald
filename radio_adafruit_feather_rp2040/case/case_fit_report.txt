@@ -35,6 +35,6 @@ parts (case frame):
   holder top Z -1.30 (in a 0.2 floor pocket), frame underside over it Z -0.60 -> gap 0.70 mm
   wheel: dial edge X 42.70, outer face X 41.75 -> protrudes 0.95 mm past the case side, 1.95 mm past the 1 mm-deep thumb pocket floor; body front 39.30 vs inner wall 39.75
   switch (left side): knob tip X -6.55 -> protrudes 2.80 mm past the case side (SW_L=4; G4 2.80 / G5 3.80 / G6 4.80); skin in front of the plate 1.20 mm
-  USB-C: receptacle mouth Y -0.90: 1.60 mm inside the outer (dock) face Y -2.50, 0.10 mm behind the cable-plug recess floor Y -1.00 (single board: 2.50 / 1.00); dock plug insertion 6.90 mm (single board 6.00, full mate ~6.6)
+  USB-C: receptacle mouth Y -0.90: 1.60 mm inside the outer (dock) face Y -2.50, 0.10 mm behind the cable-plug recess floor Y -1.00 (single board: 2.50 / 1.00); dock plug insertion 6.90 mm on the standard pad (USB-C full seat 6.20 +/- 0.20 -> use the dock's 0.90 mm Feather riser shim: 6.00, like the single board)
   switch backing: solid behind the ears 22.8/22.8 mm^3 sampled; back wall from X 3.20 (body back 2.90, 0.30 gap; 0.15 with a 0.6 plate) to X 5.20; shelf under the body 99% solid down to the floor
 RESULT: PASS (0 interferences)

@@ -12,6 +12,13 @@ powers all six slots.
 Both radio variants fit the same pockets (`radio_single_board`, and `radio_adafruit_feather_rp2040` if it keeps the
 lower envelope). The exact interface is in **[DOCK_INTERFACE.md](DOCK_INTERFACE.md)**.
 
+**Feather radios need a riser shim** (2026-11-12, still v1.0): the Feather's USB-C mouth is 1.60 mm inside its bottom
+face (the single board's is 2.50), so on the standard pad the fixed plug would go 6.9 mm in, past the USB-C full seat
+(6.20 ± 0.20), and the radio would stand on the plug. Drop a 0.90 mm shim (`case/riser_shims/`) into each pocket used by
+a Feather radio: insertion is then 6.0 mm, the same as the single board. Single-board pockets take no shim. The pads
+themselves stay 3.10 mm, because a thicker pad would lift the single-board radio too (one pad thickness can't serve
+both; see the table in DOCK_INTERFACE.md §3). Section view: `previews/dock_plug_insertion_per_radio.png`.
+
 ## Key numbers
 | | |
 |---|---|
@@ -69,6 +76,7 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
 | `fab/erc_report.txt`, `fab/drc_report.txt`, `fab/jlc_cpl_fit.json` | Check reports |
 | `case/openald_dock.scad`, `case/dock_params.scad` | OpenSCAD case (parameters generated from the PCB layout) |
 | `case/dock_top_shell.stl`, `case/dock_base.stl`, `case/dock_floor_pads_x6.stl`, `case/floor_pads/*.stl` | Print-ready STLs (already in print orientation) |
+| `case/riser_shims/dock_riser_shims_feather_x6.stl`, `case/riser_shims/dock_riser_shim_feather_slot*.stl` | 0.90 mm riser shims for pockets used by Feather radios (flat, print as exported) |
 | `case/dock_fit_report.txt` | Fit-check result |
 | `docs/openald-dock-schematic.pdf`, `previews/*.png` | Schematic PDF, PCB/case renders, CPL overlay plots |
 | `scripts/` | Generators: `run_all_pcb.sh` (symbols → schematic → ERC → board → route → post-route → DRC), `make_fab.py`, `jlc_cpl_fit.py`, `build_case.sh`, `check_dock_fit.py`, `render_pcb_previews.py`; `geom.py` is the single source of the geometry |
@@ -77,22 +85,25 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
 * **ERC:** 0 errors, 0 warnings.
 * **DRC:** 0 errors, **0 unconnected**. 75 silkscreen-only warnings (reference text overlapping copper, other silk or the board edge; cosmetic).
 * **JLC placement:** `jlc_cpl_fit.py --check` → *correction table: OK*. All 80 CPL rows match the EasyEDA footprints' pads; worst pad-centre offset is 0.29 mm (SY8205 land-length difference). Overlays are in `previews/cpl_overlay_*.png`.
-* **Case fit:** `case/dock_fit_report.txt` → **INTERFERENCES: 0**. This covers radio envelopes vs. shell/pads/base, plugs vs. case and radios (the plug sits inside the USB-C cavity), the PCB with its holes vs. every case part, every PCB part vs. every case part, and the case parts against each other. The closest part to the shell is the D3 LED, 0.19 mm under the light pipe. Insertion is 6.0 mm.
+* **Case fit:** `case/dock_fit_report.txt` → **INTERFERENCES: 0**. This covers radio envelopes vs. shell/pads/base, plugs vs. case and radios (the plug sits inside the USB-C cavity), the PCB with its holes vs. every case part, every PCB part vs. every case part, and the case parts against each other. The closest part to the shell is the D3 LED, 0.19 mm under the light pipe. Insertion is 6.0 mm. Since 2026-11-12 it also checks the Feather riser shims vs. every case part, plug and the PCB, and a Feather radio envelope (1.60 mm mouth, 13.0 × 7.6 × 1.5 cable recess) standing on its shim vs. the case, shims and plugs; the report lists the insertion per radio (6.00 / 6.00; Feather without shim 6.90).
 
 ## Printing (no supports)
 * **Top shell:** print it deck-down, as exported. Walls, bosses, the light pipe and the pocket tubes grow straight up. The lead-in chamfers are 45°. Vent slots and the rear USB-C opening bridge ≤ 13 mm.
 * **Base:** print it flat, as exported.
 * **Floor pads (6):** print them top-face down, as exported (pegs up). Slot 5 (back centre) has its own STL with a relief over the rear USB-C receptacle's pads. The pads are interchangeable otherwise, but `floor_pads/` has one file per slot.
+* **Riser shims (Feather pockets only):** 0.90 mm thick, print flat as exported (e.g. 0.3 mm first layer + 3 × 0.2 mm, or 3 × 0.3 mm). Check the thickness with calipers (0.85–0.95); the insertion changes 1:1 with it. A notch on the front edge and a chamfered front-left corner show the orientation. Lift one out with tweezers or tape.
 * PETG or PLA, 0.2 mm layers, 3 walls. Check the pocket guide on one radio before printing all six pads. If the fit is tight, the guide clearance is `CLR_GUIDE` in `scripts/geom.py`.
 
 ## Assembly
 1. **Order the PCB** with JLC SMT assembly (gerber zip + BOM + CPL). The six vertical plugs J2–J7 are **not** in the JLC BOM, because LCSC has no EasyEDA footprint for C55200592 and JLC cannot verify its placement. Buy 6 (+1 spare) from LCSC and hand-solder them. They are 16 fine-pitch (0.8 mm) SMD pads plus 2 plated shell slots: use flux, a fine tip or hot air, and keep each plug **vertical** (a printed floor pad slipped over it works as a jig).
 2. **Test before docking a radio:** plug in a ≥ 45 W PD charger. Green should light and red should stay off. Each slot should read 5.0–5.2 V on VBUS. A 5 V-only charger should give red only, with no slot voltage.
 3. Press 6 M3 heat-set inserts into the shell bosses. Lay the PCB on the base standoffs and drop the six floor pads in (the pegs go into the PCB holes). Lower the shell over everything and fit 6 × M3 × 12 screws from below.
-4. Dock a radio front face (level-bar side) toward you, wheel to the right.
+4. Pockets for Feather radios: drop a riser shim onto the pad (notch to the front) before docking. Single-board radios: no shim.
+5. Dock a radio front face (level-bar side) toward you, wheel to the right.
 
 ## Open risks and judgment calls
-* **Plug height and insertion are not measured.** The HX drawing gives 11.60 (used here, 6.0 mm insertion) but also a 12.50 overall. Measure a real plug. If it is taller, the radio rests on the plug ~0.9 mm high; reprint thicker pads (`PAD_T`) if needed.
+* **Plug height and insertion are not measured.** The HX drawing gives 11.60 (used here, 6.0 mm insertion) but also a 12.50 overall (possibly including the shell tabs that go through the board; not confirmed). Measure a soldered plug from the PCB top. If it is taller, every radio would stand on the plug; set `PLUG_H` in `scripts/geom.py` and rebuild, and the riser shims grow to match (12.50: single board 0.90, Feather 1.80). Don't reprint thicker pads for this; the shims do it per radio.
+* **Riser shim (Feather):** a loose 0.90 mm printed part. If it is left out, the Feather's receptacle carries the radio's weight (~1 N) on the plug tip; if one is put under a single-board radio, insertion drops to 5.1 mm (0.9 short of the seat window; contacts probably still touch, but not reliably). The real seat depth of the HRO and CUI receptacles isn't on their drawings; 6.20 ± 0.20 is the USB-C spec value.
 * **Hand-soldered plugs:** fine pitch, and the plug must be perpendicular. The 0.35 mm guide clearance plus the case opening tolerate only ~0.5 mm of plug misalignment.
 * **Plug supply:** only 782 in stock at LCSC, and it is the only in-stock vertical (board-mount, plug-up) USB-C plug found with a usable drawing. Buy spares early.
 * **12 V fallback:** 12 V-only chargers are deliberately not supported. A 30 W charger that offers 12 V/2.5 A may or may not start the dock and could overload with six radios charging.

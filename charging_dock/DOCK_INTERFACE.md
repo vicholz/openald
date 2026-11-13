@@ -34,7 +34,26 @@ All dimensions in mm. Any OpenALD radio variant (single-board, Feather RP2040, .
 
 The dock plug (HX TYPE C-M 16P V-SMT, LCSC C55200592, shell 8.25 × 2.40) enters through these openings.
 Design insertion: plug shell tip reaches **6.0 past the receptacle mouth** with the radio resting on the
-pocket floor (USB-C nominal full mate ≈ 6.6; a normal cable in this case also stops ~1 mm short).
+pocket floor.
+
+**USB-C mating depth (USB Type-C spec R2.x, §3.2, notes on Fig. 3-1):** the receptacle's effective shell length is
+**6.20 ± 0.20**, i.e. a fully seated plug travels 6.0–6.4 past the receptacle mouth and then bottoms out (the plug
+shell is 6.65 ± 0.10 long, so its base stands ~0.45 outside the mouth). Earlier versions of this file said "full mate
+≈ 6.6"; that was the plug shell length, not the insertion. **Design target 6.0** = the low end of the seat window: the
+contacts are fully engaged, and the radio's weight stays on the printed pad, never on the plug.
+
+**Receptacle mouth depth per variant** (distance inside the radio's bottom face; the dock plug is fixed, so this sets
+the insertion):
+
+| Radio | Mouth inside the bottom face | Dock floor it stands on | Insertion |
+|---|---|---|---|
+| Single-board (HRO TYPE-C-31-M-12) | **2.50** | standard floor pad (3.10) | **6.00** |
+| Feather RP2040 (CUI CUSB31, since commit 1452af8) | **1.60** | floor pad + **0.90 riser shim** (`case/riser_shims/`) | **6.00** |
+| Feather RP2040 without the shim | 1.60 | standard floor pad | 6.90: past the 6.40 maximum seat, so the plug bottoms out and the radio stands on it — **don't** |
+
+A new variant with a mouth depth *m* (< 2.50) needs a riser shim of 2.50 − *m* (add it to `MOUTHS` in
+`scripts/geom.py`; the riser and shim STLs follow). A mouth deeper than 2.50 would need a thinner pad and is not
+supported by the standard pads.
 
 ## 4. Pocket (dock side)
 | Item | Value |
@@ -49,7 +68,8 @@ pocket floor (USB-C nominal full mate ≈ 6.6; a normal cable in this case also 
 ## 5. Dock build values (OpenALD Dock v1.0, from scripts/geom.py)
 | Item | Value |
 |---|---|
-| Radio floor (pad top) | Z 11.70 above the dock bottom; PCB top Z 8.60; floor pad 3.10 thick |
-| Plug top | Z 20.20 (HX drawing: 11.60 above the PCB) -> **6.0 mm insertion** past the receptacle mouth |
-| If the plug measures taller (the drawing also shows a 12.50 overall) | it seats ~0.9 mm deeper (6.9 > 6.6 full mate): the radio then rests on the plug instead of the pad; if that matters, print the pads thicker (`PAD_T` in geom.py) |
+| Radio floor (pad top) | Z 11.70 above the dock bottom; PCB top Z 8.60; floor pad 3.10 thick (`PAD_T`, unchanged) |
+| Feather riser shim | 0.90 thick (`RISER["feather"]`), radio footprint + 0.10/side (0.25/side play in the 0.35 guide), 9.2 × 3.4 plug hole; loose, lies on the pad; Feather floor Z 12.60 |
+| Plug top | Z 20.20 (HX drawing: 11.60 above the PCB) -> **6.0 mm insertion** past the receptacle mouth for both radios |
+| If the plug measures taller (the drawing also shows a 12.50 overall) | every radio seats deeper by the difference (12.50: single board 6.90, Feather 6.90 on its 0.90 shim) and stands on the plug. Set `PLUG_H` in geom.py to the measured value and rebuild: the risers grow to match (12.50: single board 0.90 shim, Feather 1.80), and a single-board shim STL is exported. The pads, shell and outer size don't change |
 | Layout | 2 rows x 3, 25.4 mm (1.0 in) gap between radios in X and Y; outer 191.8 x 111.72 x 62.5 mm |

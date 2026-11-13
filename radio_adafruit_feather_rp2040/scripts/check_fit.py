@@ -182,7 +182,7 @@ print(f"  switch (left side): knob tip X {px0-L.SW_L:.2f} -> protrudes {X0OU-(px
 uf=json.load(open(os.path.join(ROOT,"ref","feather_rp2040_mech.json")))["usb"]["face_y"]
 YO=L.Y_IN0-L.WALL; RF=YO+1.5
 print(f"  USB-C: receptacle mouth Y {uf:.2f}: {uf-YO:.2f} mm inside the outer (dock) face Y {YO:.2f}, {uf-RF:.2f} mm behind the "
-      f"cable-plug recess floor Y {RF:.2f} (single board: 2.50 / 1.00); dock plug insertion {6.0-uf:.2f} mm (single board 6.00, full mate ~6.6)")
+      f"cable-plug recess floor Y {RF:.2f} (single board: 2.50 / 1.00); dock plug insertion {6.0-uf:.2f} mm on the standard pad (USB-C full seat 6.20 +/- 0.20 -> use the dock's {-uf:.2f} mm Feather riser shim: 6.00, like the single board)")
 # switch backing: material behind the plate ears / body and under it (bottom half)
 bh=cases["case bottom"]
 ear=sum(trimesh.boolean.intersection([box(px1+0.3,px1+2.3,L.SW_Y+sg*7.0-0.5,L.SW_Y+sg*7.0+0.5,L.SW_Z-pz/2,L.SW_Z+pz/2),bh],engine="manifold").volume for sg in (-1,1))

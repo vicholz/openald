@@ -11,8 +11,22 @@ ok   plugs x radios (plug inside USB-C cavity)      0.000 mm^3
 ok   shell x pads                                   0.000 mm^3
 ok   shell x base                                   0.000 mm^3
 ok   pads x base                                    0.000 mm^3
+ok   Feather shims x shell_raw                      0.000 mm^3
+ok   Feather radios x shell_raw                     0.000 mm^3
+ok   Feather shims x base_raw                       0.000 mm^3
+ok   Feather radios x base_raw                      0.000 mm^3
+ok   Feather shims x pads_raw                       0.000 mm^3
+ok   Feather radios x pads_raw                      0.000 mm^3
+ok   Feather shims x plugs                          0.000 mm^3
+ok   Feather shims x PCB                            0.000 mm^3
+ok   Feather radios x shims                         0.000 mm^3
+ok   plugs x Feather radios (plug inside USB-C cavity)     0.000 mm^3
 closest PCB part to the top shell: D3 at 0.19 mm (part boxes)
 insertion past the receptacle mouth: 6.00 mm (plug top Z 20.20, radio floor Z 11.70)
+  single_board mouth 2.50 inside, riser shim 0.00 -> insertion 6.00 mm; standard pad alone 6.00
+  feather      mouth 1.60 inside, riser shim 0.90 -> insertion 6.00 mm; standard pad alone 6.90 (> 6.40 max full seat: plug would bottom out, radio on the plug)
+  USB-C full seat (spec effective receptacle shell) 6.20 +/- 0.20; design target 6.00
+Feather riser shim top Z 12.60 (pad top 11.70); Feather radio bottom Z 12.60
 radio-to-guide clearance 0.35/side for 12 mm, 0.60/side above; pocket depth 50.8
 outer size 191.8 x 111.72 x 62.5 mm; radio gap 25.4 mm
 INTERFERENCES: 0
