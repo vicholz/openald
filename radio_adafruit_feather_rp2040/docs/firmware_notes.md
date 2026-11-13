@@ -1,6 +1,8 @@
 # OpenALD Feather RP2040 v1.0 — firmware notes
 
-There is no firmware in this package yet. These notes cover what firmware has to know about this hardware. Nothing has been tested on hardware.
+**Firmware now exists:** `firmware/openald_feather/` (Arduino, arduino-pico core; build with `firmware/build.sh`, prebuilt `firmware/openald_feather_v1.0.uf2`). It compiles with arduino-pico 6.3.2 + Adafruit NeoPixel 1.15.5 for "Adafruit Feather RP2040"; it has **not** been run on hardware. These notes cover what firmware has to know about this hardware; the sketch follows them. Nothing has been tested on hardware.
+
+Why Arduino rather than CircuitPython: the same toolchain style as the single board (MiniCore/Arduino), a 1 ms timer-interrupt wheel poll that is not disturbed by the main loop, flash persistence of frequency/volume, and a single .uf2 to flash.
 
 ## Toolchains
 * **Arduino**: Earle Philhower's *Raspberry Pi Pico/RP2040* core. Select the board "Adafruit Feather RP2040". `Wire` is the STEMMA QT port on SDA = GP2 and SCL = GP3.
@@ -23,11 +25,11 @@ Paper-verified against the Mitsumi SIQ series datasheet ([LCSC copy of the offic
 * **Decode:** 15 detents, one quadrature cycle (four valid Gray-code transitions) per detent, A leading B for clockwise. Count **one step per detent** (accumulate ±4), not one step per edge. A 1 ms state-table poll debounces; PIO quadrature is also fine.
 * Suggested behaviour, the same as the single-board radio: turn changes the volume, push and turn tunes, a long press runs seek.
 
-Example (Earle Philhower Arduino-Pico, board "Adafruit Feather RP2040"). Use the silk names `D24` / `D25` / `D4` — on this board D4 is GP6, not GPIO 4. Call `encoder_setup()` from `setup()`, and `encoder_poll()` every 1 ms.
+Example (Earle Philhower Arduino-Pico, board "Adafruit Feather RP2040"). arduino-pico pin numbers are GPIO numbers, so use 24 / 25 / **6** (silk D4 is GP6, not GPIO 4; an earlier version of this example wrongly used 4). The full sketch runs this from a 1 ms `add_repeating_timer_ms` callback. Call `encoder_setup()` from `setup()`, and `encoder_poll()` every 1 ms.
 
 ```cpp
 // D24=ENCA (GP24), D25=ENCB (GP25), D4=ENCSW (GP6). Common = GND.
-const uint8_t PIN_A = 24, PIN_B = 25, PIN_SW = 4;
+const uint8_t PIN_A = 24, PIN_B = 25, PIN_SW = 6;   // arduino-pico pin numbers are GPIO numbers: D4 = GP6
 static const int8_t ENC_TAB[16] = {
   0,-1,+1,0, +1,0,0,-1, -1,0,0,+1, 0,+1,-1,0
 };

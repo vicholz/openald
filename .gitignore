@@ -17,3 +17,6 @@ tools/freerouting.jar
 .DS_Store
 tools/kicad3d/
 dist/
+
+# Arduino build output
+radio_adafruit_feather_rp2040/firmware/build/
