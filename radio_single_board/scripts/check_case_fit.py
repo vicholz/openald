@@ -39,6 +39,14 @@ for r in [s for s in stock if s not in parts]:
     if r=='BT1': globals()['BOARD_PIECES']=[p for p in pcs if (p.bounds[0][2]>-0.01 and p.bounds[1][2]<1.61 and (p.bounds[1]-p.bounds[0])[0]>30)]
     keep=[p for p in pcs if not (p.bounds[0][2]>-0.01 and p.bounds[1][2]<1.61 and (p.bounds[1]-p.bounds[0])[0]>30)]
     parts[r]=keep
+# J1 (HRO TYPE-C-31-M-12): the project WRL is a plain 8.94 x 7.3 x 3.26 box; the real shell has fully rounded ends
+# (r = 1.63, HRO drawing), which matters now that it reaches 0.4 into the end-wall opening (2026-11-12). Check a stadium.
+if 'J1' in parts:
+    _j=b.FindFootprintByReference('J1'); _x=pcbnew.ToMM(_j.GetPosition().x)-100; _y=H-(pcbnew.ToMM(_j.GetPosition().y)-100)
+    _r=3.26/2; _c=[trimesh.creation.cylinder(radius=_r,height=7.3,sections=64,transform=trimesh.transformations.rotation_matrix(math.pi/2,[1,0,0])) for _ in (0,1)]
+    for _k,_sx in enumerate((-1,1)): _c[_k].apply_translation([_x+_sx*(8.94/2-_r),_y,1.6+_r])
+    _bx=trimesh.creation.box(extents=[8.94-2*_r,7.3,3.26]); _bx.apply_translation([_x,_y,1.6+_r])
+    parts['J1']=[trimesh.boolean.union(_c+[_bx],engine='manifold')]
 top=trimesh.load(sys.argv[1]); bot=trimesh.load(sys.argv[2])
 bad=0
 for r,ms in sorted(parts.items()):
@@ -72,6 +80,23 @@ if len(sys.argv)>3:
         if dm<worst[0]: worst=(dm,r)
         if dm<1.0: print(f"  {r:5s} min distance to tunnel walls {dm:.2f} mm")
     print(f"TUNNELS: closest component {worst[1]} at {worst[0]:.2f} mm")
+# ---- assembly path (2026-11-12): the top half is lowered straight down onto the bottom half with the PCB in place.
+# For every part that reaches past an inner wall face (wheel dial, switch knob, USB-C shell), the part's outside
+# portion swept down to the split (Z 0) must not meet the top half.
+IN_X0,IN_X1,IN_Y0,IN_Y1=-0.5,PLm.BOARD_W+0.5,-0.5,H+0.5
+for r,ms in sorted(parts.items()):
+    mesh=trimesh.util.concatenate(ms)
+    if not len(mesh.faces): continue
+    pts=np.vstack([mesh.vertices,mesh.sample(40000)])
+    o=pts[((pts[:,0]<IN_X0)|(pts[:,0]>IN_X1)|(pts[:,1]<IN_Y0)|(pts[:,1]>IN_Y1))&(pts[:,2]>0.01)]
+    if len(o)<4: continue
+    d=o.copy(); d[:,2]=-1.0
+    try: sw=trimesh.convex.convex_hull(np.vstack([o,d]))
+    except Exception: continue
+    v=trimesh.boolean.intersection([sw,top],engine='manifold').volume
+    lo,hi=o.min(0),o.max(0)
+    if v>0.01: bad+=1; print(f"  ASSEMBLY {r:5s}: top half collides with its outside part while being lowered: {v:.2f} mm^3")
+    else: print(f"ASSEMBLY {r:5s} reaches past the inner wall (x {lo[0]:.2f}..{hi[0]:.2f} y {lo[1]:.2f}..{hi[1]:.2f} z {lo[2]:.2f}..{hi[2]:.2f}): top half lowers past it: OK")
 print("INTERFERENCES:",bad)
 # assembled-PCB mesh for the case preview renders
 allm=[m for ms in parts.values() for m in ms]+globals().get('BOARD_PIECES',[])

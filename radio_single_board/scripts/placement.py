@@ -41,7 +41,8 @@ PL = {
  "D2":(22.0,56.5,0), "R6":(17.8,56.0,90), "R7":(15.8,56.0,90),
  # --- charger block, bottom edge USB-C
  "U1":(8.0,71.5,0), "R3":(2.2,71.5,90), "C1":(33.6,77.6,90), "C2":(8.0,66.6,0), "D7":(12.6,65.4,90),
- "J1":(19.0,83.35,0), "R1":(15.4,76.6,0), "R2":(22.6,76.6,0),
+ "J1":(19.0,84.25,0),   # 2026-11-12: +0.9 toward the USB edge (was 83.35): receptacle front 0.9 past the board edge -> mouth 1.60 inside the case bottom face, like the Feather
+ "R1":(15.4,76.6,0), "R2":(22.6,76.6,0),
  # TP4056 charge LEDs (visible with the power switch off), each in its own light tunnel left of the USB-C
  "D3":(7.4,81.8,0), "D4":(11.4,81.8,0), "R21":(7.4,78.6,0), "R22":(11.4,78.6,0),
  # --- rev 4 USB serial: ESD array right next to the USB-C data pins, CH340K (VBUS-powered) right of it
@@ -51,7 +52,7 @@ PL = {
  "D10":(28.0,56.3,0), "D8":(28.0,58.9,0), "D9":(28.0,61.5,0), "U6":(27.2,64.6,0), "C17":(24.3,64.6,90), "C18":(30.2,64.6,90),
 }
 # Battery holder on the bottom: pad 1 (+) at (19, 75.4), pad 2 (-) at (19, 2.5); body spans y 0.87..78.57,
-# leaving room for the centred USB-C receptacle (signal pads at y~79.3, shell pegs from y 79.2)
+# leaving room for the centred USB-C receptacle (signal pads at y~80.2, shell pegs from y 80.1 since J1 moved +0.9 on 2026-11-12)
 # level-bar window centres in the case top (board y, same x as the LED): evenly spaced, D1's tunnel is slanted
 BAR_WIN_Y={"D6":6.1,"D5":8.9,"D1":11.7}
 BT1_PAD1=(19.0,75.4); BT1_PAD2=(19.0,2.5)

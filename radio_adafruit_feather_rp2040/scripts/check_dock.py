@@ -40,9 +40,10 @@ for y in [-2.3,-1.5,-1.2,-0.9,-0.6]:
     x=a.intersection(w).symmetric_difference(b.intersection(w)).area
     # the Feather case has a LARGER cable-plug recess (intentional); what matters for the dock plug is that this case
     # has no material where the single-board case has an opening (plug path at least as free as on the single board)
-    blk=a.intersection(w).difference(b.intersection(w)).area
+    # (eroded by 0.02 mm: since 2026-11-12 both cases cut the same recess, and $fn 40 vs 48 facets leave ~1 um slivers)
+    blk=a.intersection(w).difference(b.intersection(w)).buffer(-0.02).area
     holes=[list(np.round(Polygon(i).bounds,2)) for g in (a.geoms if isinstance(a,MultiPolygon) else [a]) for i in g.interiors if Polygon(i).intersects(w)]
-    print(f"USB end wall y={y:5.2f}: XOR area near the USB opening = {x:.4f} mm^2 (larger recess, intentional); material where the single board is open = {blk:.4f} mm^2; openings {holes}")
+    print(f"USB end wall y={y:5.2f}: XOR area near the USB opening = {x:.4f} mm^2 (facet noise: both cases now cut the same recess); material where the single board is open = {blk:.4f} mm^2; openings {holes}")
     usb_block=max(globals().get("usb_block",0),blk)
 print("USB plug path:", "OK - every single-board opening is open here too" if usb_block<0.05 else f"BLOCKED ({usb_block:.3f} mm^2)")
 # whole-length envelope of this case

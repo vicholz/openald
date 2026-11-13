@@ -73,7 +73,7 @@ README.md            this file            HANDOFF.md        full resume / handof
 LICENSE              CC0 1.0 Universal    requirements.txt  Python deps
 tools/               check_all.sh, fetch_kicad3d.sh, make_packages.sh, easyeda/ (EasyEDA footprint cache for jlc_cpl_fit)
 radio_single_board/  kicad/ fab/ (gerbers, JLC BOM/CPL, centroid, .pos, vendor BOMs, minimal/) case/ previews/ docs/ scripts/
-charging_dock/       kicad/ fab/ case/ (STLs, floor_pads/, riser_shims/) previews/ docs/ scripts/ DOCK_INTERFACE.md
+charging_dock/       kicad/ fab/ case/ (STLs, floor_pads/) previews/ docs/ scripts/ DOCK_INTERFACE.md
 radio_adafruit_feather_rp2040/  case/ (stl/) previews/ docs/ scripts/ ref/ (Adafruit Eagle board, CC BY-SA) archive/ (retired PCB) make_all.sh
 ```
 

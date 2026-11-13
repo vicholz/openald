@@ -101,6 +101,10 @@ module wheel_notch(grow=0) {  // top half: the wheel slot continues down to the 
   ch = wheel_ch(); wz = WHEEL_SEAT_Z+(wheel_z0+wheel_z1)/2;
   translate([IN_X1U-0.5, wheel_xy[1]-ch-0.6-grow, -1]) cube([WALL+2, 2*ch+1.2+2*grow, 1+wz]);
 }
+module usb_notch() {   // top half (2026-11-12): the receptacle reaches 0.4 into the end wall (mouth Y -0.9), so the opening
+  // continues down to the split at full width; otherwise its lower rounded corners scrape the shell while the top half is lowered
+  translate([USB_X-(USB_W+0.5)/2, Y_OUT0-1, -1]) cube([USB_W+0.5, WALL+1.5, 1+USB_Z]);
+}
 module wheel_tab() {          // bottom half: fills the notch up to just under the slot (dial bottom is 0.65 above it)
   ch = wheel_ch(); top = WHEEL_SEAT_Z+wheel_z0-0.5-wheel_tab_fit;
   intersection() { shell();
@@ -206,7 +210,7 @@ module top_half() {
     for (h=feather_holes) translate([h[0],h[1],1.5]) cylinder(d=2.3,h=1.2);
     translate([f_btn_reset[0],f_btn_reset[1],3.9]) cylinder(d=reset_d,h=TOP_IN);
     translate([f_btn_reset[0],f_btn_reset[1],TOP_OUT-0.4]) cylinder(d1=reset_d,d2=reset_d+0.9,h=0.45);
-    cutouts(); wheel_notch(); led_windows(); led3_bores();
+    cutouts(); wheel_notch(); usb_notch(); led_windows(); led3_bores();
   }
   tab_plugs(); switch_tongue();
 }

@@ -9,9 +9,8 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 out = sys.argv[1] if len(sys.argv) > 1 else "/tmp/dock_plug_insertion_per_radio.png"
-cases = [("Single-board radio\n(standard pad)", "single_board", 0.0), ("Feather radio\n(standard pad + %.2f shim)" % G.RISER["feather"], "feather", G.RISER["feather"]),
-         ("Feather radio WITHOUT shim\n(not allowed: plug bottoms out)", "feather", 0.0)]
-fig, axs = plt.subplots(1, 3, figsize=(15, 7), sharey=True)
+cases = [("Single-board radio (J1 0.9 past its board edge)", "single_board", 0.0), ("Feather RP2040 radio", "feather", 0.0)]
+fig, axs = plt.subplots(1, 2, figsize=(11, 7), sharey=True)
 for ax, (title, r, rise) in zip(axs, cases):
     m = G.MOUTHS[r]; rb = G.FLOOR_Z + rise; mouth = rb + m; ins = G.PLUG_TOP - mouth
     ax.add_patch(Rectangle((-14, G.PCB_Z0), 28, G.PCB_T, color="darkgreen"))
@@ -19,11 +18,9 @@ for ax, (title, r, rise) in zip(axs, cases):
     if rise > 0:
         ax.add_patch(Rectangle((-14, G.FLOOR_Z), 28, rise, color="gold")); ax.add_patch(Rectangle((-4.6, G.FLOOR_Z), 9.2, rise, color="white"))
     # radio bottom wall (opening 9.44 wide) and the receptacle (8.40 cavity) from the mouth up
-    if r == "feather":
+    if True:   # both radios: 13.0 x 7.6 x 1.5 cable-plug recess, then the 0.5 wall with the 9.44 opening
         ax.add_patch(Rectangle((-14, rb + 1.5), 14 - 4.72, m - 1.5, color="orange")); ax.add_patch(Rectangle((4.72, rb + 1.5), 14 - 4.72, m - 1.5, color="orange"))
         ax.add_patch(Rectangle((-14, rb), 14 - 6.5, 1.5, color="orange")); ax.add_patch(Rectangle((6.5, rb), 14 - 6.5, 1.5, color="orange"))
-    else:
-        ax.add_patch(Rectangle((-14, rb), 14 - 4.72, m, color="orange")); ax.add_patch(Rectangle((4.72, rb), 14 - 4.72, m, color="orange"))
     ax.add_patch(Rectangle((-5.4, mouth), 1.0, 7.35, color="slategray")); ax.add_patch(Rectangle((4.4, mouth), 1.0, 7.35, color="slategray"))
     seat_lo, seat_hi = mouth + G.SEAT_NOM - G.SEAT_TOL, mouth + G.SEAT_NOM + G.SEAT_TOL
     ax.axhspan(seat_lo, seat_hi, xmin=0.3, xmax=0.7, color="red", alpha=0.18)
@@ -36,6 +33,6 @@ for ax, (title, r, rise) in zip(axs, cases):
                  fontsize=10, color="firebrick" if bad else "k")
     ax.set_xlim(-14, 14); ax.set_ylim(G.PCB_Z0 - 0.5, 24); ax.set_aspect("equal"); ax.set_xlabel("mm (across the radio width)")
 axs[0].set_ylabel("Z above the dock bottom, mm")
-fig.suptitle("OpenALD Dock v1.0: plug insertion per radio (plug %.2f tall from HX drawing; red band = USB-C full seat %.2f +/- %.2f past the mouth)"
-             % (G.PLUG_H, G.SEAT_NOM, G.SEAT_TOL), fontsize=11)
+fig.suptitle("OpenALD Dock v1.0: plug insertion (pad %.2f, plug %.2f tall from the HX drawing)\nred band = USB-C full seat %.2f +/- %.2f past the receptacle mouth"
+             % (G.PAD_T, G.PLUG_H, G.SEAT_NOM, G.SEAT_TOL), fontsize=11)
 fig.tight_layout(); fig.savefig(out, dpi=110)

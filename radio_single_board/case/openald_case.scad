@@ -39,7 +39,9 @@ chg_win_d  = 1.6;     // charge-LED window diameter
 win_fillet = 0.4;     // rounded outer rim of every LED window
 wheel_pocket_d = 1.0; // thumbwheel pocket depth (wall left under it = wall - this)
 wheel_pocket_h = 6.0; // pocket height (Z)
-usb_pocket_d = 1.5;   // USB-C plug-body pocket depth
+usb_pocket_d = 1.5;   // USB-C cable-plug recess depth (floor at Y -1.0)
+usb_recess = [13.0, 7.6]; usb_recess_r = 3.0; usb_fillet = 1.0;   // 2026-11-12: straight-walled recess like the Feather (mouth 15.0 x 9.6)
+asm_fit   = 0.2;    // bottom-half tabs under the wheel / switch notches: clearance to the top-half notch walls
 label_depth  = 0.4;   // engraved ON/OFF text
 label_size   = 1.8;
 $fn = 48;
@@ -117,12 +119,36 @@ module cutouts() {
   // ---- power switch (right side): filleted slot; actuator travel + 0.35 mm clearance all round
   translate([in_x1, (sw_on_y+sw_off_y)/2, zc+(sw_act_z0+sw_act_z1)/2]) rotate([0,90,0]) rotate([0,0,90])
     filleted_hole(abs(sw_on_y-sw_off_y)+sw_act_w+0.7, sw_act_z1-sw_act_z0+0.7, 0.9, wall, 0.8, 0.3);
-  // ---- USB-C (bottom edge): smooth pocket for the cable's plug body + filleted connector opening
-  translate([usb_xy[0], in_y0-wall, zc+usb_h/2]) rotate([90,0,0]) {
-    filleted_pocket(12.8, 7.4, 3.0, usb_pocket_d);
-  }
+  // ---- USB-C (bottom edge): straight-walled cable-plug overmold recess (13.0 x 7.6, r 3.0, 1.5 deep, floor at Y -1.0)
+  // with a r 1.0 fillet at the outer face (mouth 15.0 x 9.6) - same as the Feather case since 2026-11-12 (was a
+  // 12.8 x 7.4 -> 9.8 x 4.4 filleted bowl). J1 now sticks 0.9 past the board edge: its mouth is at Y -0.9, 0.1 behind
+  // the recess floor and 1.60 inside the bottom face; it reaches 0.4 into the remaining 0.5 wall through the opening below.
+  translate([usb_xy[0], in_y0-wall, zc+usb_h/2]) rotate([90,0,0]) translate([0,0,-usb_pocket_d])
+    filleted_hole(usb_recess[0], usb_recess[1], usb_recess_r, usb_pocket_d, usb_fillet, 0, 10, z_in=0);
   translate([usb_xy[0], in_y0, zc+usb_h/2]) rotate([90,0,0])
     filleted_hole(usb_w+0.5, usb_h+0.5, 1.4, wall-usb_pocket_d, 0.4, 0.3);
+}
+
+// ---- assembly notches (top half) and filler tabs (bottom half), 2026-11-12. The wheel dial, the switch knob and
+// (since J1 moved 0.9 toward the edge) the USB-C shell all reach into or through a wall. The top half is lowered
+// straight down onto the bottom half with the PCB already in, so the wall under each of those openings must be open
+// down to the split (Z 0) in the top half; the bottom half fills the notch back up to just under the part.
+function wheel_ch() = sqrt(pow(wheel_r,2)-pow(in_x1-wheel_xy[0],2));
+sw_slot_l = abs(sw_on_y-sw_off_y)+sw_act_w+0.7;      // switch slot length (Y) and height (Z), as in cutouts()
+sw_slot_h = sw_act_z1-sw_act_z0+0.7;
+module asm_notches() {   // top half
+  ch = wheel_ch(); wz = pcb_t+(wheel_z0+wheel_z1)/2;
+  translate([in_x1-0.5, wheel_xy[1]-ch-0.6, -1]) cube([wall+2, 2*ch+1.2, 1+wz]);
+  sz = pcb_t+(sw_act_z0+sw_act_z1)/2;
+  translate([in_x1-0.5, (sw_on_y+sw_off_y)/2-sw_slot_l/2, -1]) cube([wall+2, sw_slot_l, 1+sz]);
+  translate([usb_xy[0]-(usb_w+0.5)/2, in_y0-wall-1, -1]) cube([usb_w+0.5, wall+1.5, 1+pcb_t+usb_h/2]);
+}
+module asm_tabs() {      // bottom half: wheel and switch notches filled to 0.5 under the dial / knob (USB: the lip does it)
+  ch = wheel_ch();
+  intersection() { rounded_shell(-Hb,Ht); union() {
+    translate([in_x1, wheel_xy[1]-ch-0.6+asm_fit, -0.01]) cube([wall+1, 2*ch+1.2-2*asm_fit, pcb_t+wheel_z0-0.5+0.01]);
+    translate([in_x1, (sw_on_y+sw_off_y)/2-sw_slot_l/2+asm_fit, -0.01]) cube([wall+1, sw_slot_l-2*asm_fit, pcb_t+sw_act_z0-0.5+0.01]);
+  } }
 }
 
 // engraved position labels next to the power-switch slot (readable from the right side)
@@ -198,6 +224,7 @@ module top_half() {
       else { cylinder(d=screw_d,h=Ht+1); translate([0,0,Ht-nut_t]) cylinder(d=nut_af/cos(30),h=nut_t+1,$fn=6); }
     }
     cutouts();
+    asm_notches();
     led_windows();
     switch_labels();
   }
@@ -215,6 +242,7 @@ module bottom_half() {
         rrect(in_x0-lip_t,in_y0-lip_t,in_x1+lip_t,in_y1+lip_t,in_r+lip_t,lip_h);
         translate([0,0,-1]) rrect(in_x0,in_y0,in_x1,in_y1,in_r,lip_h+2);
       }
+      asm_tabs();
       // corner columns: floor to PCB, filleted into the walls
       for (h=holes) intersection() {
         translate([0,0,-bot_in-0.01]) rrect(in_x0,in_y0,in_x1,in_y1,in_r,bot_in+0.01);

@@ -1,14 +1,10 @@
 // OpenALD Dock v1.0 - 6-slot charging dock case (2 rows x 3, radios stand USB-C down, 2.00 in deep pockets)
 // Dock frame: X right, Y toward the back, Z up, origin = front-left-bottom corner. All mm.
 // Parts: part="base" | "shell" (print deck-down) | "pad" (6x, one per pocket; pad_index 0-5) | "pads" (all 6)
-//        "shim" (riser shim for one pocket: shim_index 0-5, shim_t) | "shims" (all 6, shim_t; default = Feather riser)
-//        "assembly" | "exploded" | "print" | "section" | raw parts for the fit check: shell_raw, base_raw,
-//        pads_raw, radios, plugs, shims_raw, radios_feather (Feather radio standing on its riser shim)
+//        "assembly" | "exploded" | "print" | "section" | raw parts for the fit check: shell_raw, base_raw, pads_raw, radios, plugs
 include <dock_params.scad>
 part = "assembly";
 pad_index = 0;
-shim_index = 0;
-shim_t = RISER_FEATHER;  // riser shim thickness (geom.py RISER: Feather 0.90 with the 11.60 plug)
 $fn = 48;
 SHELL_R = 4.0;           // outer plan corner radius
 DECK_T = 2.0;
@@ -115,36 +111,14 @@ module pad_raw(i) {
         translate([radios[i][0] + RW/2, radios[i][1] - PAD_OFF, PCB_Z1 + PAD_T]) scale([1, 0.6, 1]) sphere(d = 8);
     }
 }
-// ---------------------------------------------------------------- riser shims (per radio variant, loose, one per pocket)
-// Lies on the floor pad inside the 0.35/side guide (0.25/side play), plug through its hole. Raises a radio whose USB-C mouth
-// is shallower than 2.50 so the fixed plug still stops at the design insertion (geom.py TARGET_INSERTION) and the radio
-// rests on the pad, not on the plug. Feather radio (mouth 1.60): 0.90. Single-board radio: none (unless the plug is taller).
-module shim_raw(i, t) {
-    p = plugs[i];
-    difference() {
-        translate([0, 0, FLOOR_Z]) rfoot(i, RISER_OFF, t);
-        translate([0, 0, FLOOR_Z - 1]) rbox_c(p[0], p[1], PLUG_HOLE[0], PLUG_HOLE[1], 1.0, t + 2);
-        // pick-out notch (front edge) and a corner chamfer marking the front-left corner
-        translate([radios[i][0] + RW/2 - 4, radios[i][1] - RISER_OFF - 1, FLOOR_Z - 1]) cube([8, 3.0, t + 2]);
-        translate([radios[i][0] - RISER_OFF, radios[i][1] - RISER_OFF, FLOOR_Z - 1]) rotate([0, 0, 45]) cube([4, 4, t + 2], center = true);
-    }
-}
 // ---------------------------------------------------------------- fit-check / preview helpers
-module radio_env(i) {        // bottom 52 mm of any OpenALD radio (see DOCK_INTERFACE.md), USB-C cavity open
-    p = plugs[i];
+module radio_env(i) {        // bottom 52 mm of any OpenALD radio (see DOCK_INTERFACE.md): 13.0 x 7.6 x 1.5 cable-plug
+    p = plugs[i];            // recess, 9.44 x 3.76 opening, receptacle mouth MOUTH_UP (1.60) inside the bottom face
     difference() {
-        translate([0, 0, FLOOR_Z]) rfoot(i, 0, 52);
-        translate([0, 0, FLOOR_Z - 1]) rbox_c(p[0], p[1], 9.44, 3.76, 1.4, MOUTH_UP + 1);
-        translate([0, 0, FLOOR_Z]) rbox_c(p[0], p[1], 8.40, 2.60, 1.25, MOUTH_UP + 7.0);
-    }
-}
-module radio_env_feather(i, rise) {   // Feather radio bottom 52 mm on a riser: 13.0 x 7.6 x 1.5 cable recess, mouth 1.60 inside
-    p = plugs[i];
-    translate([0, 0, rise]) difference() {
         translate([0, 0, FLOOR_Z]) rfoot(i, 0, 52);
         translate([0, 0, FLOOR_Z - 1]) rbox_c(p[0], p[1], 13.0, 7.6, 3.0, 1.5 + 1);
-        translate([0, 0, FLOOR_Z - 1]) rbox_c(p[0], p[1], 9.44, 3.76, 1.4, MOUTH_FEATHER + 1);
-        translate([0, 0, FLOOR_Z]) rbox_c(p[0], p[1], 8.40, 2.60, 1.25, MOUTH_FEATHER + 7.0);
+        translate([0, 0, FLOOR_Z - 1]) rbox_c(p[0], p[1], 9.44, 3.76, 1.4, MOUTH_UP + 1);
+        translate([0, 0, FLOOR_Z]) rbox_c(p[0], p[1], 8.40, 2.60, 1.25, MOUTH_UP + 7.0);
     }
 }
 module plug(i) { p = plugs[i];
@@ -159,10 +133,6 @@ if (part == "shell_raw") shell_raw();
 if (part == "base_raw")  base_raw();
 if (part == "pads_raw")  for (i = [0:5]) pad_raw(i);
 if (part == "radios")    for (i = [0:5]) radio_env(i);
-if (part == "shims_raw") for (i = [0:5]) shim_raw(i, shim_t);
-if (part == "radios_feather") for (i = [0:5]) radio_env_feather(i, shim_t);
-if (part == "shim")      translate([0, 0, -FLOOR_Z]) shim_raw(shim_index, shim_t);                // prints flat as is
-if (part == "shims")     for (i = [0:5]) translate([(i % 3) * 50 - radios[i][0], floor(i / 3) * 40 - radios[i][1], -FLOOR_Z]) shim_raw(i, shim_t);
 if (part == "plugs")     for (i = [0:5]) plug(i);
 if (part == "assembly" || part == "section") {
     intersection() {

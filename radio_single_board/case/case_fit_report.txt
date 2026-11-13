@@ -31,7 +31,7 @@ D9    x  26.10.. 29.90  y  24.70.. 26.30  z   1.59..  2.85
 FB1   x  23.20.. 24.80  y  76.20.. 77.00  z   1.59..  2.40
 FB2   x  23.20.. 24.80  y  74.20.. 75.00  z   1.59..  2.40
 FB3   x   3.80..  4.60  y  74.00.. 75.60  z   1.59..  2.40
-J1    x  14.53.. 23.47  y   0.00..  7.30  z   1.60..  4.86
+J1    x  14.53.. 23.47  y  -0.90..  6.40  z   1.60..  4.86
 J2    x   8.45.. 14.55  y  72.80.. 87.00  z   1.60..  6.60
 Q1    x  27.40.. 30.20  y  75.95.. 78.85  z   1.59..  3.15
 Q2    x  10.05.. 12.55  y   9.50.. 12.50  z   1.59..  2.79
@@ -80,4 +80,7 @@ TUNNELS: wall bottom z = 1.80 mm (PCB top 1.60 -> gap 0.20 mm)
   D6    min distance to tunnel walls 0.60 mm
   J1    min distance to tunnel walls 0.73 mm
 TUNNELS: closest component D1 at 0.31 mm
+ASSEMBLY J1    reaches past the inner wall (x 14.53..23.47 y -0.90..-0.50 z 1.60..4.86): top half lowers past it: OK
+ASSEMBLY SW1   reaches past the inner wall (x 38.50..43.30 y 20.00..23.50 z 3.85..6.35): top half lowers past it: OK
+ASSEMBLY SW3   reaches past the inner wall (x 38.50..40.85 y 55.70..66.30 z 3.60..5.60): top half lowers past it: OK
 INTERFERENCES: 0

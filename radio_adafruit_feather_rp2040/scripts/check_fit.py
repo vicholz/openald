@@ -128,6 +128,13 @@ path=trimesh.boolean.intersection([col,box(L.IN_X1U,L.IN_X1U+10,WY-10,WY+10,-1,D
 v=trimesh.boolean.intersection([path,cases["case top"]],engine="manifold").volume
 if v>0.01: bad+=1; print(f"  INTERFERENCE top-half assembly path over the dial: {v:.3f} mm^3")
 else: print("  top half can be lowered straight over the protruding dial: OK")
+# USB-C receptacle (2026-11-12): its part outside the inner end wall (Y < Y_IN0), swept down to the split, must be free of the top half
+_u=[m for m in parts["Feather parts"] if abs((m.bounds[1][0]-m.bounds[0][0])-8.94)<0.05 and m.bounds[0][1]<L.Y_IN0]
+if _u:
+    _o=trimesh.boolean.intersection([_u[0],box(0,40,L.Y_IN0-5,L.Y_IN0,0.01,20)],engine="manifold"); _p=_o.vertices.copy(); _d=_p.copy(); _d[:,2]=-1
+    v=trimesh.boolean.intersection([trimesh.convex.convex_hull(np.vstack([_p,_d])),cases["case top"]],engine="manifold").volume
+    if v>0.01: bad+=1; print(f"  INTERFERENCE top-half assembly path over the USB-C receptacle: {v:.3f} mm^3")
+    else: print(f"  top half can be lowered straight past the USB-C receptacle ({L.Y_IN0-_o.bounds[0][1]:.2f} mm into the end wall): OK")
 # switch drop-in path: the switch goes into the bottom half from above (plate in the groove, knob down the channel)
 def up(m,z1=3.0):
     lo,hi=m.bounds; return box(lo[0],hi[0],lo[1],hi[1],lo[2],z1)
@@ -182,7 +189,7 @@ print(f"  switch (left side): knob tip X {px0-L.SW_L:.2f} -> protrudes {X0OU-(px
 uf=json.load(open(os.path.join(ROOT,"ref","feather_rp2040_mech.json")))["usb"]["face_y"]
 YO=L.Y_IN0-L.WALL; RF=YO+1.5
 print(f"  USB-C: receptacle mouth Y {uf:.2f}: {uf-YO:.2f} mm inside the outer (dock) face Y {YO:.2f}, {uf-RF:.2f} mm behind the "
-      f"cable-plug recess floor Y {RF:.2f} (single board: 2.50 / 1.00); dock plug insertion {6.0-uf:.2f} mm on the standard pad (USB-C full seat 6.20 +/- 0.20 -> use the dock's {-uf:.2f} mm Feather riser shim: 6.00, like the single board)")
+      f"cable-plug recess floor Y {RF:.2f} (single board since 2026-11-12: the same 1.60 / 0.10); dock plug insertion {7.6-(uf-YO):.2f} mm (dock plug tip 7.60 above the bottom face on the 4.00 pad) (USB-C full seat 6.20 +/- 0.20)")
 # switch backing: material behind the plate ears / body and under it (bottom half)
 bh=cases["case bottom"]
 ear=sum(trimesh.boolean.intersection([box(px1+0.3,px1+2.3,L.SW_Y+sg*7.0-0.5,L.SW_Y+sg*7.0+0.5,L.SW_Z-pz/2,L.SW_Z+pz/2),bh],engine="manifold").volume for sg in (-1,1))

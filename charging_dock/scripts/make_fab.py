@@ -163,7 +163,7 @@ def main():
     parts=design.PARTS
     HAND={ # parts not assembled by JLCPCB (no EasyEDA footprint -> JLC cannot verify placement), with where to buy
      **{f"J{i}":("HX TYPE C-M 16P V-SMT vertical USB-C plug (slot %d) - hand solder, see README"%(i-1),None,"https://www.lcsc.com/product-detail/C55200592.html") for i in range(2,8)}}
-    EXTRA=[("—","6","M3 x 12 mm screws, socket or pan head (from below, heads in 3 mm counterbores)","~$0.05","https://www.amazon.com/s?k=M3+x+12mm+socket+head+screws"),
+    EXTRA=[("—","6","M3 x 10 mm screws, socket or pan head (from below, heads in 3 mm counterbores; 4.1 mm standoffs)","~$0.05","https://www.amazon.com/s?k=M3+x+12mm+socket+head+screws"),
            ("—","6","M3 brass heat-set inserts, OD 4.0-4.6 mm x L 4-5.7 mm","~$0.06","https://www.amazon.com/s?k=M3+heat+set+inserts"),
            ("—","4","10 mm round rubber bumper feet (optional)","~$0.05","https://www.amazon.com/s?k=10mm+rubber+bumper+feet"),
            ("—","1","USB-C PD charger, 45 W or more (must offer 20 V >= 2.25 A or 15 V >= 3 A) + USB-C cable","~$15-25","https://www.amazon.com/s?k=45W+USB+C+PD+charger")]
