@@ -12,7 +12,7 @@ def S(n,val): o.append(f"{n} = {val if isinstance(val,str) else ('%g'%val)};")
 for n in ["WALL","CLR","EDGE_R","IN_X0","IN_X1","IN_R","OUT_R","Y_IN0","Y_OUT0","TOP_IN","TOP_T","BOT_OUT","USB_X","USB_Z","USB_W","USB_H",
           "DOCK_DEPTH","DOCK_LINE_Y","FLOOR_T","FLOOR_Z","J0","J1","WIDEN","IN_X0U","IN_X1U","Y_IN1","Y_OUT1","TOP_OUT_R","TOP_IN_R",
           "DECK_Z0","DECK_Z1","FM_HOLE_INSET","FM_HOLE_D","FM_JACK_X","FM_JACK_AXIS_H","FM_JACK_BODY_H","FM_JACK_HOLE_D",
-          "WHEEL_R","WHEEL_SEAT_Z","WHEEL_PUSH","SW_L","SW_Y","SW_Z","SW_LUG_L","SW_LUG_P","SW_TRAVEL","SW_SKIN","SW_GROOVE","SW_RIB","SW_CRUSH","HOLDER_POCKET","DECK_RELIEF","LED3_ABOVE_FLANGE"]:
+          "WHEEL_R","WHEEL_SEAT_Z","WHEEL_PUSH","SW_L","SW_Y","SW_Z","SW_LUG_L","SW_LUG_P","SW_TRAVEL","SW_SKIN","SW_GROOVE","SW_RIB","SW_CRUSH","SW_PLATE_MAX","SW_BACK","SW_SIDE_EXT","HOLDER_POCKET","DECK_RELIEF","LED3_ABOVE_FLANGE"]:
     S(n,getattr(L,n))
 H=L.HOLDER; S("holder_box",v([H["x0"],H["x1"],H["y0"],H["y1"],H["z0"],H["z1"]]))
 S("holder_pins",v([[p[0],p[1]] for p in L.HOLDER_PINS]))

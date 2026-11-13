@@ -1,6 +1,6 @@
 """OpenALD Feather RP2040 v1.0 - single source of truth for the mechanical layout.
 Everything is in the CASE frame (same frame as the single-board radio's case so the dock interface can be compared
-directly):  X across the case (case centre X = 19.0), Y = 0 at the USB-C receptacle face (+Y toward the top end),
+directly):  X across the case (case centre X = 19.0), Y = 0 at the single-board USB-C receptacle face (the Feather's is at FEATHER_DY = -0.9) (+Y toward the top end),
 Z = 0 at the Feather bottom face (= the single-board PCB bottom face).  Outer bottom (dock) face is at Y = -2.5."""
 # ---------------- dock interface (copied from the single-board case: case_params.scad + openald_case.scad) -------
 WALL=2.0; CLR=0.5; PCB_W=38.0; PCB_R=3.0; EDGE_R=2.0
@@ -25,7 +25,11 @@ TOP_OUT_R = 3.0; TOP_IN_R = TOP_OUT_R-WALL     # smaller plan radius at the (fre
 # 18650 holder MPD BH-18650-PC (77.7 x 20.9 x 21.31, PC pins 72.9 apart), base on the floor, cell opening up
 HOLDER = dict(x0=19.0-20.9/2, x1=19.0+20.9/2, y0=3.0, y1=3.0+77.7, z0=FLOOR_Z, z1=FLOOR_Z+21.31)
 HOLDER_PINS = [(19.0, 3.0+2.4, "+"), (19.0, 3.0+2.4+72.9, "-")]   # + end at the USB end
-# Feather: from scripts/feather_data.py (Adafruit Eagle file)
+# Feather: from scripts/feather_data.py (Adafruit Eagle file).
+# FEATHER_DY: the Feather (and its USB-C receptacle face) sits 0.9 mm closer to the USB/bottom face than the single
+# board's receptacle (Y 0): mouth 1.6 mm inside the bottom face, 0.1 mm behind the plug-overmold recess floor (Y -1.0),
+# so a cable plug seats fully (test print 52983f3: the cable barely held). Y = 0 is still the single board's mouth.
+FEATHER_DY = -0.9
 # frame (deck) under the Feather / boards
 DECK_Z0, DECK_Z1 = -1.0, 0.0
 # FM module (26.9 x 26.9, from the photo / listing; MEASURE YOURS) - components up, jack toward +Y (top end)
@@ -66,7 +70,10 @@ SW_TRAVEL = 3.0
 SW_SKIN = 1.2                # outer skin in front of the plate -> G4 knob 2.8 mm proud (same as the original radio)
 SW_GROOVE = 0.7              # plate groove width (fits 0.4-0.6 plates; crush ribs take up the slack)
 SW_RIB = 0.8                 # printed ribs behind the plate ears
-SW_CRUSH = 0.25              # crush bumps on the ribs (effective groove 0.45)
+SW_CRUSH = 0.25              # crush bumps on the side blocks (effective groove 0.45)
+SW_PLATE_MAX = 0.6           # thickest plate allowed for (sets the back-wall position)
+SW_BACK = 2.0                # solid back wall behind the switch body (lug slot open to the top)
+SW_SIDE_EXT = 2.0            # side blocks run 2 mm past the groove ends
 # Optional dock-visible charge LEDs: two 3 mm THT LEDs pushed into sockets in the top half, wired with inline resistors.
 LED3 = [("red","CHG",30.0,74.0),("green","FULL",30.0,78.5)]
 LED3_ABOVE_FLANGE = 4.6      # 3 mm LED length from the flange top to the dome tip (measure yours; typical 4.3-4.8)

@@ -1,5 +1,5 @@
 // OpenALD Feather RP2040 v1.0 - enclosure (top half, bottom half) + internal frame.
-// Case frame: X across (centre 19), Y = 0 at the USB-C receptacle face (+Y toward the jack end), Z = 0 at the
+// Case frame: X across (centre 19), Y = 0 at the single-board USB-C receptacle face (Feather: feather_dy) (+Y toward the jack end), Z = 0 at the
 // Feather's bottom face.  The lowest 2 in (Y -2.5 .. 48.3) is the same solid as the OpenALD single-board case
 // (43.0 x 33.41 section, R5.5 plan corners, R2 edges, same USB-C opening and plug-body recess) so it fits the dock.
 // Above that the body tapers out by 1.25 mm per side (Y 50.3 .. 54.3) to 45.5 mm wide.
@@ -22,7 +22,8 @@ reset_d = 1.4;                                     // pin-hole over the Feather 
 deck_clr = 0.35;                                   // frame deck to the inner walls
 fm_ledge = 1.5;                                    // FM board rests on a 1.5 mm ledge (z 0 .. fm z0)
 fm_posts = true;                                   // top-half posts on the (ESTIMATED) FM corner holes
-usb_pocket_d = 1.5; label_depth = 0.4; label_size = 1.8;
+usb_pocket_d = 1.5; usb_recess = [13.0, 7.6]; usb_recess_r = 3.0; usb_fillet = 1.0;  // cable-plug overmold recess (~12.5 x 7 plugs)
+ label_depth = 0.4; label_size = 1.8;
 wheel_pocket_d = 1.0; wheel_pocket_h = 6.0;
 wheel_tab_fit = 0.15;                              // bottom-half tab under the wheel slot (lets the top half drop over the dial)
 cradle_wall = 1.5; cradle_wall_h = 1.6;            // wheel cradle side walls (Z 1.6 .. 3.2, 0.4 under the dial)
@@ -81,8 +82,10 @@ module filleted_pocket(w,h,cr,depth,n=10) { translate([0,0,-depth]) filleted_hol
 // ---------------- openings ----------------
 module cutouts() {
   zc = WHEEL_SEAT_Z;   // wheel seat (cradle top) = 1.6, the dial is at Z 3.6 .. 5.6
-  // USB-C (bottom face) - identical to the single-board case: plug-body pocket + filleted receptacle opening
-  translate([USB_X, Y_IN0-WALL, USB_Z]) rotate([90,0,0]) filleted_pocket(12.8, 7.4, 3.0, usb_pocket_d);
+  // USB-C (bottom face): straight-walled cable-plug overmold recess (13.0 x 7.6, r 3.0, 1.5 deep, floor at Y -1.0) with
+  // a r 1.0 fillet at the outer face (mouth 15.0 x 9.6). The single board has a 12.8 x 7.4 -> 9.8 x 4.4 filleted bowl;
+  // this recess contains it, so the dock plug passes exactly as before. Receptacle opening as the single board.
+  translate([USB_X, Y_OUT0, USB_Z]) rotate([90,0,0]) translate([0,0,-usb_pocket_d]) filleted_hole(usb_recess[0], usb_recess[1], usb_recess_r, usb_pocket_d, usb_fillet, 0, 10, z_in=0);
   translate([USB_X, Y_IN0, USB_Z]) rotate([90,0,0]) filleted_hole(USB_W+0.5, USB_H+0.5, 1.4, WALL-usb_pocket_d, 0.4, 0.3);
   // 3.5 mm jack on the FM module (top end wall); position is an ESTIMATE from the module photo - edit layout.py
   translate([FM_JACK_X, Y_IN1-0.1, fm_box[4]+fm_box[5]+FM_JACK_AXIS_H]) rotate([-90,0,0]) {
@@ -117,11 +120,22 @@ module switch_cuts() {   // bottom half only
     lw(sw_g0, SW_Y-sw_gl/2, sw_gz0) cube([SW_GROOVE, sw_gl, -sw_gz0+lip_h+0.5]);
     for (s=[-1,1]) for (k=[0,1]) lw(sw_g1-SW_CRUSH, SW_Y+s*(sw_win+1.2+k*2.2)-0.4, sw_gz0-1) cube([SW_CRUSH+0.1, 0.8, -sw_gz0+1-1.05]);
   }
-  lw(sw_g1-0.05, SW_Y-sw_win, sw_gz0) cube([2*WALL, 2*sw_win, -sw_gz0+lip_h+0.5]);          // body window (wall skin behind the groove)
+  lw(sw_g1-0.05, SW_Y-sw_win, sw_gz0) cube([sw_bk0-sw_g1+0.05, 2*sw_win, -sw_gz0+lip_h+0.5]);  // body window between the side blocks
+  lw(sw_bk0-0.01, SW_Y-sw_slot_w/2, SW_Z-sw_slot_dz) cube([SW_BACK+0.02, sw_slot_w, -SW_Z+sw_slot_dz+lip_h+0.5]); // lug/wire slot, open to the top
   lw(-0.01, SW_Y-sw_kh/2, SW_Z-sw_kz/2) cube([sw_g0+0.02, sw_kh, -SW_Z+sw_kz/2+lip_h+0.5]); // knob slot + channel up to the split
 }
-module switch_ribs() {   // bottom half: ribs behind the ears (tops at Z -1.0 also support the frame tab)
-  for (s=[-1,1]) lw(sw_g1-0.01, s>0 ? SW_Y+sw_win : SW_Y-sw_gl/2, sw_gz0) cube([SW_RIB+0.01, sw_gl/2-sw_win, DECK_Z0-sw_gz0]);
+// solid backing (bottom half): two side blocks behind the plate ears, a back wall behind the body and a shelf under it,
+// all from the case floor up to the frame deck (Z -1.0) and fused to the left wall, so an inward push on the knob
+// (plate ears -> side blocks, body -> back wall) goes straight into the wall and floor
+sw_bk0 = SW_SKIN+SW_PLATE_MAX+sw_body[2]+0.15;      // back-wall front face (n 6.95): body back of a 0.6 plate + 0.15
+sw_bk1 = sw_bk0+SW_BACK;                               // back-wall rear face (n)
+sw_slot_w = 2*SW_LUG_P+1.6+2*0.6;                      // lug slot 8.8 wide (lugs 7.6 + 0.6 each side)
+sw_slot_dz = 1.5;                                      // slot floor 1.5 below the lug centre (solder joints)
+module switch_backing() {
+  sy1 = sw_gl/2+SW_SIDE_EXT;                           // side blocks reach 2 mm past the groove ends
+  for (s=[-1,1]) lw(sw_g1-0.01, s>0 ? SW_Y+sw_win : SW_Y-sy1, FLOOR_Z-0.01) cube([sw_bk1-sw_g1+0.01, sy1-sw_win, DECK_Z0-FLOOR_Z+0.01]);
+  lw(sw_bk0, SW_Y-sw_win-0.01, FLOOR_Z-0.01) cube([SW_BACK, 2*sw_win+0.02, DECK_Z0-FLOOR_Z+0.01]);      // back wall
+  lw(sw_g1-0.01, SW_Y-sw_win-0.01, FLOOR_Z-0.01) cube([sw_bk0-sw_g1+0.02, 2*sw_win+0.02, sw_gz0-FLOOR_Z+0.01]); // shelf (solid to the floor)
 }
 module switch_tongue() { // top half: fills the knob channel above the slot (closes the slot top, stops the switch rising)
   intersection() { shell(); lw(-0.5, SW_Y-sw_kh/2+sw_fit, SW_Z+sw_kz/2) cube([sw_g0-0.15+0.5, sw_kh-2*sw_fit, -SW_Z-sw_kz/2+0.01]); }
@@ -216,7 +230,7 @@ module bottom_half() {
       // tenon on the leg under the wheel cradle: engages the frame so the wheel push (3-6 N, -X) goes into the case
       translate([tenon_leg[0]-tenon_w[0]/2,tenon_leg[1]-tenon_w[1]/2,DECK_Z0-0.06]) cube([tenon_w[0],tenon_w[1],tenon_h+0.06]);
       wheel_tab();
-      switch_ribs();
+      switch_backing();
     }
     for (s=screws) { translate([s[0],s[1],head_seat-0.01]) cylinder(d=screw_d,h=-head_seat+1);
                      translate([s[0],s[1],BOT_OUT-1]) cylinder(d=head_d,h=head_seat-BOT_OUT+1); }
@@ -277,7 +291,7 @@ module frame() {
     translate([31.2,12.0,-5]) cube([3.8,36.0,10]);              // Feather JP1/JP3 wires down to the right channel
     translate([30.4,69.6,-5]) cube([3.6,10.9,10]);              // wheel / LED wires down to the right channel
     translate([tenon_leg[0]-tenon_w[0]/2-0.15, tenon_leg[1]-tenon_w[1]/2-0.15, DECK_Z0-0.01]) cube([tenon_w[0]+0.3, tenon_w[1]+0.3, tenon_h+0.25]);
-    for (x=[14.68,23.32]) for (y=[2.60,6.78]) translate([x,y,-5]) cylinder(d=1.8,h=10);      // Feather USB-C shell legs
+    for (x=[14.68,23.32]) for (y=[2.60,6.78]+[feather_dy,feather_dy]) translate([x,y,-5]) cylinder(d=1.8,h=10);      // Feather USB-C shell legs
     translate([fm_box[0]+fm_ledge,fm_box[2]+fm_ledge,-5]) cube([fm_box[1]-fm_box[0]-2*fm_ledge,fm_box[3]-fm_box[2]-2*fm_ledge,10]);  // under the FM board
   }
 }
@@ -320,6 +334,11 @@ else if (part=="section") {   // closed case cut at Y = sec_y, looking from the 
   clipc("#222") ghost_switch(); clipc("red") ghost_leds(); }
 else if (part=="inside_left") {   // bottom half + frame + switch, cut at X = 9 (looking at the left wall from inside)
   intersection() { union() { color("lightgray") bottom_half(); color("tan") frame(); ghost_switch(); } translate([-10,52,-40]) cube([19,60,80]); } }
+else if (part=="usb_section") {   // closed case cut at X = 19 (USB centreline), looking from +X: receptacle vs the recess
+  intersection() { union() { color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("tan") frame(); ghosts(); }
+                   translate([-20,-10,-40]) cube([39,30,80]); } }
+else if (part=="switch_backing") {   // bottom half only around the switch (no switch): groove, side blocks, back wall, lug slot
+  intersection() { color("lightgray") bottom_half(); translate([-10,55,-30]) cube([22,35,40]); } }
 else if (part=="bottom_switch") { color("lightgray") bottom_half(); ghost_switch(); }
 else if (part=="inside_right") {   // bottom half + frame + parts, top half removed, cut at X = 30.6, Y > 52 (looking at the right wall from inside)
   intersection() { union() { color("lightgray") bottom_half(); color("tan") frame(); ghosts(); ghost_switch(); } translate([30.6,52,-40]) cube([30,60,80]); } }

@@ -1,5 +1,5 @@
      y mm above bottom   width  depth   ref w  ref d  outer-envelope XOR area (mm^2)
- -2.45            0.05   33.47  30.17   33.47  30.17  0.0041
+ -2.45            0.05   33.47  30.17   33.47  30.17  0.0040
  -2.00            0.50   36.54  32.01   36.54  32.01  0.0014
  -1.00            1.50   39.53  33.28   39.53  33.28  0.0042
  -0.60            1.90   40.29  33.38   40.29  33.38  0.0012
@@ -13,15 +13,16 @@
  20.00           22.50   43.00  33.41   43.00  33.41  0.0004
  30.00           32.50   43.00  33.41   43.00  33.41  0.0004
  40.00           42.50   43.00  33.41   43.00  33.41  0.0005
- 45.00           47.50   43.00  33.41   43.00  33.41  0.0005
+ 45.00           47.50   43.00  33.41   43.00  33.41  0.0006
  48.30           50.80   43.00  33.41   43.00  33.41  0.0006
  49.00           51.50   43.00  33.41   43.00  33.41  0.0006
  49.50           52.00   43.00  33.41   43.00  33.41  0.0006
 worst outer-envelope difference in the bottom 52 mm: 0.1788 mm^2
-USB end wall y=-2.30: XOR area near the USB opening = 0.0344 mm^2; openings (x0,z0,x1,z1) [[np.float64(13.34), np.float64(0.27), np.float64(24.66), np.float64(6.19)]]
-USB end wall y=-1.50: XOR area near the USB opening = 0.0152 mm^2; openings (x0,z0,x1,z1) [[np.float64(2.36), np.float64(0.0), np.float64(35.64), np.float64(5.52)]]
-USB end wall y=-1.20: XOR area near the USB opening = 0.0203 mm^2; openings (x0,z0,x1,z1) [[np.float64(1.25), np.float64(0.0), np.float64(36.75), np.float64(5.51)]]
-USB end wall y=-0.90: XOR area near the USB opening = 0.0126 mm^2; openings (x0,z0,x1,z1) [[np.float64(0.66), np.float64(0.0), np.float64(37.34), np.float64(5.25)]]
-USB end wall y=-0.60: XOR area near the USB opening = 0.0119 mm^2; openings (x0,z0,x1,z1) [[np.float64(0.22), np.float64(0.0), np.float64(37.78), np.float64(5.2)]]
+USB end wall y=-2.30: XOR area near the USB opening = 43.1380 mm^2 (larger recess, intentional); material where the single board is open = 0.0000 mm^2; openings [[np.float64(12.1), np.float64(-0.97), np.float64(25.9), np.float64(7.43)]]
+USB end wall y=-1.50: XOR area near the USB opening = 33.8812 mm^2 (larger recess, intentional); material where the single board is open = 0.0000 mm^2; openings [[np.float64(2.36), np.float64(-0.57), np.float64(35.64), np.float64(7.03)]]
+USB end wall y=-1.20: XOR area near the USB opening = 45.9981 mm^2 (larger recess, intentional); material where the single board is open = 0.0000 mm^2; openings [[np.float64(1.25), np.float64(-0.57), np.float64(36.75), np.float64(7.03)]]
+USB end wall y=-0.90: XOR area near the USB opening = 0.0126 mm^2 (larger recess, intentional); material where the single board is open = 0.0100 mm^2; openings [[np.float64(0.66), np.float64(0.0), np.float64(37.34), np.float64(5.25)]]
+USB end wall y=-0.60: XOR area near the USB opening = 0.0119 mm^2 (larger recess, intentional); material where the single board is open = 0.0095 mm^2; openings [[np.float64(0.22), np.float64(0.0), np.float64(37.78), np.float64(5.2)]]
+USB plug path: OK - every single-board opening is open here too
 this case overall: x -3.75..41.75 (45.50) y -2.50..89.50 (92.00) z -23.61..9.80 (33.41)
 single-board case: x -2.50..40.50 (43.00) y -2.50..89.50 (92.00) z -23.61..9.80 (33.41)

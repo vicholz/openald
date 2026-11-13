@@ -17,6 +17,6 @@ Prices were checked on 2026-11-11 and are in USD, without shipping or tax. There
 | 11 | Battery divider: 2 × 220 k + 1 × 100 nF, inline in heat-shrink (needed for the battery gauge) | any | 1 set | — | not price-checked |
 | 12 | Optional dock-visible charge LEDs: 3 mm THT red + green (diffused), 2 × 1.5 k | any | 1 set | — | not price-checked |
 | 13 | **Hookup wire** 28–30 AWG silicone, ~8 colours, ~1.5 m total (about 12 leads of ~120 mm), 32–36 AWG enamel for the optional STAT tap, 1.5–2 mm heat-shrink, medium CA or 5-min epoxy, thin double-sided tape (≤ 0.2 mm, not foam) or glue dots for the holder | any | — | — | not price-checked |
-| 14 | Filament (PLA/PETG): top 10.8 + bottom 17.7 + frame 2.4 cm³ ≈ 31 cm³ (~39 g) | — | — | — | — |
+| 14 | Filament (PLA/PETG): top 10.8 + bottom 20.8 + frame 2.4 cm³ ≈ 34 cm³ (~43 g) | — | — | — | — |
 
 **Priced items total: $32.25** per radio (Feather, holder, cell, two cables, wheel, switch). Add the 4 case screws, inserts, the divider/LED parts, wire and filament. The FM module is already on hand. Compared with the controls-board version this drops the JLC PCB order (board, assembly, ~$6 of extended-part fees and shipping).

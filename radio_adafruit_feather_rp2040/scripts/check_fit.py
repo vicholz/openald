@@ -23,7 +23,14 @@ sc=open(os.path.join(ROOT,"case","feather_params.scad")).read()
 def arr(n): return json.loads(re.search(n+r"\s*=\s*(\[.*?\]);",sc,re.S).group(1))
 fbx=arr("feather_box"); fh=arr("feather_holes"); fparts=arr("f_parts")
 parts["Feather PCB"]=[diff(box(fbx[0],fbx[1],fbx[2],fbx[3],0,1.6),[cyl(x,y,2.5,-1,3) for x,y in fh])]
-for i,p in enumerate(fparts): parts.setdefault("Feather parts",[]).append(box(*p))
+def usb_shell(p):   # USB-C receptacle (CUI CUSB31): the shell is a stadium (fully rounded ends, r = h/2), not a box
+    from shapely.geometry import box as sbox
+    r=(p[5]-p[4])/2-0.01; prof=sbox(p[0]+r,p[4]+r,p[1]-r,p[5]-r).buffer(r,resolution=16)
+    m=trimesh.creation.extrude_polygon(prof,p[3]-p[2])   # profile in (x,z), extruded along local z -> map to Y
+    m.apply_transform(np.array([[1,0,0,0],[0,0,-1,0],[0,1,0,0],[0,0,0,1]],float)); m.apply_translation([0,p[3],0]); return m
+for i,p in enumerate(fparts):
+    is_usb = abs((p[1]-p[0])-8.94)<0.05 and abs(p[5]-4.86)<0.05
+    parts.setdefault("Feather parts",[]).append(usb_shell(p) if is_usb else box(*p))
 # ---- holder
 H=L.HOLDER; parts["18650 holder"]=[box(H["x0"],H["x1"],H["y0"],H["y1"],H["z0"],H["z1"])]
 # ---- FM module (ESTIMATED geometry)
@@ -171,5 +178,17 @@ print(f"  wheel: dial edge X {WX+R:.2f}, outer face X {OUT_X:.2f} -> protrudes {
       f"{WX+R-(OUT_X-1.0):.2f} mm past the 1 mm-deep thumb pocket floor; body front {WX+3.85:.2f} vs inner wall {L.IN_X1U:.2f}")
 print(f"  switch (left side): knob tip X {px0-L.SW_L:.2f} -> protrudes {X0OU-(px0-L.SW_L):.2f} mm past the case side (SW_L={L.SW_L:g}; "
       f"G4 {4-L.SW_SKIN:.2f} / G5 {5-L.SW_SKIN:.2f} / G6 {6-L.SW_SKIN:.2f}); skin in front of the plate {L.SW_SKIN:.2f} mm")
+# USB-C: receptacle mouth vs the case bottom (dock) face and the cable-plug recess floor
+uf=json.load(open(os.path.join(ROOT,"ref","feather_rp2040_mech.json")))["usb"]["face_y"]
+YO=L.Y_IN0-L.WALL; RF=YO+1.5
+print(f"  USB-C: receptacle mouth Y {uf:.2f}: {uf-YO:.2f} mm inside the outer (dock) face Y {YO:.2f}, {uf-RF:.2f} mm behind the "
+      f"cable-plug recess floor Y {RF:.2f} (single board: 2.50 / 1.00); dock plug insertion {6.0-uf:.2f} mm (single board 6.00, full mate ~6.6)")
+# switch backing: material behind the plate ears / body and under it (bottom half)
+bh=cases["case bottom"]
+ear=sum(trimesh.boolean.intersection([box(px1+0.3,px1+2.3,L.SW_Y+sg*7.0-0.5,L.SW_Y+sg*7.0+0.5,L.SW_Z-pz/2,L.SW_Z+pz/2),bh],engine="manifold").volume for sg in (-1,1))
+bk=trimesh.boolean.intersection([box(px1+bd+0.1,px1+bd+3,L.SW_Y-5.4,L.SW_Y+5.4,L.SW_Z-pz/2,L.SW_Z+pz/2),bh],engine="manifold")
+sh=trimesh.boolean.intersection([box(px1,px1+bd,L.SW_Y-5,L.SW_Y+5,L.FLOOR_Z,L.SW_Z-pz/2-0.05),bh],engine="manifold")
+print(f"  switch backing: solid behind the ears {ear:.1f}/{2*2*1*pz:.1f} mm^3 sampled; back wall from X {bk.bounds[0][0]:.2f} (body back {px1+bd:.2f}, "
+      f"{bk.bounds[0][0]-(px1+bd):.2f} gap; {bk.bounds[0][0]-(px0+0.6+bd):.2f} with a 0.6 plate) to X {bk.bounds[1][0]:.2f}; shelf under the body {sh.volume/((bd)*10*(L.SW_Z-pz/2-0.05-L.FLOOR_Z))*100:.0f}% solid down to the floor")
 print("RESULT:", "PASS (0 interferences)" if bad==0 else f"FAIL ({bad} interferences)")
 allm=[m for ms in parts.values() for m in ms]; trimesh.util.concatenate(allm).export("/tmp/feather_assembly.stl")
