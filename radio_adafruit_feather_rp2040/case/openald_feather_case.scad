@@ -288,8 +288,11 @@ module frame() {
       wheel_cradle();
       frame_tabs_solid();
     }
-    // underside relief over the battery holder (deck 0.6 thick there)
-    hb=holder_box; translate([hb[0]-0.5, hb[2]-0.5, DECK_Z0-0.01]) cube([hb[1]-hb[0]+1.0, hb[3]-hb[2]+1.0, DECK_RELIEF+0.01]);
+    // deck underside over the battery holder is flat (no relief since 2026-11-12); only an engraved locating outline
+    // of the holder footprint (CELL_MARK_W wide, CELL_MARK_D deep, on the bed face: a 0.9 mm bridge, no supports) plus a "+" at the + end
+    hb=holder_box;
+    if (DECK_RELIEF > 0) translate([hb[0]-0.5, hb[2]-0.5, DECK_Z0-0.01]) cube([hb[1]-hb[0]+1.0, hb[3]-hb[2]+1.0, DECK_RELIEF+0.01]);
+    translate([0,0,DECK_Z0-0.01]) linear_extrude(CELL_MARK_D+0.01) cell_mark2d();
     for (s=screws) hull() { translate([s[0],s[1],-5]) cylinder(r=3.2+0.4,h=10); c=side_cube(s); translate([c[0]-0.5,c[1]-0.5,-5]) cube([3,3,10]); }
     translate([0.0,8.0,-5]) cube([6.2,9.0,10]);                  // battery wires up to the JST (left channel)
     translate([31.2,12.0,-5]) cube([3.8,36.0,10]);              // Feather JP1/JP3 wires down to the right channel
@@ -298,6 +301,13 @@ module frame() {
     for (x=[14.68,23.32]) for (y=[2.60,6.78]+[feather_dy,feather_dy]) translate([x,y,-5]) cylinder(d=1.8,h=10);      // Feather USB-C shell legs
     translate([fm_box[0]+fm_ledge,fm_box[2]+fm_ledge,-5]) cube([fm_box[1]-fm_box[0]-2*fm_ledge,fm_box[3]-fm_box[2]-2*fm_ledge,10]);  // under the FM board
   }
+}
+
+module cell_mark2d() {        // holder outline ring + a "+" near the holder + (USB) end
+  hb=holder_box; g=0.1; w=CELL_MARK_W;
+  difference() { translate([hb[0]-g-w, hb[2]-g-w]) square([hb[1]-hb[0]+2*(g+w), hb[3]-hb[2]+2*(g+w)]);
+                 translate([hb[0]-g, hb[2]-g]) square([hb[1]-hb[0]+2*g, hb[3]-hb[2]+2*g]); }
+  translate([(hb[0]+hb[1])/2, hb[2]+9]) { square([4,w],center=true); square([w,4],center=true); }
 }
 
 // ---------------- ghosts ----------------

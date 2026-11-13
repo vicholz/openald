@@ -41,6 +41,8 @@ openscad $P --camera=19,-2,3,75,0,20,45   -D 'part="closed"' -o $R/closeup_usb_r
 openscad $P --camera=33,62,2,45,0,300,48  -D 'part="cradle"' -o $R/wheel_cradle.png $S 2>/dev/null &
 openscad $P --camera=12,90,4,80,0,180,55  -D 'part="closed"' -o $R/closeup_jack_end.png $S 2>/dev/null &
 openscad $P --camera=19,43,0,0,0,0,200   -D 'part="frame"' -o $R/frame_top_view.png $S 2>/dev/null &
+openscad --imgsize=1200,1500 --colorscheme=Tomorrow --projection=o --render --camera=19,44,0,180,0,0,230 -D 'part="frame"' -o $R/frame_underside_cell_outline.png $S 2>/dev/null &
+openscad $P --render --camera=19,14,-1,150,0,20,60 -D 'part="frame"' -o $R/frame_cell_outline_closeup.png $S 2>/dev/null &
 openscad $P --camera=19,30,-7,90,0,0,95   -D 'part="section"' -D 'sec_y=30' -o $R/section_y30.png $S 2>/dev/null &
 openscad $P --camera=19,70,-7,90,0,0,95   -D 'part="section"' -D 'sec_y=70' -o $R/section_y70.png $S 2>/dev/null &
 O="--imgsize=1200,900 --colorscheme=Tomorrow --projection=o"

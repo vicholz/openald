@@ -80,9 +80,13 @@ LED3_ABOVE_FLANGE = 4.6      # 3 mm LED length from the flange top to the dome t
 # frame clamp tabs: the deck's tabs sit in notches at the parting line (bottom half below, top-half plugs above)
 # (side, position along that wall, width); "L"/"R" = left/right wall at Y, "T" = top end wall at X
 FRAME_TABS = [("L",25.0,6.0),("L",SW_Y,20.4),("R",25.0,6.0),("R",42.0,6.0),("R",79.0,6.0),("T",33.0,6.0)]
-# battery-holder seat: floor pocket + deck underside relief so a taller holder (or tape) cannot lift the frame
+# battery-holder seat: floor pocket under the holder; the deck underside over it is FLAT (2026-11-12 print feedback:
+# the old 0.4 mm underside relief was too shallow for supports and printed stringy) -> holder-to-deck gap 0.1 + 0.2 = 0.3 mm
 HOLDER_POCKET = 0.2          # floor pocket depth under the holder
-DECK_RELIEF = 0.4            # deck underside relief over the holder -> holder-to-deck gap 0.1 + 0.2 + 0.4 = 0.7 mm
+DECK_RELIEF = 0.0            # was 0.4 (underside relief over the holder); removed, kept as a knob
+# engraved locating outline of the holder footprint on the deck underside (bed face): a 0.9 mm groove bridges cleanly
+CELL_MARK_D = 0.4            # groove depth into the 1.0 mm deck
+CELL_MARK_W = 0.9            # groove width; inner edge 0.1 mm outside the holder footprint
 # case screws (M2, from the back into heat-set inserts in the top half)
 SCREWS = [(1.8,1.8),(36.2,1.8),(0.0,51.8),(38.0,51.8)]
 # the holder sits in its floor pocket
