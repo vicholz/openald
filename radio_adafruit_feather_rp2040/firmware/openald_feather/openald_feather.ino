@@ -9,19 +9,23 @@
 //   GP6  (silk D4)  wheel S/push INPUT_PULLUP, LOW = pressed
 //   GP26 (silk A0)  VBAT/2 from the 220k/220k divider (100 nF to GND)
 //   GP2 / GP3       STEMMA QT SDA / SCL -> RDA5807M (Wire = i2c1 on this board)
-//   GP16            on-board NeoPixel (battery level / status)
+//   GP16            on-board NeoPixel (battery level only; dark at all other times)
 //   GP13            on-board red LED (unused, kept off)
 //   EN              SS-12F16 middle lug (hardware power switch; firmware never sees it)
 //   STAT tap, VBUS  optional charge LEDs, hardware only (firmware cannot read them)
 //
 // Wheel behaviour (mirrors the single-board radio as far as the Feather hardware allows):
 //   turn                      volume (0 = mute .. 15)
-//   short press (<500 ms)     battery level on the NeoPixel for 3 s
+//   power on                  battery level on the NeoPixel for 5 s, then the pixel is cleared (off)
+//   short press (<500 ms)     battery level on the NeoPixel for 3 s, then off again
 //   hold >= 500 ms, no turn   seek up to the next station
 //   push and turn             tune +/- TUNE_STEP_10K per detent (no battery check, no seek)
 // Differences from the single board: the level is shown as a NeoPixel colour instead of a 3-LED bar, and there is no
 // battery check with the power switch OFF (EN holds the Feather's 3.3 V regulator off, so nothing can run).
-// The NeoPixel and D13 sit by the USB end and are hidden while docked.
+// The NeoPixel and D13 sit by the USB end and are hidden while docked. The NeoPixel is lit ONLY during these two battery
+// displays (no seek / error / low-battery blinks), to save battery. Its power can't be switched off: on the Feather RP2040
+// (Adafruit Eagle file, LED1 WS2812B-3535) VDD is tied straight to +3V3 and there is no NEOPIXEL_POWER pin (GPIO 20 is MISO
+// on this board, so it is left alone). A dark WS2812B still draws its quiescent current (~1 mA typ.) while the switch is ON.
 
 #include <Wire.h>
 #include <EEPROM.h>
@@ -41,7 +45,9 @@ const uint16_t TUNE_STEP_10K = 20;           // 200 kHz per detent (US odd-tenth
 const uint16_t DEFAULT_FREQ_10K = 9910;      // 99.1 MHz on first boot
 const uint8_t  DEFAULT_VOLUME = 6;
 const float    VBAT_CAL = 1.000f;            // multiply the reading by this after checking against a meter
-const bool     SHOW_BATTERY_AT_POWER_ON = true;  // the Feather can't check the battery with the switch OFF, so flash it at power-on
+const bool     SHOW_BATTERY_AT_POWER_ON = true;  // the Feather can't check the battery with the switch OFF, so show it at power-on
+const uint32_t POWER_ON_SHOW_MS = 5000;     // battery display at power-on
+const uint32_t PRESS_SHOW_MS = 3000;        // battery display after a short press
 const uint8_t  PIXEL_BRIGHTNESS = 24;        // 0..255; the NeoPixel is very bright at full power
 const uint32_t SAVE_DELAY_MS = 5000;         // write frequency/volume to flash this long after the last change
 const float    V_MUTE = 3.25f, V_RESUME = 3.45f;  // low-battery cut-off (radio powered down) and resume threshold
@@ -106,7 +112,8 @@ rda::Radio radio;
 bool radio_ok = false, low_batt_off = false;
 uint16_t freq10k = DEFAULT_FREQ_10K;
 uint8_t volume = DEFAULT_VOLUME;
-uint32_t show_until = 0, dirty_at = 0, last_vcheck = 0, last_lowflash = 0, seek_started = 0;
+uint32_t show_until = 0, dirty_at = 0, last_vcheck = 0, seek_started = 0;
+bool showing = false;
 bool dirty = false;
 float vbat = 4.0f;
 
@@ -146,9 +153,9 @@ void show_battery(uint32_t now) {
   }
 }
 
-void start_battery_display() {
+void start_battery_display(uint32_t ms) {
   vbat = read_vbat();                    // measure with the pixel off (as on the single board)
-  show_until = millis() + 3000;
+  show_until = millis() + ms; showing = true;
   Serial.printf("battery %.2f V (band %d)\n", vbat, battery_band(vbat));
 }
 
@@ -180,7 +187,7 @@ void setup() {
   vbat = read_vbat();
   if (vbat < V_MUTE && vbat > 1.0f) low_batt_off = true;   // < 1 V = divider not fitted: run anyway
   if (!low_batt_off) radio_start();
-  if (SHOW_BATTERY_AT_POWER_ON) start_battery_display();
+  if (SHOW_BATTERY_AT_POWER_ON) start_battery_display(POWER_ON_SHOW_MS);
 }
 
 void loop() {
@@ -193,7 +200,7 @@ void loop() {
   battery_req = seek_req = false;
   interrupts();
 
-  if (breq) start_battery_display();
+  if (breq) start_battery_display(PRESS_SHOW_MS);
   if (radio_ok && !low_batt_off) {
     if (steps && held) {                             // push and turn: tune
       if (radio.seeking()) { radio.stopSeek(); freq10k = radio.frequency(); }
@@ -221,7 +228,7 @@ void loop() {
   }
 
   // --- battery watch (every 2 s, not while the pixel shows something) ---
-  if (now - last_vcheck >= 2000 && now >= show_until) {
+  if (now - last_vcheck >= 2000 && !showing) {
     last_vcheck = now;
     float v = read_vbat();
     if (v > 1.0f) {                                  // divider fitted
@@ -238,17 +245,11 @@ void loop() {
   }
 
   // --- pixel ---
-  if (now < show_until) {
+  if (showing && (int32_t)(show_until - now) > 0) {
     show_battery(now);
-  } else if (radio.seeking()) {
-    pixel_set(0, 0, ((now / 150) & 1) ? 120 : 0);    // blue blink while seeking
-  } else if (!radio_ok && !low_batt_off) {
-    pixel_set(((now / 1000) & 1) ? 120 : 0, 0, ((now / 1000) & 1) ? 120 : 0);   // magenta 0.5 Hz: radio not found
-  } else if (vbat < 3.30f && vbat > 1.0f) {          // very low: 50 ms red flash every 10 s even without a press
-    if (now - last_lowflash >= 10000) last_lowflash = now;
-    pixel_set(now - last_lowflash < 50 ? 255 : 0, 0, 0);
   } else {
-    pixel_set(0, 0, 0);
+    showing = false;
+    pixel_set(0, 0, 0);                              // off at all other times (pixel_set only re-sends on a change)
   }
 
   // --- persist ---

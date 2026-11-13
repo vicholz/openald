@@ -83,4 +83,5 @@ void encoder_poll() {            // call every 1 ms
 
 ## LEDs firmware can use
 * Red D13 (GP13) and the NeoPixel (GP16) show through the top windows near the USB end. These are hidden while docked.
+* The firmware lights the NeoPixel only for the battery level: 5 s at power-on and 3 s after a short press; it is cleared (off) at all other times and D13 stays off. The NeoPixel (WS2812B-3535, LED1) has VDD tied to +3V3 in Adafruit's board file, with **no power-enable pin** (GPIO 20 is MISO here), so it can't be powered down; a dark WS2812B draws ~1 mA typ. while the switch is ON (not measured).
 * The optional 3 mm CHG/FULL LEDs in the top half are hardware-only (driven by VBUS and STAT) and visible while docked.
