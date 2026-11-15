@@ -42,7 +42,8 @@ const uint8_t PIN_PIXEL = 16, PIN_RED_LED = 13;
 // ---------------- settings (edit) ----------------
 const bool     DEEMPH_50US = false;          // false = 75 us (Americas, Korea); true = 50 us (Europe, Asia, Australia)
 const uint16_t TUNE_STEP_10K = 20;           // 200 kHz per detent (US odd-tenth channels); 10 = 100 kHz
-const uint16_t DEFAULT_FREQ_10K = 9910;      // 99.1 MHz on first boot
+const uint16_t DEFAULT_FREQ_10K = 9730;      // 97.3 MHz on first boot / when no valid saved settings exist
+                                             // (channel (9730 - 8700) / 10 = 103: exactly on the 100 kHz grid)
 const uint8_t  DEFAULT_VOLUME = 6;
 const float    VBAT_CAL = 1.000f;            // multiply the reading by this after checking against a meter
 const bool     SHOW_BATTERY_AT_POWER_ON = true;  // the Feather can't check the battery with the switch OFF, so show it at power-on
@@ -118,7 +119,9 @@ bool dirty = false;
 float vbat = 4.0f;
 
 struct Saved { uint32_t magic; uint16_t freq10k; uint8_t volume; uint8_t check; };
-const uint32_t MAGIC = 0x0A1D1000;   // "OpenALD v1.0"
+const uint32_t MAGIC = 0x0A1D1001;   // "OpenALD v1.0", settings format 1. Bumped from ...1000 (2026-11-14) so a station
+                                     // saved by an earlier build is ignored once and the radio starts at DEFAULT_FREQ_10K.
+                                     // (Copying a .uf2 does not erase the EEPROM-emulation flash sector.)
 
 void load_settings() {
   Saved s; EEPROM.get(0, s);

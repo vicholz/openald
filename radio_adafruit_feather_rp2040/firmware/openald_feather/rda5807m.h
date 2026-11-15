@@ -44,7 +44,7 @@ class Radio {
     uint16_t want = v ? (r02_ | R02_DMUTE) : (r02_ & ~R02_DMUTE);
     if (want != r02_) { if (seeking_) stopSeek(); r02_ = (want & ~(R02_SEEK | R02_SEEKUP)); write(0x02, r02_); }
   }
-  void tune(uint16_t f10k) {                                     // frequency in 10 kHz units, e.g. 9910 = 99.1 MHz
+  void tune(uint16_t f10k) {                                     // frequency in 10 kHz units, e.g. 9730 = 97.3 MHz
     f10k = constrain(f10k, BAND_LO_10K, BAND_HI_10K);
     stopSeek();
     uint16_t chan = (f10k - BAND_LO_10K) / 10;                   // 100 kHz spacing
