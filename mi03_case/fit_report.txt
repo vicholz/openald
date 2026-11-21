@@ -1,0 +1,55 @@
+== Printable STLs ==
+mi03_front_shell       watertight=True volume=  4932.5 mm3  extents 27.50 x 86.60 x 9.08  min z 0.00
+mi03_back_shell        watertight=True volume= 15767.0 mm3  extents 27.50 x 86.60 x 28.55  min z 0.00
+mi03_button_plunger    watertight=True volume=    56.3 mm3  extents 5.60 x 5.60 x 4.23  min z 0.00
+mi03_switch_cap        watertight=True volume=   108.1 mm3  extents 5.00 x 7.00 x 5.05  min z 0.00
+
+== Interference (mm3, assembly pose; 0 = clear) ==
+front_shell        x back_shell         0.0
+front_shell        x pcb                0.0
+front_shell        x lcd+buttons        0.0
+front_shell        x jack/usb/switch    0.0
+front_shell        x 18650+holder       0.0
+front_shell        x plungers           0.0
+front_shell        x switch_cap         0.0
+back_shell         x pcb                0.0
+back_shell         x lcd+buttons        0.0
+back_shell         x jack/usb/switch    0.0
+back_shell         x 18650+holder       17.6689  (expected: holder locating pegs in the holder's 3.2 mm holes + trimmed pins in their floor pockets (ghost holder has no holes))
+back_shell         x plungers           0.0
+back_shell         x switch_cap         0.0
+pcb                x lcd+buttons        0.0
+pcb                x jack/usb/switch    8.0102  (expected: USB-C shell top (z +0.16) sits in the board-edge notch (mid-mount): modelling artefact)
+pcb                x 18650+holder       0.0
+pcb                x plungers           0.0
+pcb                x switch_cap         0.0
+lcd+buttons        x jack/usb/switch    0.0
+lcd+buttons        x 18650+holder       0.0
+lcd+buttons        x plungers           0.0
+lcd+buttons        x switch_cap         0.0
+jack/usb/switch    x 18650+holder       0.0
+jack/usb/switch    x plungers           0.0
+18650+holder       x plungers           0.0
+18650+holder       x switch_cap         0.0
+plungers           x switch_cap         0.0
+
+== Switch cap travel (cap + actuator shifted together) ==
+cap shift -1       x front_shell        0.0
+cap shift -1       x back_shell         0.0
+cap shift -1       x switch/usb/jack    0.0
+cap shift 0        x front_shell        0.0
+cap shift 0        x back_shell         0.0
+cap shift 0        x switch/usb/jack    0.0
+cap shift 1        x front_shell        0.0
+cap shift 1        x back_shell         0.0
+cap shift 1        x switch/usb/jack    0.0
+
+== Hardware ghosts (screws) ==
+screws x front_shell        2.605   (expected >0 only for the self-tapping top screw biting its 1.7 mm pilot)
+screws x back_shell         0.0
+screws x pcb                0.0
+screws x lcd+buttons        0.0
+screws x jack/usb/switch    0.0
+screws x 18650+holder       0.0
+
+RESULT: PASS (0 unexpected interferences)
