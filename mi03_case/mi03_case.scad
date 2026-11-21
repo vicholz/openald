@@ -23,11 +23,12 @@ pcb_end_r_top = 6;      // ASSUMED rounding of the top end ("semicircular-ish" i
 pcb_end_r_bot = 4;      // ASSUMED rounding of the bottom corners
 // mounting holes [x, d, diameter, use]   use: "screw_back" (screw from the PCB back into the front shell),
 // "screw_thru" (screw from the front face into an insert in the back shell), "pin" (locating pin), "none"
+hole_bot_d    = 74;     // 2026-11-21: moved down 1 mm (was 73): 6 mm from the bottom end
 hole_bot_in   = 2.1;    // ASSUMED: "1 mm from left and right" read as hole EDGE 1 mm from the board edge (2.2 mm hole)
 holes = [[0, 3.75, 3.2, "screw_back"],
          [0, 28,   2.25, "none"],        // set "pin" for a 1.9 mm locating pin (off: LED pads/wires sit near here)
-         [-(21/2-hole_bot_in), 73, 2.2, "screw_thru"],
-         [ (21/2-hole_bot_in), 73, 2.2, "screw_thru"]];
+         [-(21/2-hole_bot_in), hole_bot_d, 2.2, "screw_thru"],
+         [ (21/2-hole_bot_in), hole_bot_d, 2.2, "screw_thru"]];
 // front (top) side
 lcd_d0 = 6.75;  lcd_glass_d1 = 21.75;  lcd_bl_d1 = 26.25;
 lcd_w  = 21 - 1;        // "1 mm narrower than the board"
@@ -61,12 +62,20 @@ cell_d = 18.6;
 // ================= case tunables (OpenALD values where they exist) =================
 wall    = 2.0;     // side wall (OpenALD)
 front_t = 1.6;     // front face (OpenALD floor_t)
-floor_t = 2.0;     // back floor (0.4 thicker than OpenALD: wire grooves + pin pockets)
+floor_t = 1.6;     // back floor (OpenALD)
 clr     = 0.5;     // PCB edge to inner wall (OpenALD)
 end_clr_top = 1.3; // top end: room for the closing snap tab
 jack_clr = 0.3;    // jack body face to inner wall -> barrel ends flush with the outer face
 top_clear = 0.3;   // air above the LCD glass
-bat_clear = 0.5;   // air between the lowest back part (jack) and the cell
+// battery frame (2026-11-21): a flat plate between the PCB and the 18650; the holder is glued BASE-UP to its underside
+frame_gap  = 0.3;  // air between the lowest back part (jack, 5.25 mm) and the frame top
+frame_t    = 1.6;  // plate thickness (flat glue face underneath)
+frame_clr  = 0.2;  // plate edge to the inner wall
+frame_ledge_w = 1.0;   // back-shell ledges the plate rests on (sides + jack end)
+frame_ledge_gap = 0.1; // ledge top sits this far below the plate (the screws set the plate height)
+cell_floor_clr = 0.4;  // cell (open side of the inverted holder) to the floor
+holder_pin_trim = 1.4; // trim the holder pins to this so they stay inside the 1.6 mm plate slots
+pin_slot = [3.0, 3.6]; // through-slots in the plate for the trimmed pins (X x Y)
 edge_r  = 2.0;     // rounding of the front/back edges (OpenALD)
 plan_r_in = 3.0;   // plan-view inner corner radius
 lip_h = 1.2;  lip_t = 0.9;  fit = 0.15;   // alignment lip (OpenALD)
@@ -93,6 +102,7 @@ cap_socket_clr = 0.1;      // per side on the 1.5 x 1.5 head (tight; scale if lo
 slot_clr = 0.2;
 // LCD window
 lcd_border = 0.8;  bezel = 0.8;
+lcd_top_cover = 2.0;   // 2026-11-21: the case covers the top 2 mm of the glass (zebra strip edge)
 // LCD retaining frame (the glass is held to the PCB only by a zebra/elastomer strip, so the case holds it)
 lcd_frame       = true;
 lcd_frame_clr   = 0.2;    // lateral clearance per side around the glass and the backlight plate
@@ -104,7 +114,9 @@ lcd_preload     = 0.15;   // how far the rib/lip tips reach BELOW the nominal gl
 lcd_rib_w       = 0.6;    // rib/lip width at the ceiling (tapers to lcd_rib_tip at the tip)
 lcd_rib_tip     = 0.25;
 lcd_rib_len     = 3.5;    // rib length (ribs mode)
-lcd_ribs_x      = [-6, 0, 6];     // rib centres along the top and bottom glass edges (X)
+lcd_ribs_x      = [-6, 0, 6];     // rib centres along the bottom glass edge (X)
+lcd_ribs_x_top  = [-8, -4, 0, 4, 8]; // rib centres along the top (zebra) edge, under the 2 mm cover
+lcd_rib_len_top = 3.0;
 lcd_ribs_y      = [-3.5, 3.5];    // rib centres along the side edges (offset from the glass centre, Y)
 // edge ledges supporting the PCB back between the buttons (d ranges)
 ledge_d = [[33, 62]];  ledge_w = 1.1;  ledge_h = 1.2;
@@ -112,6 +124,8 @@ ledge_d = [[33, 62]];  ledge_w = 1.1;  ledge_h = 1.2;
 wire_side = -1;   // -1 = USB-C side, +1 = switch side
 groove_w = 1.4;  groove_dp = 1.0;
 $fn = 40;
+
+snap_bot_x0 = 3.8;  snap_bot_w = 2.6;   // jack-end snap tabs (jack body is +-3)
 
 // ================= derived =================
 function Y(d) = pcb_l - d;
@@ -125,21 +139,22 @@ Zf         = z_ceiling + front_t;          // front outer face
 jack_h     = jack_total_h - pcb_t;  usb_hb = usb_total_h - pcb_t;  sw_h = sw_total_h - pcb_t;
 jack_axis_z = -jack_h/2;
 sw_head_z  = -sw_h/2;                      // ASSUMED head centred on the body height
-z_cell_top = -(max(jack_h, sw_h, usb_hb) + bat_clear);
-z_floor_in = z_cell_top - holder_env_h;
+z_frame_top = -(max(jack_h, sw_h, usb_hb) + frame_gap);
+z_frame_bot = z_frame_top - frame_t;        // = holder base (glue face)
+z_cell_low  = z_frame_bot - holder_env_h;   // lowest point of the cell in the inverted holder
+z_floor_in = z_cell_low - cell_floor_clr;
 Zb         = z_floor_in - floor_t;          // back outer face (negative)
 in_x1 = pcb_wmax/2 + clr;  in_x0 = -in_x1;
 in_y1 = Y(-end_clr_top);                    // top end
 in_y0 = Y(pcb_l + jack_body_out + jack_clr);// bottom end (jack)
 out_r = plan_r_in + wall;
-holder_y1 = in_y1 - 0.5;                   // + end at the top end wall
+holder_y1 = in_y1 - 0.7;                   // + end at the top end wall (clears the 3 mm inner corner radius)
 holder_y0 = holder_y1 - holder_l;
-wire_ch_bot_y = Y(73) + boss_r_back + 1.5;  // above the bottom insert boss
 sw_x   = pcb_halfw(sw_d);                   // switch body face (board edge)
 sw_tip = sw_x + sw_head_out;
 usb_tip = -pcb_halfw(usb_d) - usb_out;
 echo(str("MI03 case outer: ", in_x1-in_x0+2*wall, " W x ", in_y1-in_y0+2*wall, " L x ", Zf-Zb, " T mm (knob adds ", cap_knob[2]+0.2, " mm on the switch side)"));
-echo(str("Z stack: back face ", Zb, ", floor top ", z_floor_in, ", cell top ", z_cell_top, ", PCB 0..", pcb_t, ", LCD glass top ", z_glass, ", ceiling ", z_ceiling, ", front face ", Zf));
+echo(str("Z stack: back face ", Zb, ", floor top ", z_floor_in, ", cell low ", z_cell_low, ", frame ", z_frame_bot, "..", z_frame_top, ", PCB 0..", pcb_t, ", LCD glass top ", z_glass, ", ceiling ", z_ceiling, ", front face ", Zf));
 echo(str("LCD: glass top ", z_glass, ", ceiling ", z_ceiling, ", press ", lcd_press, " tips at z ", z_glass-lcd_preload, " (preload ", lcd_preload, " mm), frame clearance ", lcd_frame_clr, "/side"));
 echo(str("Holder Y ", holder_y0, "..", holder_y1, " (cavity ", in_y0, "..", in_y1, ")"));
 echo(str("Switch tip x ", sw_tip, ", USB tip x ", usb_tip, ", inner wall ", in_x1));
@@ -190,8 +205,8 @@ module ghost_back_parts(shift=0) {
   translate([sw_x-sw_body_depth, Y(sw_d)-sw_body_w/2, -sw_h]) cube([sw_body_depth, sw_body_w, sw_h]);
   translate([sw_x-0.01, Y(sw_d)+shift-sw_head[0]/2, sw_head_z-sw_head[1]/2]) cube([sw_head_out+0.01, sw_head[0], sw_head[1]]);
 }
-module ghost_holder() {
-  translate([0,0,z_floor_in]) {
+module ghost_holder() {   // inverted: base glued under the frame, cell opening toward the floor
+  translate([0,0,z_frame_bot]) mirror([0,0,1]) {
     difference() {   // base/sides + full-height end walls
       union() {
         translate([-holder_w/2, holder_y0, 0]) cube([holder_w, holder_l, holder_side_h]);
@@ -200,7 +215,7 @@ module ghost_holder() {
       translate([0, holder_y0+4, holder_env_h-cell_d/2]) rotate([-90,0,0]) cylinder(d=cell_d, h=holder_l-8);
     }
     translate([0, holder_y0+2.5, holder_env_h-cell_d/2]) rotate([-90,0,0]) cylinder(d=cell_d, h=holder_l-5);  // cell
-    for (y=[holder_y0+holder_pin_in, holder_y1-holder_pin_in]) translate([0,y,-1.0]) cylinder(d=1.2,h=1.01,$fn=12); // trimmed pins (1 mm)
+    for (y=[holder_y0+holder_pin_in, holder_y1-holder_pin_in]) translate([0,y,-holder_pin_trim]) cylinder(d=1.2,h=holder_pin_trim+0.01,$fn=12); // trimmed pins (into the plate slots)
   }
 }
 module screws() {   // hardware ghosts, for the fit check
@@ -251,9 +266,15 @@ module front_shell() {
       // pin guide tubes (ceiling -> just above the button cap)
       for (i=[0:len(btn_d)-1]) if (!btn_press[i]) translate([0,Y(btn_d[i]),z_btn_top+tube_gap]) cylinder(d=tube_od, h=z_ceiling-z_btn_top-tube_gap+0.01);
       // closing snap tab at the top end (hangs into the back shell, bump clicks into its end wall)
+      // (extended down to just above the battery frame so it also holds the frame's top end down)
       translate([-3, in_y1-0.9, -3.0]) {
-        cube([6, 0.9, z_ceiling+3.0]);
+        translate([0,0,z_frame_top+0.05+3.0]) cube([6, 0.9, z_ceiling-z_frame_top-0.05]);
         translate([0,0.9,0.4]) hull() { cube([6,0.01,1.4]); translate([0,0,0.3]) cube([6,0.45,0.8]); }
+      }
+      // two more snap tabs at the jack end (beside the jack), bumps click into the end wall
+      for (sx=[-1,1]) translate([sx>0 ? snap_bot_x0 : -snap_bot_x0-snap_bot_w, in_y0, -3.0]) {
+        cube([snap_bot_w, 0.9, z_ceiling+3.0]);
+        translate([0,0,0.4]) hull() { translate([0,-0.01,0]) cube([snap_bot_w,0.01,1.4]); translate([0,-0.45,0.3]) cube([snap_bot_w,0.45,0.8]); }
       }
     }
     // rebate for the back-shell lip
@@ -263,7 +284,7 @@ module front_shell() {
       switch_keeper_zone();   // no rebate beside the switch: the front wall closes the top of the switch pocket
     }
     // LCD window with 45-degree bezel
-    translate([0, Y((lcd_d0+lcd_glass_d1)/2), z_ceiling]) chamfered_hole(lcd_w-2*lcd_border, lcd_glass_d1-lcd_d0-2*lcd_border, 0.6, front_t, bezel);
+    translate([0, Y((lcd_d0+lcd_top_cover+lcd_glass_d1-lcd_border)/2), z_ceiling]) chamfered_hole(lcd_w-2*lcd_border, lcd_glass_d1-lcd_border-(lcd_d0+lcd_top_cover), 0.6, front_t, bezel);
     // plunger holes / pin holes with funnels
     for (i=[0:len(btn_d)-1]) translate([0,Y(btn_d[i]),0]) {
       if (btn_press[i]) translate([0,0,z_ceiling]) chamfered_hole(plunger_hole_d, plunger_hole_d, 99, front_t, 0.4);
@@ -302,11 +323,12 @@ module rib_x(len) {   // rib running along X, tip down, centred on the origin, b
 rib_h = z_ceiling - z_glass + lcd_preload;   // ceiling to (glass top - preload)
 module lcd_press_features() {
   b = lcd_border/2;   // centre of the border strip between the glass edge and the window
-  yt = Y(lcd_d0) - b;  yb = Y(lcd_glass_d1) + b;  yc = (yt+yb)/2;  xs = lcd_w/2 - b;
+  yt = Y(lcd_d0 + lcd_top_cover/2);  yb = Y(lcd_glass_d1) + b;  yc = (Y(lcd_d0)+Y(lcd_glass_d1))/2;  xs = lcd_w/2 - b;
   wlen_x = lcd_w - lcd_border;  wlen_y = lcd_glass_d1 - lcd_d0 - lcd_border;
   translate([0,0,z_ceiling]) {
     if (lcd_press=="ribs") {
-      for (x=lcd_ribs_x) for (y=[yt,yb]) translate([x,y,0]) rib_x(lcd_rib_len);
+      for (x=lcd_ribs_x_top) translate([x,yt,0]) rib_x(lcd_rib_len_top);   // zebra edge
+      for (x=lcd_ribs_x) translate([x,yb,0]) rib_x(lcd_rib_len);
       for (y=lcd_ribs_y) for (sx=[-1,1]) translate([sx*xs,yc+y,0]) rotate([0,0,90]) rib_x(lcd_rib_len);
     }
     if (lcd_press=="lip") {
@@ -334,22 +356,18 @@ module back_shell() {
         translate([0,0,-1]) rrect(in_x0,in_y0,in_x1,in_y1,plan_r_in,lip_h+2);
         switch_keeper_zone();
       }
-      // insert bosses for the through screws: hang from the side wall, 45-degree underside (prints without support)
-      for (h=holes) if (h[3]=="screw_thru") translate([h[0],Y(h[1]),0]) intersection() {
-        translate([-h[0],-Y(h[1]),0]) cavity(z_floor_in, 0);
-        s = sign(h[0]); reach = in_x1 - abs(h[0]);
+      // ledges the battery frame rests on: both long sides + the jack end (45-degree undersides, no supports)
+      intersection() {
+        cavity(z_floor_in, 0);
         union() {
-          hull() {   // boss + flat bridge to the wall
-            translate([0,0,-jack_h]) cylinder(r=boss_r_back, h=jack_h);
-            translate([s*(reach+0.5)-0.5, -boss_r_back, -jack_h]) cube([1, 2*boss_r_back, jack_h]);
+          zt = z_frame_bot - frame_ledge_gap;
+          for (sx=[-1,1]) hull() {
+            translate([sx>0 ? in_x1-frame_ledge_w : in_x0-0.01, in_y0, zt-0.01]) cube([frame_ledge_w+0.01, in_y1-in_y0, 0.01]);
+            translate([sx>0 ? in_x1-0.01 : in_x0-0.01, in_y0, zt-frame_ledge_w-0.5]) cube([0.02, in_y1-in_y0, frame_ledge_w+0.5]);
           }
-          // 45-degree support wedge under it, only where the holder's end wall is not (y > end wall + 0.4)
-          intersection() {
-            hull() {
-              translate([0,0,-jack_h]) cylinder(r=boss_r_back, h=jack_h);
-              translate([s*(reach+0.5)-0.5, -boss_r_back, -jack_h-reach-boss_r_back]) cube([1, 2*boss_r_back, jack_h+reach+boss_r_back]);
-            }
-            translate([-20, holder_y0+holder_end_t+0.4-Y(h[1]), -40]) cube([40, 40, 40]);
+          hull() {
+            translate([in_x0, in_y0-0.01, zt-0.01]) cube([in_x1-in_x0, holder_y0-0.4-in_y0+0.01, 0.01]);
+            translate([in_x0, in_y0-0.01, zt-(holder_y0-0.4-in_y0)-0.5]) cube([in_x1-in_x0, 0.02, holder_y0-0.4-in_y0+0.5]);
           }
         }
       }
@@ -361,27 +379,44 @@ module back_shell() {
           translate([s>0 ? in_x1-0.01 : in_x0-0.01, Y(r[1]), -ledge_h-ledge_w-clr]) cube([0.02, r[1]-r[0], ledge_h+ledge_w+clr]);
         }
       }
-      // holder locating rails along the long sides (middle part only, wire grooves stay free at the ends)
-      for (s=[-1,1]) translate([s>0 ? holder_w/2+0.2 : -holder_w/2-0.2-0.8, holder_y0+12, z_floor_in-0.01]) cube([0.8, holder_l-24, 1.5]);
-      // locating pegs for the holder's two 3.2 mm holes (- end at the jack end)
-      for (y=[holder_y0+holder_hole_from_neg, holder_y0+holder_hole_from_neg+holder_hole_pitch]) translate([0,y,z_floor_in-0.01]) cylinder(d1=holder_hole_d-0.3, d2=holder_hole_d-0.6, h=1.5);
-    }
-    // inserts
-    for (h=holes) if (h[3]=="screw_thru") translate([h[0],Y(h[1]),-insert_hole_l]) cylinder(d=insert_d, h=insert_hole_l+lip_h+1);
-    // trimmed holder pins: pockets + wire grooves to the wire-side wall, then up the wall to the PCB zone
-    // channel Y positions: top wire straight up at its pin, bottom wire runs along the wall past the insert boss first
-    wx0 = wire_side>0 ? in_x1-0.6 : in_x0-groove_dp;      // floor groove hugging the wall
-    for (pc=[[holder_y1-holder_pin_in, holder_y1-holder_pin_in], [holder_y0+holder_pin_in, wire_ch_bot_y]]) {
-      y=pc[0]; yc=pc[1];
-      translate([-1.5, y-1.5, z_floor_in-groove_dp]) cube([3,3,groove_dp+0.01]);
-      translate([wire_side>0 ? 0 : in_x0-groove_dp, y-groove_w/2, z_floor_in-groove_dp]) cube([in_x1+groove_dp, groove_w, groove_dp+0.01]);
-      translate([wx0, min(y,yc)-groove_w/2, z_floor_in-groove_dp]) cube([groove_dp+0.6, abs(yc-y)+groove_w, groove_dp+0.01]);
-      translate([wire_side>0 ? in_x1-0.01 : in_x0-groove_dp, yc-groove_w/2, z_floor_in-groove_dp]) cube([groove_dp+0.01, groove_w, -z_floor_in+groove_dp+lip_h+1]);
     }
     // recess for the snap-tab bump (top end wall)
     translate([-3.3, in_y1-0.01, -3.0+0.2]) cube([6.6, 0.6, 1.8]);
+    for (sx=[-1,1]) translate([sx>0 ? snap_bot_x0-0.3 : -snap_bot_x0-snap_bot_w-0.3, in_y0-0.59, -3.0+0.2]) cube([snap_bot_w+0.6, 0.6, 1.8]);
     side_openings();
     switch_cuts();
+  }
+}
+
+// ================= BATTERY FRAME (loose part, assembly pose) =================
+// Flat plate between the PCB and the 18650.  The BH-18650-PC holder is glued base-up to its flat underside.
+// Two columns carry the M2 inserts for the bottom screws (front face -> PCB -> column), so the plate hangs from the
+// PCB/front shell; it also rests on back-shell ledges, and the top snap tab holds its top end down.
+module battery_frame() {
+  x1 = in_x1 - frame_clr;  y0 = in_y0 + frame_clr;  y1 = in_y1 - frame_clr;
+  difference() {
+    union() {
+      translate([0,0,z_frame_bot]) difference() {
+        rrect(-x1, y0, x1, y1, plan_r_in-frame_clr, frame_t);
+        // notches past the PCB edge ledges (so the plate drops in past them)
+        for (r=ledge_d) for (sx=[-1,1]) translate([sx>0 ? in_x1-ledge_w-clr+0.5-0.15 : -50+(in_x0+ledge_w+clr-0.5+0.15), Y(r[1])-0.4, -1]) cube([50, r[1]-r[0]+0.8, frame_t+2]);
+      }
+      // insert columns under the bottom mounting holes, up to the PCB back face
+      intersection() {
+        translate([0,0,z_frame_top-1]) rrect(-x1, y0, x1, y1, plan_r_in-frame_clr, -z_frame_top+1);
+        for (h=holes) if (h[3]=="screw_thru") translate([h[0],Y(h[1]),z_frame_top-0.01]) {
+          cylinder(r=boss_r_back, h=-z_frame_top+0.01);
+          cylinder(r1=boss_r_back+0.8, r2=boss_r_back, h=0.8);   // root fillet
+        }
+      }
+    }
+    for (h=holes) if (h[3]=="screw_thru") translate([h[0],Y(h[1]),-insert_hole_l]) cylinder(d=insert_d, h=insert_hole_l+1);
+    // slots for the holder's trimmed pins
+    for (y=[holder_y0+holder_pin_in, holder_y1-holder_pin_in]) translate([-pin_slot[0]/2, y-pin_slot[1]/2, z_frame_bot-1]) cube([pin_slot[0], pin_slot[1], frame_t+2]);
+    // wire groove from the jack-end pin slot sideways out from under the jack
+    translate([wire_side>0 ? 0 : -(jack_body_w/2+2), holder_y0+holder_pin_in-groove_w/2, z_frame_top-0.9]) cube([jack_body_w/2+2, groove_w, 1]);
+    // the holder's two 3.2 mm holes: through holes for alignment pins / optional 2-56 (M2.5) screws
+    for (y=[holder_y0+holder_hole_from_neg, holder_y0+holder_hole_from_neg+holder_hole_pitch]) translate([0,y,z_frame_bot-1]) cylinder(d=holder_hole_d, h=frame_t+2);
   }
 }
 
@@ -417,12 +452,15 @@ plunger_ys = [for (i=[0:len(btn_d)-1]) if (btn_press[i]) Y(btn_d[i])];
 
 if (part=="front")       translate([0,0,Zf]) rotate([180,0,0]) front_shell();     // front face on the bed
 else if (part=="back")   translate([0,0,-Zb]) back_shell();                       // floor on the bed
+else if (part=="battery_frame") translate([0,0,-z_frame_bot]) battery_frame();   // flat face on the bed, columns up
+else if (part=="frame_raw") battery_frame();
 else if (part=="plunger") translate([0,0,-(z_btn_top+plunger_gap)]) plunger();   // flange on the bed
 else if (part=="switch_cap") rotate([0,90,0]) translate([-(in_x1+wall+0.2+cap_knob[2]),-Y(sw_d),-sw_head_z]) switch_cap(); // knob face on the bed
 else if (part=="print") {
   translate([0,0,-Zb]) back_shell();
   translate([in_x1-in_x0+2*wall+6, 0, Zf]) rotate([180,0,0]) translate([0,-in_y1-in_y0,0]) front_shell();
   for (k=[0,1]) translate([-24, 20+k*9, -(z_btn_top+plunger_gap)]) plunger();
+  translate([-2*(in_x1-in_x0)-14, 0, -z_frame_bot]) battery_frame();
   translate([-24, 50, 0]) rotate([0,90,0]) translate([-(in_x1+wall+0.2+cap_knob[2]),-Y(sw_d),-sw_head_z]) switch_cap();
 }
 else if (part=="front_raw") front_shell();
@@ -435,11 +473,11 @@ else if (part=="ghost_back") ghost_back_parts(cap_shift);
 else if (part=="ghost_holder") ghost_holder();
 else if (part=="ghost_screws") screws();
 else if (part=="closed") {
-  color("lightsteelblue") front_shell(); color("lightgray") back_shell();
+  color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("mediumseagreen") battery_frame();
   color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap();
 }
 else if (part=="exploded") {
-  color("lightgray") back_shell(); ghosts();
+  color("lightgray") translate([0,0,-30]) back_shell(); color("mediumseagreen") battery_frame(); ghosts();
   color("tomato") translate([6,0,0]) switch_cap();
   color("orange") for (y=plunger_ys) translate([0,y,14]) plunger();
   color("lightsteelblue",0.85) translate([0,0,24]) front_shell();
@@ -450,4 +488,4 @@ else if (part=="section_buttons") {   // cut at X = 0 (through all five buttons,
 else if (part=="section_switch") {    // cut at Y = switch centre (through the switch, its cap and the USB-C)
   intersection() { union() { color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("tomato") switch_cap(); ghosts(); } translate([-50,Y(sw_d)-100,-50]) cube([100,100,100]); }
 }
-else { color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap(); ghosts(); }
+else { color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("mediumseagreen") battery_frame(); color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap(); ghosts(); }

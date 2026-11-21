@@ -8,11 +8,13 @@ This folder is separate from the OpenALD v1.0 design: none of the OpenALD files 
 * `mi03_case.scad`: the parametric source. Every measurement Victor gave is a named parameter at the top, and
   every guess is marked `ASSUMED`.
 * `stl/mi03_front_shell.stl`: front face with the LCD window, 2 plunger holes and 3 pin holes with guide tubes.
-* `stl/mi03_back_shell.stl`: battery tub with the USB-C, jack and switch openings.
+* `stl/mi03_back_shell.stl`: back tub with the USB-C, jack and switch openings and the ledges for the battery frame.
+* `stl/mi03_battery_frame.stl`: flat plate between the PCB and the 18650. The holder is glued to its underside, and
+  it carries the two M2 inserts.
 * `stl/mi03_button_plunger.stl`: print 2.
 * `stl/mi03_switch_cap.stl`: print 1.
 * `scripts/build.sh` rebuilds the STLs, runs the fit check and renders the previews. `scripts/check_fit.py` runs the
-  watertight check and the interference check. `scripts/sections.py` draws the cross-sections.
+  watertight and single-body checks, the interference check and the glue-area measurement. `scripts/sections.py` draws the cross-sections.
 * `fit_report.txt` is the latest check output. `previews/*.png` are the pictures.
 
 ## Size and Z stack
@@ -26,28 +28,46 @@ Z = 0 at the PCB back face.
 | +2.50 | Button cap tops (1 mm body + 0.5 mm cap) |
 | 0 to +1.0 | PCB |
 | -5.25 | Bottom of the jack, the deepest part on the back (switch -3.8, USB-C -3.1) |
-| -5.75 | Top of the 18650 (0.5 mm air gap) |
-| -25.35 | Holder base / top of the floor (holder plus cell assumed 19.6 mm tall) |
-| -27.35 | Back face (2.0 mm floor) |
+| -5.55 | Top of the battery frame (0.3 mm air gap under the jack) |
+| -7.15 | Underside of the frame = glue face = holder base (holder mounted **base up**) |
+| -26.75 | Lowest point of the cell (holder plus cell assumed 19.6 mm) |
+| -27.15 | Top of the floor (0.4 mm clearance) |
+| -28.75 | Back face (1.6 mm floor, as in OpenALD) |
 
-**Outside size: 27.5 mm wide × 86.6 mm long × 33.4 mm thick.** The switch knob sticks out another 2.45 mm on one side.
-The case is 2 mm wider than the widest part of the board (22.5 mm), with 0.5 mm clearance and 2 mm walls.
+**Outside size: 27.5 mm wide × 86.6 mm long × 34.8 mm thick** (34.83 mm). That is **1.4 mm thicker** than before the
+battery frame (33.43 mm). Width and length are unchanged. The switch knob sticks out another 2.45 mm on one side.
+The added 1.4 mm is the 1.6 mm frame plus a 0.3 mm air gap above it, offset by the 0.4 mm thinner floor. The floor
+no longer needs wire grooves, so it went from 2.0 mm back to OpenALD's 1.6 mm.
 
 ## How it goes together
-1. **Battery.** Trim the holder's two PC pins to about 1 mm and solder 26–28 AWG silicone wires to them. Set the
-   holder on the floor with its − (spring) end toward the jack. Its two 3.2 mm holes drop over the floor pegs, and
-   side rails keep it straight; add double-sided tape if you like. The pins sit in floor pockets. The wires run in
-   floor grooves to the USB-C-side wall, then up wall grooves into the 5 mm space under the PCB, and on to the stock
-   VBAT pads. The − wire first runs along the wall past the bottom screw boss. Check the polarity at the VBAT pads
-   with a meter before you put a cell in.
-2. **Switch cap.** Drop the cap into its slot from above, with the inner plate in the wall pocket and the knob outside.
-3. **PCB.** Lay the PCB in the tub so the switch head goes into the cap's 1.7 mm square socket. The board edge sits
-   on two ledges between 33 and 62 mm from the top, which stop it flexing when S1 and S3 are pressed.
-4. **Front shell.** Drop the two plungers into the front shell, flange side in. Fix the PCB's top hole to the
-   front-shell boss with an M2 × 4 self-tapping screw from the back of the PCB. The front shell's tab at the top end
-   clicks into the back shell's end wall. The front wall closes the top of the switch slot, so the cap can't come out.
-5. **Screws.** Fit 2 × M2 × 10 countersunk screws from the front face through the two bottom-corner holes into M2
-   heat-set inserts in the back shell (OD 3.2, L 4.0, the same kind as OpenALD).
+1. **Battery frame and holder.** Trim the holder's two PC pins to **1.4 mm or less** and solder 26–28 AWG silicone
+   wires to them. Glue the holder **base up** to the flat underside of the battery frame, with its − (spring) end
+   toward the jack end.
+   * The pins sit in the frame's 3.0 × 3.6 mm slots, and the holder's two 3.2 mm holes line up with matching holes
+     in the frame. A 3 mm drill bit or pin through each pair keeps the holder aligned while the glue sets.
+   * Optionally, add 2-56 or M2.5 screws through those holes with nuts on the frame top.
+   * The jack-end wire runs in a 1.4 × 0.9 mm groove on the frame top, sideways out from under the jack. Both wires
+     then run over the frame to the stock VBAT pads.
+   * Check the polarity at the VBAT pads with a meter before you put a cell in. The cell goes in from the open
+     (floor) side of the holder.
+2. **Into the back shell.** Lower the frame, holder and cell into the back shell. The frame rests on 1.0 mm ledges
+   along both long walls and on a ledge across the jack end. It is notched where it passes the PCB edge ledges.
+3. **Switch cap.** Drop the cap into its slot from above, with the inner plate in the wall pocket and the knob outside.
+4. **PCB.** Lay the PCB in so the switch head goes into the cap's 1.7 mm square socket. The board edge sits on two
+   ledges between 33 and 62 mm from the top, which stop it flexing when S1 and S3 are pressed. The frame's two insert
+   columns come up under the bottom mounting holes.
+5. **Front shell.** Drop the two plungers into the front shell, flange side in. Fix the PCB's top hole to the
+   front-shell boss with an M2 × 4 self-tapping screw from the back of the PCB.
+   * The front shell has three snap tabs: one at the top end and two beside the jack. They click into the back
+     shell's end walls.
+   * The top tab reaches down to 0.05 mm above the frame, so it also holds the frame's top end down.
+   * The front wall closes the top of the switch slot, so the cap can't come out.
+6. **Screws.** Fit 2 × M2 × 10 countersunk screws from the front face, through the two bottom-corner holes, into M2
+   heat-set inserts in the battery frame's columns (OD 3.2, L 4.0, the same kind as OpenALD). This clamps the front
+   shell, PCB and frame together, so the battery hangs from the PCB stack rather than from the back shell.
+   * The frame's ledges sit 0.1 mm below it, so the screws, not the ledges, set its height.
+   * To swap the cell, undo the two screws, unclip the back shell, and lift out the front shell, PCB, frame and
+     holder as one unit. The cell comes out from below.
 
 ## Controls and openings
 * **S1 and S3** (37.25 and 45 mm from the top) use through-case plungers. The 3.1 mm stem passes through a 3.5 mm
@@ -64,9 +84,12 @@ The case is 2 mm wider than the widest part of the board (22.5 mm), with 0.5 mm 
   outside (OpenALD style). The receptacle ends 1.0 mm inside the outer face.
 * **Headphone jack.** A 5.4 mm hole fits the barrel, with a 0.7 mm chamfer outside. The barrel ends flush with the
   outer face.
-* **LCD window.** It is 18.4 × 13.4 mm: the glass area minus a 0.8 mm border, with a 0.8 mm 45° bezel.
+* **LCD window.** It is 18.4 × 12.2 mm (2026-11-21), with a 0.8 mm 45° bezel.
+  * The top edge now covers **2.0 mm** of the glass (`lcd_top_cover`), so the window starts 8.75 mm from the board
+    top. That hides the zebra strip.
+  * The other three edges cover 0.8 mm (`lcd_border`), so the window ends 20.95 mm from the top and is 18.4 mm wide.
 
-## LCD retaining frame (added 2026-11-20)
+## LCD retaining frame (added 2026-11-20, top cover and zebra-edge ribs 2026-11-21)
 The display is a bare LCD glass connected to the board only by a rubber (zebra) strip, so the front shell now holds
 it in place:
 * **Frame walls** (`lcd_frame_t` = 0.8 mm) hang from the inside of the front face around the glass and the backlight
@@ -76,10 +99,14 @@ it in place:
     continues under it.
   * Past the backlight's lower end there are only 3 mm corner stubs (`lcd_bl_stub`). The middle is left open for the
     LED pads and wires.
-* **Light pressure.** By default (`lcd_press = "ribs"`) there are **10 short crush ribs**: 3 along the top border, 3
-  along the bottom border and 2 on each side. They sit on the glass border outside the viewing window, and none of
-  them touch the backlight extension.
-  * Each rib is 3.5 mm long and tapers from 0.6 mm wide at the face (`lcd_rib_w`) to a 0.25 mm tip (`lcd_rib_tip`).
+* **Light pressure.** By default (`lcd_press = "ribs"`) there are **12 short crush ribs** on the glass border outside
+  the viewing window. None of them touch the backlight extension.
+  * **5 ribs, each 3.0 mm long, along the top (zebra-strip) edge** (2026-11-21). They are centred 7.75 mm from the
+    board top, in the middle of the 2 mm covered strip, at X = −8, −4, 0, 4 and 8 mm (`lcd_ribs_x_top`,
+    `lcd_rib_len_top`). Together they press 15 mm of the 20 mm wide strip edge evenly.
+  * 3 ribs, each 3.5 mm long, along the bottom edge.
+  * 2 ribs, each 3.5 mm long, on each side.
+  * Each rib tapers from 0.6 mm wide at the face (`lcd_rib_w`) to a 0.25 mm tip (`lcd_rib_tip`).
   * The tips reach **`lcd_preload` = 0.15 mm below the nominal glass top**. The narrow tips crush or flex slightly
     the first time the case closes, and the 1.6 mm front face bows a little. Together they give a light, even
     pressure instead of a hard stop.
@@ -89,8 +116,8 @@ it in place:
   automatically.
 * **Z stack recheck.** The zebra strip agrees with `lcd_stacked = true`: the strip spans the gap between the glass and
   the board along one edge, beside the 1.4 mm backlight, and the glass rests on the backlight. Glass top is then
-  1.0 + 1.4 + 1.78 = **4.18 mm** above the board's back face (3.18 mm above its front), unchanged. The case thickness
-  is unchanged too.
+  1.0 + 1.4 + 1.78 = **4.18 mm** above the board's back face (3.18 mm above its front), unchanged. The LCD frame doesn't change
+  the case thickness.
 * **Tuning on the first print:**
   * **Missing or faint segments, or segments that come and go when you squeeze the case**, mean the zebra strip isn't
     pressed enough. Raise `lcd_preload` to 0.25–0.3, or put a 0.2–0.5 mm foam or tape shim on the ribs over the strip
@@ -102,30 +129,39 @@ it in place:
 
 ## Hardware
 * 2 × M2 × 10 countersunk machine screws.
-* 2 × M2 heat-set inserts, OD 3.2 mm, 4 mm long (holes 3.2 × 4.5 mm).
+* 2 × M2 heat-set inserts, OD 3.2 mm, 4 mm long (holes 3.2 × 4.5 mm), in the battery frame's columns.
 * 1 × M2 × 4 self-tapping screw (PCB top hole into the front shell; 1.7 mm pilot).
 * MPD BH-18650-PC holder and an 18650 cell (see the battery notes below).
 * About 2 × 120 mm of 26–28 AWG silicone wire.
-* Optional double-sided foam tape under the holder.
+* Glue for the holder on the frame: medium CA or a thin layer of 2-part epoxy. Lightly sand both faces first. Hot
+  glue also works, but it is softer. PETG is harder to glue than PLA.
+* Optional: 2 × 2-56 or M2.5 screws and nuts through the holder's 3.2 mm holes.
 
 ## Printing
-* **Front shell:** front face down. The bosses, tubes and snap tab grow upward, and the bezel and countersinks are
+* **Front shell:** front face down. The bosses, tubes and snap tabs grow upward (the top tab is now 11.6 mm tall
+  and 0.9 mm thick, so print it slowly or with a brim if your printer wobbles thin features), and the bezel and countersinks are
   45° chamfers on the bed side.
-* **Back shell:** floor down. The insert bosses hang off the side walls with a 45° wedge underneath. Near the jack
-  end, the holder's end wall leaves room for only a partial wedge, so about 3 mm of each boss's underside is a short
-  overhang. It should bridge, but if it sags, use a support blocker there.
+* **Back shell:** floor down. The frame ledges and the PCB edge ledges all have 45° undersides. The earlier
+  overhanging insert bosses are gone (the inserts are in the battery frame now).
+* **Battery frame:** flat glue face down, columns up. No supports needed. Use 4 or more perimeters and 30% or more
+  infill so the plate is stiff.
 * **Plungers:** flange down.
 * **Switch cap:** knob face down.
-* PETG or PLA with 0.2 mm layers. No supports are expected apart from the note above.
+* PETG or PLA with 0.2 mm layers. No supports are expected.
 
 ## Fit check (`fit_report.txt`)
-All four STLs are watertight. The parts were checked against each other in the assembled position: front shell,
-back shell, plungers, switch cap, the PCB outline, LCD and buttons, jack, USB-C, switch, the 18650 in its holder,
-and the screws. **No unexpected interferences.** With the press ribs turned off, the frame clears the LCD, the
-backlight and the PCB completely. With them on, the ribs touch the glass at 10 points, 0.150 mm deep, all within
-the glass border. Four overlaps are expected:
+All five STLs are watertight and each is a single body. The parts were checked against each other in the assembled
+position: front shell, back shell, battery frame, plungers, switch cap, the PCB outline, LCD and buttons, jack,
+USB-C, switch, the inverted 18650 holder with its cell, and the screws. **No unexpected interferences.**
+* The battery frame clears the jack (0.3 mm), the back shell (it sits 0.1 mm above its ledges), the cell and the
+  front shell.
+* With the press ribs turned off, the LCD frame clears the LCD, the backlight and the PCB completely. With them on,
+  the 12 ribs touch the glass 0.150 mm deep, all within the glass border.
+* **Glue area:** 1586 mm² of flat contact between the frame and the holder base, out of the holder's
+  77.7 × 20.9 mm (1624 mm²) footprint. Only the two pin slots and the two 3.2 mm alignment holes are missing.
+
+Three overlaps are expected:
 * The LCD press ribs reach 0.15 mm into the glass on purpose (the preload).
-* The holder pegs sit in the holder's holes, which the stand-in model of the holder doesn't have.
 * The USB-C shell's top 0.16 mm sits in the board-edge notch (the stand-in PCB has no notch).
 * The self-tapping screw cuts into its pilot hole.
 
@@ -134,9 +170,9 @@ These are checks against stand-in models built from the measurements, not agains
 ## Assumptions: please measure these
 1. **LCD height.** I assumed the glass sits on top of the backlight (total 3.18 mm above the board), which agrees with
    the zebra-strip construction. Measure the glass top above the board with the strip compressed as it normally
-   sits; if it isn't 3.18 mm, adjust `lcd_glass_t`/`lcd_bl_t`. Also note which edge the zebra strip is on (top or
-   bottom of the glass): the ribs press on all four edges, but more pressure on the strip edge may help. The glass
-   border is assumed to be at least 0.8 mm wide outside the viewing area (`lcd_border`).
+   sits; if it isn't 3.18 mm, adjust `lcd_glass_t`/`lcd_bl_t`.
+   * Victor confirmed the zebra strip is on the glass's **top** edge, which is now covered by 2 mm.
+   * The other three borders are assumed to be at least 0.8 mm wide outside the viewing area (`lcd_border`).
 2. **Switch head.** I assumed it sits halfway down the 3.8 mm body (1.9 mm below the board), sticks out 1.5 mm past
    the board edge, and travels about 2 mm in total. Please check the head height, how far it sticks out, and the
    travel.
@@ -147,19 +183,26 @@ These are checks against stand-in models built from the measurements, not agains
    it is a mid-mount part sitting in a notch in the board edge. Please check the shell size and the height of its
    centre.
 5. **Mounting holes.**
-   * The bottom-corner holes: I read "1 mm from the left and right" as the hole edge, giving centres 2.1 mm in and
-     7 mm up, with a 2.2 mm hole.
+   * The bottom-corner holes moved down 1 mm on 2026-11-21: **6 mm up from the bottom end** (`hole_bot_d` = 74 mm
+     from the top). I read "1 mm from the left and right" as the hole edge, giving centres 2.1 mm in, with a 2.2 mm
+     hole.
+   * The front bosses, frame insert columns and screws all follow `hole_bot_d`.
    * The 2.25 mm hole at 28 mm is assumed centred and is **not used**, because the LED pads and wires sit near it.
      `holes[1] = "pin"` turns on a locating pin there.
 6. **Back side.** Apart from the switch, USB-C and jack, I assumed nothing on the back is taller than 1.8 mm. The
-   insert bosses (bottom corners) and the PCB edge ledges (33–62 mm from the top, 0.6 mm under the edge) must land on
+   battery frame's insert columns (5.2 mm diameter, bottom corners) and the PCB edge ledges (33–62 mm from the top, 0.6 mm under the edge) must land on
    bare board. Please check that area, including where the crystal sits.
 7. **Front side.** The front bosses at the top hole and the bottom corners, and the plunger flanges, must miss the
    crystal and the LED wires.
 8. **Board outline.** The ends are modelled as rounded (6 mm radius at the top, 4 mm at the bottom). The case is
    rectangular, so this only matters for the snap tab at the top end, which has 0.1 mm of clearance.
-9. **Battery holder.** The BH-18650-PC size comes from its KiCad model (77.7 × 20.9 mm). I assumed the cell top is
-   19.6 mm above the holder base, and that the peg holes are 10.68 mm from the − end and 55.61 mm apart (MPD drawing).
+9. **Battery holder.** The BH-18650-PC size comes from its KiCad model (77.7 × 20.9 mm).
+   * I assumed the cell reaches 19.6 mm from the holder base, and that the holes are 10.68 mm from the − end and
+     55.61 mm apart (MPD drawing).
+   * **New:** I assumed the holder base is flat enough to glue to. If it has ribs or a recess, the glue area is
+     smaller; a thicker epoxy layer or the optional screws make up for it.
+   * The pins must be trimmed to 1.4 mm or less, or they will poke above the frame into the 0.3 mm gap under the
+     jack.
    **Check that your cell fits:** protected 18650s are often 69–70 mm long and may not fit this holder.
 
 ## Battery and charging notes

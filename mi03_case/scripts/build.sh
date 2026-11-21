@@ -8,8 +8,9 @@ $O -D 'part="front"'      -o stl/mi03_front_shell.stl $S 2>/dev/null &
 $O -D 'part="back"'       -o stl/mi03_back_shell.stl  $S 2>/dev/null &
 $O -D 'part="plunger"'    -o stl/mi03_button_plunger.stl $S 2>/dev/null &
 $O -D 'part="switch_cap"' -o stl/mi03_switch_cap.stl  $S 2>/dev/null &
+$O -D 'part="battery_frame"' -o stl/mi03_battery_frame.stl $S 2>/dev/null &
 mkdir -p /tmp/mi03fit
-for p in front_raw back_raw plungers_raw ghost_pcb ghost_front ghost_holder ghost_screws; do
+for p in front_raw back_raw frame_raw plungers_raw ghost_pcb ghost_front ghost_holder ghost_screws; do
   $O -D "part=\"$p\"" -o /tmp/mi03fit/$p.stl $S 2>/dev/null &
 done
 $O -D 'part="front_raw"' -D 'lcd_press="none"' -o /tmp/mi03fit/front_raw_nopress.stl $S 2>/dev/null &

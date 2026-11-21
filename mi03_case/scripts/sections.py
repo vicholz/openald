@@ -5,8 +5,8 @@ matplotlib.use('Agg'); import matplotlib.pyplot as plt
 from matplotlib.patches import PathPatch
 from matplotlib.path import Path
 F='/tmp/mi03fit/'
-parts=[('front_raw','#9db7d6','front shell'),('back_raw','#c8c8c8','back shell'),('plungers_raw','orange','plungers'),
-       ('cap_0','tomato','switch cap'),('ghost_pcb','green','PCB'),('ghost_front','black','LCD / buttons'),
+parts=[('front_raw','#9db7d6','front shell'),('back_raw','#c8c8c8','back shell'),('frame_raw','mediumseagreen','battery frame'),('plungers_raw','orange','plungers'),
+       ('cap_0','tomato','switch cap'),('ghost_pcb','darkgreen','PCB'),('ghost_front','black','LCD / buttons'),
        ('ghost_back_0','#7a7a7a','jack / USB-C / switch'),('ghost_holder','royalblue','18650 + holder'),('ghost_screws','gold','screws')]
 def draw(ax, origin, normal, to2d):
     for n,c,lab in parts:
@@ -44,3 +44,10 @@ fig,ax=plt.subplots(figsize=(10,5)); draw(ax,[0,80-14.25+3.5,0],[0,1,0],lambda p
 save(fig,ax,'section_lcd_across.png','Section across the LCD (Y through the side press ribs): frame walls, ribs on the glass border, window')
 fig,ax=plt.subplots(figsize=(12,5)); draw(ax,[0,0,0],[1,0,0],lambda p:p[:,[1,2]]); ax.set_xlim(50,82); ax.set_ylim(-1,7)
 save(fig,ax,'section_lcd_lengthwise.png','Section X=0 through the LCD: top wall, ribs on the top/bottom glass border, glass-edge wall above the backlight')
+# 6: battery frame + holder: across at mid-length, and lengthwise through the bottom-hole insert column
+fig,ax=plt.subplots(figsize=(8,9)); draw(ax,[0,40,0],[0,1,0],lambda p:p[:,[0,2]])
+save(fig,ax,'section_frame_holder_across.png','Section Y=40: PCB, battery frame on its side ledges, holder glued under it, cell, floor')
+fig,ax=plt.subplots(figsize=(13,6)); draw(ax,[-8.4,0,0],[1,0,0],lambda p:p[:,[1,2]])
+save(fig,ax,'section_frame_holder_lengthwise.png','Section X=-8.4 (bottom-left mounting hole): screw -> PCB -> frame insert column, frame, holder, end ledge')
+fig,ax=plt.subplots(figsize=(11,6)); draw(ax,[-8.4,0,0],[1,0,0],lambda p:p[:,[1,2]]); ax.set_xlim(-4,20); ax.set_ylim(-12,7)
+save(fig,ax,'section_frame_holder_zoom.png','Section X=-8.4 zoom: front boss, PCB, insert column on the frame, jack-end ledge and snap tab')
