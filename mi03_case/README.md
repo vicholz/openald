@@ -66,6 +66,40 @@ The case is 2 mm wider than the widest part of the board (22.5 mm), with 0.5 mm 
   outer face.
 * **LCD window.** It is 18.4 × 13.4 mm: the glass area minus a 0.8 mm border, with a 0.8 mm 45° bezel.
 
+## LCD retaining frame (added 2026-11-20)
+The display is a bare LCD glass connected to the board only by a rubber (zebra) strip, so the front shell now holds
+it in place:
+* **Frame walls** (`lcd_frame_t` = 0.8 mm) hang from the inside of the front face around the glass and the backlight
+  plate, with `lcd_frame_clr` = **0.2 mm** clearance per side. They stop `lcd_frame_gap` = 0.3 mm above the board.
+  * Side walls run the full length of the glass and backlight; there is also a wall above the glass top edge.
+  * At the glass's lower edge, a short wall locates the glass but stops 0.2 mm above the backlight plate, which
+    continues under it.
+  * Past the backlight's lower end there are only 3 mm corner stubs (`lcd_bl_stub`). The middle is left open for the
+    LED pads and wires.
+* **Light pressure.** By default (`lcd_press = "ribs"`) there are **10 short crush ribs**: 3 along the top border, 3
+  along the bottom border and 2 on each side. They sit on the glass border outside the viewing window, and none of
+  them touch the backlight extension.
+  * Each rib is 3.5 mm long and tapers from 0.6 mm wide at the face (`lcd_rib_w`) to a 0.25 mm tip (`lcd_rib_tip`).
+  * The tips reach **`lcd_preload` = 0.15 mm below the nominal glass top**. The narrow tips crush or flex slightly
+    the first time the case closes, and the 1.6 mm front face bows a little. Together they give a light, even
+    pressure instead of a hard stop.
+  * `lcd_press = "lip"` uses one continuous thin lip around the border instead (more even pressure, but stiffer).
+    `"none"` leaves only the frame.
+* All of these are parameters, and the ribs follow the LCD height (`lcd_glass_t`, `lcd_bl_t`, `lcd_stacked`)
+  automatically.
+* **Z stack recheck.** The zebra strip agrees with `lcd_stacked = true`: the strip spans the gap between the glass and
+  the board along one edge, beside the 1.4 mm backlight, and the glass rests on the backlight. Glass top is then
+  1.0 + 1.4 + 1.78 = **4.18 mm** above the board's back face (3.18 mm above its front), unchanged. The case thickness
+  is unchanged too.
+* **Tuning on the first print:**
+  * **Missing or faint segments, or segments that come and go when you squeeze the case**, mean the zebra strip isn't
+    pressed enough. Raise `lcd_preload` to 0.25–0.3, or put a 0.2–0.5 mm foam or tape shim on the ribs over the strip
+    edge.
+  * **Rainbow or dark blotches on the glass, or a case that won't close flat**, mean too much pressure. Lower
+    `lcd_preload` to 0.05–0.1, or shave the rib tips.
+  * **Never force it closed.** The glass is thin.
+  * If the glass slides around, reduce `lcd_frame_clr` to 0.1. If it binds, increase it to 0.3.
+
 ## Hardware
 * 2 × M2 × 10 countersunk machine screws.
 * 2 × M2 heat-set inserts, OD 3.2 mm, 4 mm long (holes 3.2 × 4.5 mm).
@@ -87,7 +121,10 @@ The case is 2 mm wider than the widest part of the board (22.5 mm), with 0.5 mm 
 ## Fit check (`fit_report.txt`)
 All four STLs are watertight. The parts were checked against each other in the assembled position: front shell,
 back shell, plungers, switch cap, the PCB outline, LCD and buttons, jack, USB-C, switch, the 18650 in its holder,
-and the screws. **No unexpected interferences.** Three overlaps are expected:
+and the screws. **No unexpected interferences.** With the press ribs turned off, the frame clears the LCD, the
+backlight and the PCB completely. With them on, the ribs touch the glass at 10 points, 0.150 mm deep, all within
+the glass border. Four overlaps are expected:
+* The LCD press ribs reach 0.15 mm into the glass on purpose (the preload).
 * The holder pegs sit in the holder's holes, which the stand-in model of the holder doesn't have.
 * The USB-C shell's top 0.16 mm sits in the board-edge notch (the stand-in PCB has no notch).
 * The self-tapping screw cuts into its pilot hole.
@@ -95,8 +132,11 @@ and the screws. **No unexpected interferences.** Three overlaps are expected:
 These are checks against stand-in models built from the measurements, not against the real parts.
 
 ## Assumptions: please measure these
-1. **LCD height.** I assumed the glass sits on top of the backlight (total 3.18 mm above the board). If the glass
-   sits directly on the board, set `lcd_stacked=false` and the case gets about 1.4 mm thinner.
+1. **LCD height.** I assumed the glass sits on top of the backlight (total 3.18 mm above the board), which agrees with
+   the zebra-strip construction. Measure the glass top above the board with the strip compressed as it normally
+   sits; if it isn't 3.18 mm, adjust `lcd_glass_t`/`lcd_bl_t`. Also note which edge the zebra strip is on (top or
+   bottom of the glass): the ribs press on all four edges, but more pressure on the strip edge may help. The glass
+   border is assumed to be at least 0.8 mm wide outside the viewing area (`lcd_border`).
 2. **Switch head.** I assumed it sits halfway down the 3.8 mm body (1.9 mm below the board), sticks out 1.5 mm past
    the board edge, and travels about 2 mm in total. Please check the head height, how far it sticks out, and the
    travel.

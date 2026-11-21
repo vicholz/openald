@@ -12,6 +12,7 @@ mkdir -p /tmp/mi03fit
 for p in front_raw back_raw plungers_raw ghost_pcb ghost_front ghost_holder ghost_screws; do
   $O -D "part=\"$p\"" -o /tmp/mi03fit/$p.stl $S 2>/dev/null &
 done
+$O -D 'part="front_raw"' -D 'lcd_press="none"' -o /tmp/mi03fit/front_raw_nopress.stl $S 2>/dev/null &
 for sh in -1 0 1; do
   $O -D 'part="cap_raw"' -D "cap_shift=$sh" -o /tmp/mi03fit/cap_$sh.stl $S 2>/dev/null &
   $O -D 'part="ghost_back"' -D "cap_shift=$sh" -o /tmp/mi03fit/ghost_back_$sh.stl $S 2>/dev/null &

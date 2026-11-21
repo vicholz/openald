@@ -1,5 +1,5 @@
 == Printable STLs ==
-mi03_front_shell       watertight=True volume=  4932.5 mm3  extents 27.50 x 86.60 x 9.08  min z 0.00
+mi03_front_shell       watertight=True volume=  5143.3 mm3  extents 27.50 x 86.60 x 9.08  min z 0.00
 mi03_back_shell        watertight=True volume= 15767.0 mm3  extents 27.50 x 86.60 x 28.55  min z 0.00
 mi03_button_plunger    watertight=True volume=    56.3 mm3  extents 5.60 x 5.60 x 4.23  min z 0.00
 mi03_switch_cap        watertight=True volume=   108.1 mm3  extents 5.00 x 7.00 x 5.05  min z 0.00
@@ -7,7 +7,7 @@ mi03_switch_cap        watertight=True volume=   108.1 mm3  extents 5.00 x 7.00 
 == Interference (mm3, assembly pose; 0 = clear) ==
 front_shell        x back_shell         0.0
 front_shell        x pcb                0.0
-front_shell        x lcd+buttons        0.0
+front_shell        x lcd+buttons        1.6257  (expected: LCD press ribs reach lcd_preload below the glass top on purpose (see the LCD frame section below))
 front_shell        x jack/usb/switch    0.0
 front_shell        x 18650+holder       0.0
 front_shell        x plungers           0.0
@@ -32,6 +32,11 @@ jack/usb/switch    x plungers           0.0
 18650+holder       x plungers           0.0
 18650+holder       x switch_cap         0.0
 plungers           x switch_cap         0.0
+
+== LCD frame ==
+front (no ribs)    x lcd+buttons        0.0
+front (no ribs)    x pcb                0.0
+press ribs x glass: 1.626 mm3 in 10 contact(s); engagement depth 0.150 mm (glass top z 4.18), all within the glass border: X -9.78..9.78, Y 58.47..73.03
 
 == Switch cap travel (cap + actuator shifted together) ==
 cap shift -1       x front_shell        0.0

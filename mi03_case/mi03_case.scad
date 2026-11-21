@@ -93,6 +93,19 @@ cap_socket_clr = 0.1;      // per side on the 1.5 x 1.5 head (tight; scale if lo
 slot_clr = 0.2;
 // LCD window
 lcd_border = 0.8;  bezel = 0.8;
+// LCD retaining frame (the glass is held to the PCB only by a zebra/elastomer strip, so the case holds it)
+lcd_frame       = true;
+lcd_frame_clr   = 0.2;    // lateral clearance per side around the glass and the backlight plate
+lcd_frame_t     = 0.8;    // frame wall thickness
+lcd_frame_gap   = 0.3;    // frame walls stop this far above the PCB top
+lcd_bl_stub     = 3.0;    // the wall past the backlight's lower end is only corner stubs this long (LED pads/wires in the middle)
+lcd_press       = "ribs"; // "ribs" = short crush ribs on the glass border | "lip" = continuous thin lip | "none"
+lcd_preload     = 0.15;   // how far the rib/lip tips reach BELOW the nominal glass top (interference)
+lcd_rib_w       = 0.6;    // rib/lip width at the ceiling (tapers to lcd_rib_tip at the tip)
+lcd_rib_tip     = 0.25;
+lcd_rib_len     = 3.5;    // rib length (ribs mode)
+lcd_ribs_x      = [-6, 0, 6];     // rib centres along the top and bottom glass edges (X)
+lcd_ribs_y      = [-3.5, 3.5];    // rib centres along the side edges (offset from the glass centre, Y)
 // edge ledges supporting the PCB back between the buttons (d ranges)
 ledge_d = [[33, 62]];  ledge_w = 1.1;  ledge_h = 1.2;
 // wires
@@ -127,6 +140,7 @@ sw_tip = sw_x + sw_head_out;
 usb_tip = -pcb_halfw(usb_d) - usb_out;
 echo(str("MI03 case outer: ", in_x1-in_x0+2*wall, " W x ", in_y1-in_y0+2*wall, " L x ", Zf-Zb, " T mm (knob adds ", cap_knob[2]+0.2, " mm on the switch side)"));
 echo(str("Z stack: back face ", Zb, ", floor top ", z_floor_in, ", cell top ", z_cell_top, ", PCB 0..", pcb_t, ", LCD glass top ", z_glass, ", ceiling ", z_ceiling, ", front face ", Zf));
+echo(str("LCD: glass top ", z_glass, ", ceiling ", z_ceiling, ", press ", lcd_press, " tips at z ", z_glass-lcd_preload, " (preload ", lcd_preload, " mm), frame clearance ", lcd_frame_clr, "/side"));
 echo(str("Holder Y ", holder_y0, "..", holder_y1, " (cavity ", in_y0, "..", in_y1, ")"));
 echo(str("Switch tip x ", sw_tip, ", USB tip x ", usb_tip, ", inner wall ", in_x1));
 
@@ -232,6 +246,8 @@ module front_shell() {
         }
         if (h[3]=="pin") { translate([0,0,z_pcb_top]) cylinder(r=1.8, h=z_ceiling-z_pcb_top+0.01); translate([0,0,z_pcb_top-pin_l]) cylinder(d=pin_d, h=pin_l+0.01); }
       }
+      if (lcd_frame) lcd_frame_walls();
+      if (lcd_press!="none") lcd_press_features();
       // pin guide tubes (ceiling -> just above the button cap)
       for (i=[0:len(btn_d)-1]) if (!btn_press[i]) translate([0,Y(btn_d[i]),z_btn_top+tube_gap]) cylinder(d=tube_od, h=z_ceiling-z_btn_top-tube_gap+0.01);
       // closing snap tab at the top end (hangs into the back shell, bump clicks into its end wall)
@@ -261,6 +277,45 @@ module front_shell() {
     side_openings();
   }
 }
+// ---------- LCD retaining frame (part of the front shell) ----------
+// Walls locate the glass + backlight laterally; ribs/lip press the glass border (outside the viewing window).
+module lcd_frame_walls() {
+  c = lcd_frame_clr; t = lcd_frame_t; zb = z_pcb_top + lcd_frame_gap;
+  x1 = lcd_w/2 + c;
+  yg_top = Y(lcd_d0) + c;          // above the glass top edge
+  yg_bot = Y(lcd_glass_d1) - c;    // glass lower edge
+  yb_bot = Y(lcd_bl_d1) - c;       // backlight lower edge
+  glass_z0 = lcd_stacked ? pcb_t + lcd_bl_t : pcb_t;
+  h = z_ceiling - zb + 0.01;
+  // side walls (full length of glass + backlight)
+  for (sx=[-1,1]) translate([sx>0 ? x1 : -x1-t, yb_bot-t, zb]) cube([t, yg_top+t-(yb_bot-t), h]);
+  // top wall (above the glass top edge)
+  translate([-x1-t, yg_top, zb]) cube([2*x1+2*t, t, h]);
+  // short wall at the glass lower edge: only down to 0.2 above the backlight (it continues under the glass)
+  if (lcd_stacked) translate([-x1, yg_bot-t, glass_z0+0.2]) cube([2*x1, t, z_ceiling-glass_z0-0.2+0.01]);
+  // corner stubs past the backlight's lower end
+  for (sx=[-1,1]) translate([sx>0 ? x1-lcd_bl_stub : -x1-t, yb_bot-t, zb]) cube([lcd_bl_stub+t, t, h]);
+}
+module rib_x(len) {   // rib running along X, tip down, centred on the origin, base on z = 0
+  hull() { translate([-len/2,-lcd_rib_w/2,-0.01]) cube([len,lcd_rib_w,0.01]); translate([-len/2,-lcd_rib_tip/2,-rib_h]) cube([len,lcd_rib_tip,0.01]); }
+}
+rib_h = z_ceiling - z_glass + lcd_preload;   // ceiling to (glass top - preload)
+module lcd_press_features() {
+  b = lcd_border/2;   // centre of the border strip between the glass edge and the window
+  yt = Y(lcd_d0) - b;  yb = Y(lcd_glass_d1) + b;  yc = (yt+yb)/2;  xs = lcd_w/2 - b;
+  wlen_x = lcd_w - lcd_border;  wlen_y = lcd_glass_d1 - lcd_d0 - lcd_border;
+  translate([0,0,z_ceiling]) {
+    if (lcd_press=="ribs") {
+      for (x=lcd_ribs_x) for (y=[yt,yb]) translate([x,y,0]) rib_x(lcd_rib_len);
+      for (y=lcd_ribs_y) for (sx=[-1,1]) translate([sx*xs,yc+y,0]) rotate([0,0,90]) rib_x(lcd_rib_len);
+    }
+    if (lcd_press=="lip") {
+      for (y=[yt,yb]) translate([0,y,0]) rib_x(wlen_x+lcd_rib_w);
+      for (sx=[-1,1]) translate([sx*xs,yc,0]) rotate([0,0,90]) rib_x(wlen_y+lcd_rib_w);
+    }
+  }
+}
+
 module switch_keeper_zone() {
   translate([in_x1-0.5, Y(sw_d)-(cap_flange[0]+sw_travel)/2-2, -1]) cube([lip_t+fit+1, cap_flange[0]+sw_travel+4, lip_h+3]);
 }

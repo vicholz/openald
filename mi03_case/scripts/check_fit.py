@@ -22,6 +22,7 @@ loose = {'plungers': L('plungers_raw'), 'switch_cap': L('cap_0')}
 print("\n== Interference (mm3, assembly pose; 0 = clear) ==")
 bad = 0
 EXPECTED = {frozenset(['pcb','jack/usb/switch']): 'USB-C shell top (z +0.16) sits in the board-edge notch (mid-mount): modelling artefact',
+            frozenset(['front_shell','lcd+buttons']): 'LCD press ribs reach lcd_preload below the glass top on purpose (see the LCD frame section below)',
             frozenset(['back_shell','18650+holder']): 'holder locating pegs in the holder\'s 3.2 mm holes + trimmed pins in their floor pockets (ghost holder has no holes)'}
 def chk(na, a, nb, b, expect0=True):
     global bad
@@ -38,6 +39,14 @@ for cn, c in case.items():
 for a, b in itertools.combinations(list(ghost.items()) + list(loose.items()), 2):
     if {a[0], b[0]} == {'switch_cap', 'jack/usb/switch'}: continue
     chk(a[0], a[1], b[0], b[1])
+print("\n== LCD frame ==")
+chk('front (no ribs)', L('front_raw_nopress'), 'lcd+buttons', ghost['lcd+buttons'])
+chk('front (no ribs)', L('front_raw_nopress'), 'pcb', ghost['pcb'])
+r = trimesh.boolean.intersection([case['front_shell'], ghost['lcd+buttons']], engine='manifold')
+if r is None or r.is_empty: print("press ribs: NOT touching the glass  <-- CHECK"); bad += 1
+else:
+    b = r.bounds
+    print(f"press ribs x glass: {abs(r.volume):.3f} mm3 in {len(r.split(only_watertight=False))} contact(s); engagement depth {b[1][2]-b[0][2]:.3f} mm (glass top z {b[1][2]:.2f}), all within the glass border: X {b[0][0]:.2f}..{b[1][0]:.2f}, Y {b[0][1]:.2f}..{b[1][1]:.2f}")
 print("\n== Switch cap travel (cap + actuator shifted together) ==")
 for s in ['-1', '0', '1']:
     cap = L('cap_' + s); gb = L('ghost_back_' + s)

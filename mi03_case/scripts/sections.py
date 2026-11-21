@@ -39,3 +39,8 @@ save(fig,ax,'section_S1.png','Section through S1 (37.25 mm from the top): plunge
 # 4: plan section just under the PCB (Z=-3)
 fig,ax=plt.subplots(figsize=(6,13)); draw(ax,[0,0,-3],[0,0,1],lambda p:p[:,[0,1]])
 save(fig,ax,'section_plan_z-3.png','Plan section Z=-3 (back side, under the PCB)')
+# 5: across the LCD (through the top/bottom ribs' line is along X; cut at Y through side ribs) + lengthwise at the side ribs' X
+fig,ax=plt.subplots(figsize=(10,5)); draw(ax,[0,80-14.25+3.5,0],[0,1,0],lambda p:p[:,[0,2]]); ax.set_xlim(-14.5,14.5); ax.set_ylim(-1,7)
+save(fig,ax,'section_lcd_across.png','Section across the LCD (Y through the side press ribs): frame walls, ribs on the glass border, window')
+fig,ax=plt.subplots(figsize=(12,5)); draw(ax,[0,0,0],[1,0,0],lambda p:p[:,[1,2]]); ax.set_xlim(50,82); ax.set_ylim(-1,7)
+save(fig,ax,'section_lcd_lengthwise.png','Section X=0 through the LCD: top wall, ribs on the top/bottom glass border, glass-edge wall above the backlight')
