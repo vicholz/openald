@@ -8,11 +8,19 @@
 //   Y = pcb_l - d, where d = "distance from the top" exactly as Victor measured it (top end at Y = 80).
 //   Z = 0 at the PCB BACK face (switch/USB/jack side); +Z towards the front (LCD/buttons).
 //
-// Parts:  openscad -D 'part="front"' -o front_shell.stl mi03_case.scad   (also: back, plunger, switch_cap, print)
+// Parts:  openscad -D 'part="front"' -o front_shell.stl mi03_case.scad
+//         (also: back, battery_frame [-D frame_mount="front"|"back"], plunger, switch_carrier, switch_knob, print)
+//
+// 2026-11-22 layout: the USB-C opening, the switch slot/pocket and the jack opening are entirely in the FRONT shell.
+// The board screws straight into the front shell (3 x M2 self-tapping from the board back), so front + board is one
+// rigid unit.  The front/back split moved down to 1 mm below the battery frame (z_split); the back shell is a snap-on
+// cover with a lip.  The battery frame screws either into the front shell over the board (frame_mount="front") or
+// into columns in the back shell (frame_mount="back").
 // Every measurement Victor gave is a named parameter below; "ASSUMED" marks values he did not give.
 
-part = "assembly";  // front | back | plunger | switch_cap | print | assembly | exploded | closed | section_buttons
-                    // section_switch | front_raw | back_raw | plungers_raw | cap_raw | ghost_* (fit-check poses)
+part = "assembly";  // front | back | battery_frame | plunger | switch_carrier | switch_knob | print | assembly | exploded | closed
+                    // front_raw | back_raw | frame_raw | plungers_raw | cap_raw | ghost_* | board_unit (fit-check poses)
+frame_mount = "front"; // "front" = frame screws over the board into front-shell bosses | "back" = into back-shell columns
 cap_shift = 0;      // switch cap / actuator offset along Y for travel checks (-sw_travel/2 .. +sw_travel/2)
 
 // ================= Victor's measurements (mm, d = from the top end) =================
@@ -27,8 +35,8 @@ hole_bot_d    = 74;     // 2026-11-21: moved down 1 mm (was 73): 6 mm from the b
 hole_bot_in   = 2.1;    // ASSUMED: "1 mm from left and right" read as hole EDGE 1 mm from the board edge (2.2 mm hole)
 holes = [[0, 3.75, 3.2, "screw_back"],
          [0, 28,   2.25, "none"],        // set "pin" for a 1.9 mm locating pin (off: LED pads/wires sit near here)
-         [-(21/2-hole_bot_in), hole_bot_d, 2.2, "screw_thru"],
-         [ (21/2-hole_bot_in), hole_bot_d, 2.2, "screw_thru"]];
+         [-(21/2-hole_bot_in), hole_bot_d, 2.2, "screw_back"],   // 2026-11-22: all board screws go from the
+         [ (21/2-hole_bot_in), hole_bot_d, 2.2, "screw_back"]];  // board back into front-shell bosses
 // front (top) side
 lcd_d0 = 6.75;  lcd_glass_d1 = 21.75;  lcd_bl_d1 = 26.25;
 lcd_w  = 21 - 1;        // "1 mm narrower than the board"
@@ -65,7 +73,10 @@ front_t = 1.6;     // front face (OpenALD floor_t)
 floor_t = 1.6;     // back floor (OpenALD)
 clr     = 0.5;     // PCB edge to inner wall (OpenALD)
 end_clr_top = 1.3; // top end: room for the closing snap tab
-jack_clr = 0.3;    // jack body face to inner wall -> barrel ends flush with the outer face
+jack_tip_clr = 1.2; // 2026-11-22: jack barrel tip to the inner end wall (barrel now fully inside so the board drops in;
+                   // 1.2 rather than 0.2 so the option-"front" frame screws fit between the board end and the plate edge)
+jack_plug_d = 6.8;  // ASSUMED: hole in the end wall for the plug overmold
+jack_cbore = [7.8, 1.0];  // outside counterbore around the plug hole: plug reaches 1.2 + 2.0 - 1.0 = 2.2 mm in to the barrel face
 top_clear = 0.3;   // air above the LCD glass
 // battery frame (2026-11-21): a flat plate between the PCB and the 18650; the holder is glued BASE-UP to its underside
 frame_gap  = 0.3;  // air between the lowest back part (jack, 5.25 mm) and the frame top
@@ -78,7 +89,19 @@ holder_pin_trim = 1.4; // trim the holder pins to this so they stay inside the 1
 pin_slot = [3.0, 3.6]; // through-slots in the plate for the trimmed pins (X x Y)
 edge_r  = 2.0;     // rounding of the front/back edges (OpenALD)
 plan_r_in = 3.0;   // plan-view inner corner radius
-lip_h = 1.2;  lip_t = 0.9;  fit = 0.15;   // alignment lip (OpenALD)
+lip_h = 1.8;  lip_t = 0.9;  fit = 0.15;   // back-shell lip into the front-shell rebate (taller: it carries the snaps)
+split_below_frame = 1.0;  // front/back split this far below the battery frame underside
+snap_ys = [18, 62];  snap_len = 8;  snap_bump = 0.3;   // snap bumps on the lip, both long sides
+// battery-frame fasteners (M2 x 90-degree countersunk self-tapping, e.g. DIN 7982 / ISO 7050 2.2 or M2 "PT" style)
+frame_pilot_d = 1.6;  frame_csk_d = 4.0;  frame_boss_r = 1.9;
+frame_screw_front = [5.3, -2.05];   // option "front": [+-X, Y] of the front-shell bosses (beside the jack body, +-3)
+frame_screw_back  = [9.0, 0.3];    // option "back":  [+-X, Y] of the back-shell columns (in the end corners)
+frame_screw_len   = [5, 8];        // M2 countersunk length: option "front", option "back"
+frame_boss_top = -2.0;             // front bosses stop 2 mm below the PCB back face (clear of back-side parts <= 1.8 mm)
+frame_rib = [10.1, 10.9];           // PCB edge support ribs on the frame (X range, both sides), d = ledge_d
+usb_recess_gap = 0.55;              // plug recess stops this far outside the USB-C tip (keeps a skin over the drop-in channel)
+knob_fit = 0.05;                    // per side, knob socket on the carrier stem (press fit + a drop of CA glue)
+knob_socket_l = 1.5;
 // fasteners (OpenALD: M2 + heat-set inserts)
 screw_d = 2.4;  insert_d = 3.2;  insert_l = 4.0;  insert_hole_l = 4.5;
 csk_d = 4.2;           // M2 countersunk head (3.8) + clearance
@@ -119,13 +142,12 @@ lcd_ribs_x_top  = [-8, -4, 0, 4, 8]; // rib centres along the top (zebra) edge, 
 lcd_rib_len_top = 3.0;
 lcd_ribs_y      = [-3.5, 3.5];    // rib centres along the side edges (offset from the glass centre, Y)
 // edge ledges supporting the PCB back between the buttons (d ranges)
-ledge_d = [[33, 62]];  ledge_w = 1.1;  ledge_h = 1.2;
+ledge_d = [[33, 62]];  // (2026-11-22: now ribs on the battery frame, see frame_rib)
 // wires
 wire_side = -1;   // -1 = USB-C side, +1 = switch side
 groove_w = 1.4;  groove_dp = 1.0;
 $fn = 40;
 
-snap_bot_x0 = 3.8;  snap_bot_w = 2.6;   // jack-end snap tabs (jack body is +-3)
 
 // ================= derived =================
 function Y(d) = pcb_l - d;
@@ -146,14 +168,15 @@ z_floor_in = z_cell_low - cell_floor_clr;
 Zb         = z_floor_in - floor_t;          // back outer face (negative)
 in_x1 = pcb_wmax/2 + clr;  in_x0 = -in_x1;
 in_y1 = Y(-end_clr_top);                    // top end
-in_y0 = Y(pcb_l + jack_body_out + jack_clr);// bottom end (jack)
+in_y0 = Y(pcb_l + jack_body_out + jack_barrel_out + jack_tip_clr);// bottom end (jack barrel inside)
+z_split = z_frame_bot - split_below_frame;  // front shell: z_split .. Zf, back shell: Zb .. z_split (+ lip)
 out_r = plan_r_in + wall;
 holder_y1 = in_y1 - 0.7;                   // + end at the top end wall (clears the 3 mm inner corner radius)
 holder_y0 = holder_y1 - holder_l;
 sw_x   = pcb_halfw(sw_d);                   // switch body face (board edge)
 sw_tip = sw_x + sw_head_out;
 usb_tip = -pcb_halfw(usb_d) - usb_out;
-echo(str("MI03 case outer: ", in_x1-in_x0+2*wall, " W x ", in_y1-in_y0+2*wall, " L x ", Zf-Zb, " T mm (knob adds ", cap_knob[2]+0.2, " mm on the switch side)"));
+echo(str("MI03 case outer: ", in_x1-in_x0+2*wall, " W x ", in_y1-in_y0+2*wall, " L x ", Zf-Zb, " T mm (knob adds ", cap_knob[2]+0.2, " mm on the switch side); split at z ", z_split, " (front shell ", Zf-z_split, ", back shell ", z_split-Zb, ")"));
 echo(str("Z stack: back face ", Zb, ", floor top ", z_floor_in, ", cell low ", z_cell_low, ", frame ", z_frame_bot, "..", z_frame_top, ", PCB 0..", pcb_t, ", LCD glass top ", z_glass, ", ceiling ", z_ceiling, ", front face ", Zf));
 echo(str("LCD: glass top ", z_glass, ", ceiling ", z_ceiling, ", press ", lcd_press, " tips at z ", z_glass-lcd_preload, " (preload ", lcd_preload, " mm), frame clearance ", lcd_frame_clr, "/side"));
 echo(str("Holder Y ", holder_y0, "..", holder_y1, " (cavity ", in_y0, "..", in_y1, ")"));
@@ -218,43 +241,64 @@ module ghost_holder() {   // inverted: base glued under the frame, cell opening 
     for (y=[holder_y0+holder_pin_in, holder_y1-holder_pin_in]) translate([0,y,-holder_pin_trim]) cylinder(d=1.2,h=holder_pin_trim+0.01,$fn=12); // trimmed pins (into the plate slots)
   }
 }
-module screws() {   // hardware ghosts, for the fit check
-  for (h=holes) translate([h[0],Y(h[1]),0]) {
-    if (h[3]=="screw_thru") { translate([0,0,-3.92]) cylinder(d=2.0,h=Zf+3.92-1.0); translate([0,0,Zf-1.0]) cylinder(d1=2.0,d2=3.8,h=0.99); }
-    if (h[3]=="screw_back") { translate([0,0,1.0]) cylinder(d=2.0,h=3.0); translate([0,0,-1.3]) cylinder(d=3.8,h=1.3); }
-  }
+module board_screws() { for (h=holes) if (h[3]=="screw_back") translate([h[0],Y(h[1]),0]) { translate([0,0,1.0]) cylinder(d=2.0,h=3.0); translate([0,0,-1.3]) cylinder(d=3.8,h=1.3); } }
+module frame_screws(m=frame_mount) {   // M2 countersunk: head 3.8 / 0.9 deep
+  if (m=="front") for (sx=[-1,1]) translate([sx*frame_screw_front[0], frame_screw_front[1], z_frame_bot]) {   // from under the plate up
+    cylinder(d1=3.8, d2=2.0, h=0.9); translate([0,0,0.89]) cylinder(d=2.0, h=frame_screw_len[0]-0.89); }
+  if (m=="back") for (sx=[-1,1]) translate([sx*frame_screw_back[0], frame_screw_back[1], z_frame_top]) {    // from above down
+    translate([0,0,-0.9]) cylinder(d1=2.0, d2=3.8, h=0.9); translate([0,0,-frame_screw_len[1]]) cylinder(d=2.0, h=frame_screw_len[1]-0.89); }
 }
+module screws() { board_screws(); frame_screws(); }
 
-// ================= openings shared by both shells =================
-module side_openings() {
-  // USB-C: shell clearance through the wall + plug recess on the outside (OpenALD 13.0 x 7.6 recess, r 3)
-  zc = -usb_hb + usb_h/2;
-  translate([in_x0+0.5, Y(usb_d), zc]) rotate([0,-90,0]) chamfered_hole(usb_h+0.5, usb_w+0.5, 0.4, wall+1, 0);
-  translate([in_x0-wall-1, Y(usb_d), zc]) rotate([0,90,0]) linear_extrude(1 + usb_tip-(in_x0-wall)) rr2d(7.6, 13.0, 3.0);
-  // headphone jack barrel: through hole + 45-degree outer chamfer for the plug
-  translate([0, in_y0+0.01, jack_axis_z]) rotate([90,0,0]) chamfered_hole(jack_barrel_d+0.4, jack_barrel_d+0.4, 99, wall, 0.7);
+// ================= openings (all in the FRONT shell) =================
+module usb_cuts() {
+  zc = -usb_hb + usb_h/2;  yc = Y(usb_d);
+  // shell clearance through the wall
+  translate([in_x0+0.5, yc, zc]) rotate([0,-90,0]) chamfered_hole(usb_h+0.5, usb_w+0.5, 0.4, wall+1, 0);
+  // plug recess on the outside (OpenALD 13.0 x 7.6, r 3); stops usb_recess_gap outside the receptacle tip
+  translate([in_x0-wall-1, yc, zc]) rotate([0,90,0]) linear_extrude(1 + (usb_tip-usb_recess_gap)-(in_x0-wall)) rr2d(7.6, 13.0, 3.0);
+  // drop-in channel: the receptacle sticks 1 mm into the wall, so the wall is relieved from the split up to it
+  translate([usb_tip-0.15, yc-(usb_w+0.5)/2, z_split-1]) cube([in_x0+0.01-(usb_tip-0.15), usb_w+0.5, zc+(usb_h+0.5)/2-(z_split-1)]);
 }
-// switch slot (stem) + wall pocket (flange), open at Z=0 so the cap drops in before the front closes
+module jack_cuts() {   // plug hole + outside counterbore with a 45-degree chamfer (barrel ends jack_tip_clr inside the wall)
+  translate([0, in_y0+0.01, jack_axis_z]) rotate([90,0,0]) cylinder(d=jack_plug_d, h=wall+1);
+  translate([0, in_y0-wall+jack_cbore[1], jack_axis_z]) rotate([90,0,0]) cylinder(d=jack_cbore[0], h=jack_cbore[1]+1);
+  translate([0, in_y0-wall+0.4, jack_axis_z]) rotate([90,0,0]) cylinder(d1=jack_cbore[0], d2=jack_cbore[0]+2*1.4, h=1.4);
+}
+// no lip/rebate along the straight part of the jack end wall (the front wall keeps its full 2 mm there, below the plug hole)
+module jack_end_no_lip() { translate([-(in_x1-plan_r_in), in_y0-wall-1, z_split-1]) cube([2*(in_x1-plan_r_in), wall+1, lip_h+3]); }
+// closed stem slot + flange pocket in the side wall, and a channel below the pocket so the switch head drops in
 module switch_cuts() {
   yc = Y(sw_d);
   sl = cap_stem[0] + sw_travel + 2*slot_clr;
   fl = cap_flange[0] + sw_travel + 2*slot_clr;
-  translate([in_x1-1, yc-sl/2, sw_head_z-cap_stem[1]/2-slot_clr]) cube([wall+2, sl, -(sw_head_z-cap_stem[1]/2-slot_clr)+0.01]);
-  translate([in_x1-1, yc-fl/2, sw_head_z-cap_flange[1]/2-slot_clr]) cube([1+ (sw_x+0.15+cap_flange_t+slot_clr) - in_x1, fl, -(sw_head_z-cap_flange[1]/2-slot_clr)+0.01]);
+  hw = sw_head[0] + sw_travel + 0.6;
+  zp0 = sw_head_z - cap_flange[1]/2 - slot_clr;
+  translate([in_x1-1, yc-sl/2, sw_head_z-cap_stem[1]/2-slot_clr]) cube([wall+2, sl, cap_stem[1]+2*slot_clr]);
+  translate([in_x1-1, yc-fl/2, zp0]) cube([1+(sw_x+0.15+cap_flange_t+slot_clr)-in_x1, fl, cap_flange[1]+2*slot_clr]);
+  translate([in_x1-1, yc-hw/2, z_split-1]) cube([1+sw_tip+0.15-in_x1, hw, zp0-(z_split-1)+0.01]);
 }
+module lip_outline(o, h) { rrect(in_x0-o, in_y0-o, in_x1+o, in_y1+o, plan_r_in+o, h); }
 
-// ================= FRONT SHELL (z = 0 .. Zf) =================
+// ================= FRONT SHELL (z = z_split .. Zf) =================
+module frame_front_boss(sx) {   // option "front" battery-frame boss, merged into the jack end wall (45-degree top)
+  x = sx*frame_screw_front[0];  y = frame_screw_front[1];  r = frame_boss_r;
+  hull() {
+    translate([x, y, z_frame_top]) cylinder(r=r, h=frame_boss_top-z_frame_top);
+    translate([x-r, in_y0-0.5, z_frame_top]) cube([2*r, 0.5, frame_boss_top-z_frame_top+(y+r-in_y0)]);
+  }
+}
 module front_shell() {
   difference() {
     union() {
       difference() {
-        intersection() { rounded_shell(Zb, Zf); translate([-50,-50,0]) cube([100,200,Zf+1]); }
-        cavity(-1, z_ceiling);
+        intersection() { rounded_shell(Zb, Zf); translate([-50,-50,z_split]) cube([100,200,Zf-z_split+1]); }
+        cavity(z_split-1, z_ceiling);
       }
-      // PCB bosses (ceiling -> PCB top)
+      // PCB bosses (ceiling -> PCB top); the board screws into all of them from its back
       for (h=holes) translate([h[0],Y(h[1]),0]) {
-        if (h[3]=="screw_back") translate([0,0,z_pcb_top]) cylinder(r=boss_r_front+0.3, h=z_ceiling-z_pcb_top+0.01);
-        if (h[3]=="screw_thru") intersection() {
+        if (h[3]=="screw_back" && abs(h[0])<1) translate([0,0,z_pcb_top]) cylinder(r=boss_r_front+0.3, h=z_ceiling-z_pcb_top+0.01);
+        if (h[3]=="screw_back" && abs(h[0])>=1) intersection() {
           translate([-h[0],-Y(h[1]),z_pcb_top]) cavity(0, z_ceiling-z_pcb_top+0.01);
           hull() { translate([0,0,z_pcb_top]) cylinder(r=boss_r_front, h=z_ceiling-z_pcb_top+0.01);
                    translate([sign(h[0])*(in_x1-h[0]*sign(h[0])), 0, z_pcb_top]) translate([-1,-boss_r_front,0]) cube([2,2*boss_r_front,z_ceiling-z_pcb_top+0.01]); }
@@ -263,39 +307,26 @@ module front_shell() {
       }
       if (lcd_frame) lcd_frame_walls();
       if (lcd_press!="none") lcd_press_features();
-      // pin guide tubes (ceiling -> just above the button cap)
       for (i=[0:len(btn_d)-1]) if (!btn_press[i]) translate([0,Y(btn_d[i]),z_btn_top+tube_gap]) cylinder(d=tube_od, h=z_ceiling-z_btn_top-tube_gap+0.01);
-      // closing snap tab at the top end (hangs into the back shell, bump clicks into its end wall)
-      // (extended down to just above the battery frame so it also holds the frame's top end down)
-      translate([-3, in_y1-0.9, -3.0]) {
-        translate([0,0,z_frame_top+0.05+3.0]) cube([6, 0.9, z_ceiling-z_frame_top-0.05]);
-        translate([0,0.9,0.4]) hull() { cube([6,0.01,1.4]); translate([0,0,0.3]) cube([6,0.45,0.8]); }
-      }
-      // two more snap tabs at the jack end (beside the jack), bumps click into the end wall
-      for (sx=[-1,1]) translate([sx>0 ? snap_bot_x0 : -snap_bot_x0-snap_bot_w, in_y0, -3.0]) {
-        cube([snap_bot_w, 0.9, z_ceiling+3.0]);
-        translate([0,0,0.4]) hull() { translate([0,-0.01,0]) cube([snap_bot_w,0.01,1.4]); translate([0,-0.45,0.3]) cube([snap_bot_w,0.45,0.8]); }
-      }
+      // post at the top end: holds the battery frame's top end (both options)
+      translate([-3, in_y1-0.9, z_frame_top+0.05]) cube([6, 0.91, z_ceiling-z_frame_top-0.05+0.01]);
+      // battery-frame bosses in the jack end (screwed in option "front", they just bear on the plate in option "back")
+      for (sx=[-1,1]) frame_front_boss(sx);
     }
-    // rebate for the back-shell lip
-    translate([0,0,-0.01]) difference() {
-      rrect(in_x0-lip_t-fit,in_y0-lip_t-fit,in_x1+lip_t+fit,in_y1+lip_t+fit,plan_r_in+lip_t+fit,lip_h+0.3);
-      translate([0,0,-1]) rrect(in_x0+0.01,in_y0+0.01,in_x1-0.01,in_y1-0.01,plan_r_in,lip_h+3);
-      switch_keeper_zone();   // no rebate beside the switch: the front wall closes the top of the switch pocket
-    }
+    // rebate for the back-shell lip + snap grooves
+    translate([0,0,z_split-0.01]) difference() { lip_outline(lip_t+fit, lip_h+0.3+0.01); translate([0,0,-1]) lip_outline(-0.01, lip_h+3); translate([0,0,-z_split+0.01]) jack_end_no_lip(); }
+    for (sx=[-1,1]) for (y=snap_ys) translate([sx>0 ? in_x1+lip_t+fit-0.01 : in_x0-lip_t-fit-snap_bump-0.1+0.01, Y(y)-(snap_len+0.6)/2, z_split+lip_h/2-0.5]) cube([snap_bump+0.1, snap_len+0.6, 1.0]);
     // LCD window with 45-degree bezel
     translate([0, Y((lcd_d0+lcd_top_cover+lcd_glass_d1-lcd_border)/2), z_ceiling]) chamfered_hole(lcd_w-2*lcd_border, lcd_glass_d1-lcd_border-(lcd_d0+lcd_top_cover), 0.6, front_t, bezel);
-    // plunger holes / pin holes with funnels
     for (i=[0:len(btn_d)-1]) translate([0,Y(btn_d[i]),0]) {
       if (btn_press[i]) translate([0,0,z_ceiling]) chamfered_hole(plunger_hole_d, plunger_hole_d, 99, front_t, 0.4);
       else { translate([0,0,z_btn_top]) cylinder(d=pinhole_d+pinhole_clr, h=Zf); translate([0,0,Zf-(funnel_d-pinhole_d-pinhole_clr)/2]) cylinder(d1=pinhole_d+pinhole_clr, d2=funnel_d, h=(funnel_d-pinhole_d-pinhole_clr)/2+0.01); translate([0,0,Zf]) cylinder(d=funnel_d,h=1); }
     }
-    // screw holes
-    for (h=holes) translate([h[0],Y(h[1]),0]) {
-      if (h[3]=="screw_back") translate([0,0,z_pcb_top-0.01]) cylinder(d=pilot_d, h=z_ceiling-z_pcb_top-0.3);
-      if (h[3]=="screw_thru") { translate([0,0,-1]) cylinder(d=screw_d, h=Zf+2); translate([0,0,Zf-(csk_d-screw_d)/2]) cylinder(d1=screw_d, d2=csk_d, h=(csk_d-screw_d)/2+0.01); translate([0,0,Zf]) cylinder(d=csk_d,h=1); }
-    }
-    side_openings();
+    // board screw pilots (M2 self-tapping)
+    for (h=holes) if (h[3]=="screw_back") translate([h[0],Y(h[1]),z_pcb_top-0.01]) cylinder(d=pilot_d, h=z_ceiling-z_pcb_top-0.3);
+    // battery-frame screw pilots
+    for (sx=[-1,1]) translate([sx*frame_screw_front[0], frame_screw_front[1], z_frame_top-0.01]) cylinder(d=frame_pilot_d, h=frame_boss_top-z_frame_top-0.2);
+    usb_cuts(); jack_cuts(); switch_cuts();
   }
 }
 // ---------- LCD retaining frame (part of the front shell) ----------
@@ -337,30 +368,24 @@ module lcd_press_features() {
     }
   }
 }
-
-module switch_keeper_zone() {
-  translate([in_x1-0.5, Y(sw_d)-(cap_flange[0]+sw_travel)/2-2, -1]) cube([lip_t+fit+1, cap_flange[0]+sw_travel+4, lip_h+3]);
-}
-
-// ================= BACK SHELL (z = Zb .. 0, lip to +lip_h) =================
+// ================= BACK SHELL (z = Zb .. z_split, lip to z_split + lip_h) =================
+// A plain snap-on cover: lip with 4 snap bumps, ledges + 2 columns for the battery frame (same part for both options).
 module back_shell() {
+  zt = z_frame_bot - frame_ledge_gap;
   difference() {
     union() {
       difference() {
-        intersection() { rounded_shell(Zb, Zf); translate([-50,-50,Zb-1]) cube([100,200,-Zb+1]); }
-        cavity(z_floor_in, 1);
+        intersection() { rounded_shell(Zb, Zf); translate([-50,-50,Zb-1]) cube([100,200,z_split-Zb+1]); }
+        cavity(z_floor_in, z_split+1);
       }
-      // alignment lip (removed beside the switch pocket)
-      difference() {
-        rrect(in_x0-lip_t,in_y0-lip_t,in_x1+lip_t,in_y1+lip_t,plan_r_in+lip_t,lip_h);
-        translate([0,0,-1]) rrect(in_x0,in_y0,in_x1,in_y1,plan_r_in,lip_h+2);
-        switch_keeper_zone();
-      }
+      translate([0,0,z_split-0.01]) difference() { lip_outline(lip_t, lip_h+0.01); translate([0,0,-1]) lip_outline(0, lip_h+3); translate([0,0,-z_split+0.01]) jack_end_no_lip(); }
+      // snap bumps (45-degree flanks) on the lip, both long sides
+      for (sx=[-1,1]) for (y=snap_ys) translate([sx*(in_x1+lip_t-0.01), Y(y), z_split+lip_h/2]) mirror([sx>0 ? 0 : 1,0,0])
+        hull() { translate([0,-snap_len/2,-0.65]) cube([0.01, snap_len, 1.3]); translate([snap_bump,-snap_len/2+0.3,-0.35]) cube([0.01, snap_len-0.6, 0.7]); }
       // ledges the battery frame rests on: both long sides + the jack end (45-degree undersides, no supports)
       intersection() {
-        cavity(z_floor_in, 0);
+        cavity(z_floor_in, z_split+5);
         union() {
-          zt = z_frame_bot - frame_ledge_gap;
           for (sx=[-1,1]) hull() {
             translate([sx>0 ? in_x1-frame_ledge_w : in_x0-0.01, in_y0, zt-0.01]) cube([frame_ledge_w+0.01, in_y1-in_y0, 0.01]);
             translate([sx>0 ? in_x1-0.01 : in_x0-0.01, in_y0, zt-frame_ledge_w-0.5]) cube([0.02, in_y1-in_y0, frame_ledge_w+0.5]);
@@ -371,51 +396,47 @@ module back_shell() {
           }
         }
       }
-      // PCB edge ledges between the buttons (stop the board flexing when S1/S3 are pressed)
-      for (r=ledge_d) for (s=[-1,1]) intersection() {
-        cavity(z_floor_in, 0);
+      // option "back" screw columns (floor -> ledge height, merged into the end wall)
+      for (sx=[-1,1]) intersection() {
+        cavity(z_floor_in-1, zt+1);
         hull() {
-          translate([s>0 ? in_x1-ledge_w-clr+0.5 : in_x0-0.01, Y(r[1]), -ledge_h]) cube([ledge_w+clr-0.5+0.01, r[1]-r[0], ledge_h]);
-          translate([s>0 ? in_x1-0.01 : in_x0-0.01, Y(r[1]), -ledge_h-ledge_w-clr]) cube([0.02, r[1]-r[0], ledge_h+ledge_w+clr]);
+          translate([sx*frame_screw_back[0], frame_screw_back[1], z_floor_in-0.01]) cylinder(r=frame_boss_r, h=zt-z_floor_in+0.01);
+          translate([sx*frame_screw_back[0]-frame_boss_r, in_y0-0.5, z_floor_in-0.01]) cube([2*frame_boss_r, 0.5, zt-z_floor_in+0.01]);
         }
       }
     }
-    // recess for the snap-tab bump (top end wall)
-    translate([-3.3, in_y1-0.01, -3.0+0.2]) cube([6.6, 0.6, 1.8]);
-    for (sx=[-1,1]) translate([sx>0 ? snap_bot_x0-0.3 : -snap_bot_x0-snap_bot_w-0.3, in_y0-0.59, -3.0+0.2]) cube([snap_bot_w+0.6, 0.6, 1.8]);
-    side_openings();
-    switch_cuts();
+    for (sx=[-1,1]) translate([sx*frame_screw_back[0], frame_screw_back[1], zt-7]) cylinder(d=frame_pilot_d, h=7.01);
+    // pry notch on the seam at the top end
+    translate([-3, in_y1+wall-0.8, z_split-0.8]) cube([6, 2, 0.81]);
   }
 }
 
 // ================= BATTERY FRAME (loose part, assembly pose) =================
-// Flat plate between the PCB and the 18650.  The BH-18650-PC holder is glued base-up to its flat underside.
-// Two columns carry the M2 inserts for the bottom screws (front face -> PCB -> column), so the plate hangs from the
-// PCB/front shell; it also rests on back-shell ledges, and the top snap tab holds its top end down.
-module battery_frame() {
+// Flat plate between the PCB and the 18650; the BH-18650-PC holder is glued base-up to its flat underside.
+// m="front": 2 x M2x5 countersunk self-tapping from UNDER the plate up into the front-shell bosses (frame joins the
+//            front + board unit).  m="back": 2 x M2x8 countersunk from ABOVE into the back-shell columns.
+// In both cases the plate also sits on the back-shell ledges and the front-shell top post / bosses bear on it when closed.
+module battery_frame(m=frame_mount) {
   x1 = in_x1 - frame_clr;  y0 = in_y0 + frame_clr;  y1 = in_y1 - frame_clr;
   difference() {
     union() {
-      translate([0,0,z_frame_bot]) difference() {
-        rrect(-x1, y0, x1, y1, plan_r_in-frame_clr, frame_t);
-        // notches past the PCB edge ledges (so the plate drops in past them)
-        for (r=ledge_d) for (sx=[-1,1]) translate([sx>0 ? in_x1-ledge_w-clr+0.5-0.15 : -50+(in_x0+ledge_w+clr-0.5+0.15), Y(r[1])-0.4, -1]) cube([50, r[1]-r[0]+0.8, frame_t+2]);
-      }
-      // insert columns under the bottom mounting holes, up to the PCB back face
-      intersection() {
-        translate([0,0,z_frame_top-1]) rrect(-x1, y0, x1, y1, plan_r_in-frame_clr, -z_frame_top+1);
-        for (h=holes) if (h[3]=="screw_thru") translate([h[0],Y(h[1]),z_frame_top-0.01]) {
-          cylinder(r=boss_r_back, h=-z_frame_top+0.01);
-          cylinder(r1=boss_r_back+0.8, r2=boss_r_back, h=0.8);   // root fillet
-        }
+      translate([0,0,z_frame_bot]) rrect(-x1, y0, x1, y1, plan_r_in-frame_clr, frame_t);
+      // PCB edge support ribs between the buttons (replace the old back-shell ledges), tapered for stiffness
+      for (r=ledge_d) for (sx=[-1,1]) mirror([sx>0 ? 0 : 1,0,0]) hull() {
+        translate([frame_rib[0]-0.8, Y(r[1]), z_frame_top-0.01]) cube([frame_rib[1]-frame_rib[0]+0.8, r[1]-r[0], 0.01]);
+        translate([frame_rib[0], Y(r[1]), -0.06]) cube([frame_rib[1]-frame_rib[0], r[1]-r[0], 0.01]);
       }
     }
-    for (h=holes) if (h[3]=="screw_thru") translate([h[0],Y(h[1]),-insert_hole_l]) cylinder(d=insert_d, h=insert_hole_l+1);
-    // slots for the holder's trimmed pins
+    if (m=="front") for (sx=[-1,1]) translate([sx*frame_screw_front[0], frame_screw_front[1], z_frame_bot]) {
+      translate([0,0,-1]) cylinder(d=screw_d, h=frame_t+2);
+      translate([0,0,-0.01]) cylinder(d1=frame_csk_d, d2=screw_d, h=(frame_csk_d-screw_d)/2+0.01);
+    }
+    if (m=="back") for (sx=[-1,1]) translate([sx*frame_screw_back[0], frame_screw_back[1], z_frame_top]) {
+      translate([0,0,-frame_t-1]) cylinder(d=screw_d, h=frame_t+2);
+      translate([0,0,-(frame_csk_d-screw_d)/2]) cylinder(d1=screw_d, d2=frame_csk_d, h=(frame_csk_d-screw_d)/2+0.01);
+    }
     for (y=[holder_y0+holder_pin_in, holder_y1-holder_pin_in]) translate([-pin_slot[0]/2, y-pin_slot[1]/2, z_frame_bot-1]) cube([pin_slot[0], pin_slot[1], frame_t+2]);
-    // wire groove from the jack-end pin slot sideways out from under the jack
     translate([wire_side>0 ? 0 : -(jack_body_w/2+2), holder_y0+holder_pin_in-groove_w/2, z_frame_top-0.9]) cube([jack_body_w/2+2, groove_w, 1]);
-    // the holder's two 3.2 mm holes: through holes for alignment pins / optional 2-56 (M2.5) screws
     for (y=[holder_y0+holder_hole_from_neg, holder_y0+holder_hole_from_neg+holder_hole_pitch]) translate([0,y,z_frame_bot-1]) cylinder(d=holder_hole_d, h=frame_t+2);
   }
 }
@@ -428,64 +449,78 @@ module plunger() {   // assembly pose: bottom on the button cap
     cylinder(d=plunger_stem_d, h=Zf+plunger_proud-z0-0.6);
     translate([0,0,Zf+plunger_proud-z0-0.6]) cylinder(d1=plunger_stem_d, d2=plunger_stem_d-1.2, h=0.6);
   }
-}
-module switch_cap(shift=0) {   // assembly pose
-  yc = Y(sw_d) + shift;  zc = sw_head_z;
-  x0 = sw_x + 0.15;   // flange inner face
+}// Switch cap, now TWO pieces because the wall slot is closed (it no longer opens onto the split):
+//  carrier = flange (inside the wall pocket) + stem (through the slot); pushed out through the slot from inside before
+//            the board goes in.  Its head socket is open toward -Z, so the switch head drops into it with the board.
+//  knob    = pressed onto the stem end outside (tight socket, knob_fit per side) + a drop of CA glue.
+module switch_carrier(shift=0) {
+  yc = Y(sw_d) + shift;  zc = sw_head_z;  x0 = sw_x + 0.15;
+  xs1 = in_x1 + wall + 0.2 + knob_socket_l;
   difference() {
     union() {
       translate([x0, yc-cap_flange[0]/2, zc-cap_flange[1]/2]) cube([cap_flange_t, cap_flange[0], cap_flange[1]]);
-      translate([x0+cap_flange_t-0.01, yc-cap_stem[0]/2, zc-cap_stem[1]/2]) cube([in_x1+wall-(x0+cap_flange_t)+0.2+0.02, cap_stem[0], cap_stem[1]]);
-      translate([in_x1+wall+0.2, yc, zc]) rotate([0,90,0]) linear_extrude(cap_knob[2]-0.6) rr2d(cap_knob[1], cap_knob[0], 1.2);
-      translate([in_x1+wall+0.2+cap_knob[2]-0.6, yc, zc]) rotate([0,90,0]) hull() { linear_extrude(0.01) rr2d(cap_knob[1], cap_knob[0], 1.2); translate([0,0,0.59]) linear_extrude(0.01) rr2d(cap_knob[1]-1.2, cap_knob[0]-1.2, 0.6); }
+      translate([x0+cap_flange_t-0.01, yc-cap_stem[0]/2, zc-cap_stem[1]/2]) cube([xs1-(x0+cap_flange_t)+0.01, cap_stem[0], cap_stem[1]]);
     }
-    // socket for the 1.5 x 1.5 head
-    translate([x0-0.01, yc-sw_head[0]/2-cap_socket_clr, zc-sw_head[1]/2-cap_socket_clr]) cube([sw_tip-x0+0.2, sw_head[0]+2*cap_socket_clr, sw_head[1]+2*cap_socket_clr]);
-    // grip grooves across the knob face
-    for (k=[-2:2]) translate([in_x1+wall+0.2+cap_knob[2]-0.35, yc+k*1.2-0.3, zc-cap_knob[1]/2-1]) cube([1, 0.6, cap_knob[1]+2]);
+    translate([x0-0.01, yc-sw_head[0]/2-cap_socket_clr, zc-cap_flange[1]/2-1]) cube([sw_tip-x0+0.2+0.01, sw_head[0]+2*cap_socket_clr, cap_flange[1]/2+1+sw_head[1]/2+cap_socket_clr]);
   }
 }
+module switch_knob(shift=0) {
+  yc = Y(sw_d) + shift;  zc = sw_head_z;  xk = in_x1 + wall + 0.2;
+  difference() {
+    union() {
+      translate([xk, yc, zc]) rotate([0,90,0]) linear_extrude(cap_knob[2]-0.6) rr2d(cap_knob[1], cap_knob[0], 1.2);
+      translate([xk+cap_knob[2]-0.6, yc, zc]) rotate([0,90,0]) hull() { linear_extrude(0.01) rr2d(cap_knob[1], cap_knob[0], 1.2); translate([0,0,0.59]) linear_extrude(0.01) rr2d(cap_knob[1]-1.2, cap_knob[0]-1.2, 0.6); }
+    }
+    translate([xk-0.01, yc-cap_stem[0]/2-knob_fit, zc-cap_stem[1]/2-knob_fit]) cube([knob_socket_l+0.01, cap_stem[0]+2*knob_fit, cap_stem[1]+2*knob_fit]);
+    for (k=[-2:2]) translate([xk+cap_knob[2]-0.35, yc+k*1.2-0.3, zc-cap_knob[1]/2-1]) cube([1, 0.6, cap_knob[1]+2]);
+  }
+}
+module switch_cap(shift=0) { switch_carrier(shift); switch_knob(shift); }
 
 // ================= output =================
 module ghosts(shift=0) { color("green") ghost_pcb(); color("black") ghost_front_parts(); color("silver") ghost_back_parts(shift); color("royalblue") ghost_holder(); color("gold") screws(); }
 plunger_ys = [for (i=[0:len(btn_d)-1]) if (btn_press[i]) Y(btn_d[i])];
+module carrier_print() rotate([0,-90,0]) translate([-(sw_x+0.15),-Y(sw_d),-sw_head_z]) switch_carrier();       // flange inner face on the bed
+module knob_print() rotate([0,90,0]) translate([-(in_x1+wall+0.2+cap_knob[2]),-Y(sw_d),-sw_head_z]) switch_knob(); // knob face on the bed
 
 if (part=="front")       translate([0,0,Zf]) rotate([180,0,0]) front_shell();     // front face on the bed
 else if (part=="back")   translate([0,0,-Zb]) back_shell();                       // floor on the bed
-else if (part=="battery_frame") translate([0,0,-z_frame_bot]) battery_frame();   // flat face on the bed, columns up
+else if (part=="battery_frame") translate([0,0,-z_frame_bot]) battery_frame();   // flat (glue) face on the bed, ribs up
 else if (part=="frame_raw") battery_frame();
 else if (part=="plunger") translate([0,0,-(z_btn_top+plunger_gap)]) plunger();   // flange on the bed
-else if (part=="switch_cap") rotate([0,90,0]) translate([-(in_x1+wall+0.2+cap_knob[2]),-Y(sw_d),-sw_head_z]) switch_cap(); // knob face on the bed
+else if (part=="switch_carrier") carrier_print();
+else if (part=="switch_knob") knob_print();
 else if (part=="print") {
   translate([0,0,-Zb]) back_shell();
   translate([in_x1-in_x0+2*wall+6, 0, Zf]) rotate([180,0,0]) translate([0,-in_y1-in_y0,0]) front_shell();
   for (k=[0,1]) translate([-24, 20+k*9, -(z_btn_top+plunger_gap)]) plunger();
   translate([-2*(in_x1-in_x0)-14, 0, -z_frame_bot]) battery_frame();
-  translate([-24, 50, 0]) rotate([0,90,0]) translate([-(in_x1+wall+0.2+cap_knob[2]),-Y(sw_d),-sw_head_z]) switch_cap();
+  translate([-24, 45, 0]) carrier_print();
+  translate([-24, 56, 0]) knob_print();
 }
 else if (part=="front_raw") front_shell();
 else if (part=="back_raw")  back_shell();
 else if (part=="plungers_raw") for (y=plunger_ys) translate([0,y,0]) plunger();
-else if (part=="cap_raw") switch_cap(cap_shift);
+else if (part=="carrier_raw") switch_carrier(cap_shift);
+else if (part=="knob_raw") switch_knob(cap_shift);
 else if (part=="ghost_pcb") ghost_pcb();
 else if (part=="ghost_front") ghost_front_parts();
 else if (part=="ghost_back") ghost_back_parts(cap_shift);
 else if (part=="ghost_holder") ghost_holder();
 else if (part=="ghost_screws") screws();
+else if (part=="ghost_board_screws") board_screws();
+else if (part=="ghost_frame_screws") frame_screws();
+else if (part=="board_unit") { ghost_pcb(); ghost_front_parts(); ghost_back_parts(0); }
 else if (part=="closed") {
   color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("mediumseagreen") battery_frame();
   color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap();
 }
-else if (part=="exploded") {
-  color("lightgray") translate([0,0,-30]) back_shell(); color("mediumseagreen") battery_frame(); ghosts();
-  color("tomato") translate([6,0,0]) switch_cap();
+else if (part=="exploded") {   // front unit (front + board [+ frame in option "front"]) above, back cover below
+  color("lightgray") translate([0,0,-34]) back_shell();
+  translate([0,0,frame_mount=="front" ? -10 : -24]) { color("mediumseagreen") battery_frame(); color("royalblue") ghost_holder(); color("gold") frame_screws(); }
+  color("green") ghost_pcb(); color("black") ghost_front_parts(); color("silver") ghost_back_parts(0); color("gold") board_screws();
+  color("tomato") translate([6,0,0]) switch_knob(); color("tomato") switch_carrier();
   color("orange") for (y=plunger_ys) translate([0,y,14]) plunger();
-  color("lightsteelblue",0.85) translate([0,0,24]) front_shell();
-}
-else if (part=="section_buttons") {   // cut at X = 0 (through all five buttons, the jack and the cell)
-  intersection() { union() { color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); ghosts(); } translate([0,-50,-50]) cube([100,200,100]); }
-}
-else if (part=="section_switch") {    // cut at Y = switch centre (through the switch, its cap and the USB-C)
-  intersection() { union() { color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("tomato") switch_cap(); ghosts(); } translate([-50,Y(sw_d)-100,-50]) cube([100,100,100]); }
+  color("lightsteelblue",0.85) translate([0,0,22]) front_shell();
 }
 else { color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("mediumseagreen") battery_frame(); color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap(); ghosts(); }

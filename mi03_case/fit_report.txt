@@ -1,77 +1,142 @@
 == Printable STLs ==
-mi03_front_shell       watertight=True bodies=1 volume=  5231.3 mm3  extents 27.50 x 86.60 x 11.58  min z 0.00
-mi03_back_shell        watertight=True bodies=1 volume= 15577.8 mm3  extents 27.50 x 86.60 x 29.95  min z 0.00
-mi03_battery_frame     watertight=True bodies=1 volume=  3036.2 mm3  extents 23.10 x 82.20 x 7.15  min z 0.00
-mi03_button_plunger    watertight=True bodies=1 volume=    56.3 mm3  extents 5.60 x 5.60 x 4.23  min z 0.00
-mi03_switch_cap        watertight=True bodies=1 volume=   108.1 mm3  extents 5.00 x 7.00 x 5.05  min z 0.00
+mi03_front_shell                 watertight=True bodies=1 volume=  8763.7 mm3  extents 27.50 x 89.75 x 14.23  min z 0.00
+mi03_back_shell                  watertight=True bodies=1 volume= 13787.4 mm3  extents 27.50 x 89.75 x 22.40  min z 0.00
+mi03_battery_frame_front_mount   watertight=True bodies=1 volume=  3441.6 mm3  extents 23.10 x 85.35 x 7.10  min z 0.00
+mi03_battery_frame_back_mount    watertight=True bodies=1 volume=  3441.6 mm3  extents 23.10 x 85.35 x 7.10  min z 0.00
+mi03_button_plunger              watertight=True bodies=1 volume=    56.3 mm3  extents 5.60 x 5.60 x 4.23  min z 0.00
+mi03_switch_carrier              watertight=True bodies=1 volume=    48.5 mm3  extents 3.60 x 6.00 x 4.30  min z -0.00
+mi03_switch_knob                 watertight=True bodies=1 volume=    56.3 mm3  extents 5.00 x 7.00 x 2.25  min z 0.00
 
-== Interference (mm3, assembly pose; 0 = clear) ==
-front_shell        x back_shell         0.0
-front_shell        x battery_frame      0.0
-back_shell         x battery_frame      0.0
-front_shell        x pcb                0.0
-front_shell        x lcd+buttons        1.8347  (expected: LCD press ribs reach lcd_preload below the glass top on purpose (see the LCD frame section below))
-front_shell        x jack/usb/switch    0.0
-front_shell        x 18650+holder       0.0
-front_shell        x plungers           0.0
-front_shell        x switch_cap         0.0
-back_shell         x pcb                0.0
-back_shell         x lcd+buttons        0.0
-back_shell         x jack/usb/switch    0.0
-back_shell         x 18650+holder       0.0
-back_shell         x plungers           0.0
-back_shell         x switch_cap         0.0
-battery_frame      x pcb                0.0
-battery_frame      x lcd+buttons        0.0
-battery_frame      x jack/usb/switch    0.0
-battery_frame      x 18650+holder       0.0
-battery_frame      x plungers           0.0
-battery_frame      x switch_cap         0.0
-pcb                x lcd+buttons        0.0
-pcb                x jack/usb/switch    8.0102  (expected: USB-C shell top (z +0.16) sits in the board-edge notch (mid-mount): modelling artefact)
-pcb                x 18650+holder       0.0
-pcb                x plungers           0.0
-pcb                x switch_cap         0.0
-lcd+buttons        x jack/usb/switch    0.0
-lcd+buttons        x 18650+holder       0.0
-lcd+buttons        x plungers           0.0
-lcd+buttons        x switch_cap         0.0
-jack/usb/switch    x 18650+holder       0.0
-jack/usb/switch    x plungers           0.0
-18650+holder       x plungers           0.0
-18650+holder       x switch_cap         0.0
-plungers           x switch_cap         0.0
+== Interference, shells + loose parts (mm3, assembly pose; 0 = clear) ==
+front_shell            x back_shell           0.0
+front_shell            x pcb                  0.0
+front_shell            x lcd+buttons          1.8347  (expected: LCD press ribs reach lcd_preload below the glass top on purpose (see the LCD frame section below))
+front_shell            x jack/usb/switch      0.0
+front_shell            x 18650+holder         0.0
+front_shell            x plungers             0.0
+front_shell            x switch_carrier       0.0
+front_shell            x switch_knob          0.0
+back_shell             x pcb                  0.0
+back_shell             x lcd+buttons          0.0
+back_shell             x jack/usb/switch      0.0
+back_shell             x 18650+holder         0.0
+back_shell             x plungers             0.0
+back_shell             x switch_carrier       0.0
+back_shell             x switch_knob          0.0
+pcb                    x lcd+buttons          0.0
+pcb                    x jack/usb/switch      8.0102  (expected: USB-C shell top (z +0.16) sits in the board-edge notch (mid-mount): modelling artefact)
+pcb                    x 18650+holder         0.0
+pcb                    x plungers             0.0
+pcb                    x switch_carrier       0.0
+pcb                    x switch_knob          0.0
+lcd+buttons            x jack/usb/switch      0.0
+lcd+buttons            x 18650+holder         0.0
+lcd+buttons            x plungers             0.0
+lcd+buttons            x switch_carrier       0.0
+lcd+buttons            x switch_knob          0.0
+jack/usb/switch        x 18650+holder         0.0
+jack/usb/switch        x plungers             0.0
+jack/usb/switch        x switch_carrier       0.0
+jack/usb/switch        x switch_knob          0.0
+18650+holder           x plungers             0.0
+18650+holder           x switch_carrier       0.0
+18650+holder           x switch_knob          0.0
+plungers               x switch_carrier       0.0
+plungers               x switch_knob          0.0
+switch_carrier         x switch_knob          0.0
+
+== Battery frame, option frame_mount="front" ==
+frame(front)           x front_shell          0.0
+frame(front)           x back_shell           0.0
+frame(front)           x pcb                  0.0
+frame(front)           x lcd+buttons          0.0
+frame(front)           x jack/usb/switch      0.0
+frame(front)           x 18650+holder         0.0
+frame(front)           x plungers             0.0
+frame(front)           x switch_carrier       0.0
+frame(front)           x switch_knob          0.0
+frame(front)           x board screws         0.0
+frame screws(front) x frame            0.0
+frame screws(front) x front_shell      7.899   (expected >0: self-tapping thread biting its 1.6 mm pilot)
+frame screws(front) x back_shell       0.0
+frame screws(front) x pcb              0.0
+frame screws(front) x lcd+buttons      0.0
+frame screws(front) x jack/usb/switch  0.0
+frame screws(front) x 18650+holder     0.0
+frame screws(front) x plungers         0.0
+frame screws(front) x switch_carrier   0.0
+frame screws(front) x switch_knob      0.0
+plate z -7.15..-5.55; frame screws z -7.15..-2.15
+glue area (underside inside the holder's 20.9 x 77.7 mm footprint): 1586 mm2 of 1624 mm2
+
+== Battery frame, option frame_mount="back" ==
+frame(back)            x front_shell          0.0
+frame(back)            x back_shell           0.0
+frame(back)            x pcb                  0.0
+frame(back)            x lcd+buttons          0.0
+frame(back)            x jack/usb/switch      0.0
+frame(back)            x 18650+holder         0.0
+frame(back)            x plungers             0.0
+frame(back)            x switch_carrier       0.0
+frame(back)            x switch_knob          0.0
+frame(back)            x board screws         0.0
+frame screws(back) x frame            0.0
+frame screws(back) x front_shell      0.0
+frame screws(back) x back_shell       14.192   (expected >0: self-tapping thread biting its 1.6 mm pilot)
+frame screws(back) x pcb              0.0
+frame screws(back) x lcd+buttons      0.0
+frame screws(back) x jack/usb/switch  0.0
+frame screws(back) x 18650+holder     0.0
+frame screws(back) x plungers         0.0
+frame screws(back) x switch_carrier   0.0
+frame screws(back) x switch_knob      0.0
+plate z -7.15..-5.55; frame screws z -13.55..-5.55
+glue area (underside inside the holder's 20.9 x 77.7 mm footprint): 1586 mm2 of 1624 mm2
+
+== Drop-in sweeps ==
+board (PCB + LCD + buttons + jack/USB-C/switch) moved straight along Z from 14 mm out to 0.3 mm from home: clear at every 0.25 mm step (last 0.15 mm = LCD rib preload)
+option "front": frame moved along Z into the front + board unit from 12 mm out: clear
 
 == LCD frame ==
-front (no ribs)    x lcd+buttons        0.0
-front (no ribs)    x pcb                0.0
-press ribs x glass: 1.835 mm3 in 12 contact(s); engagement depth 0.150 mm (glass top z 4.18), all within the glass border: X -9.78..9.78, Y 58.47..72.43
+front (no ribs)        x lcd+buttons          0.0
+front (no ribs)        x pcb                  0.0
+press ribs x glass: 1.835 mm3 in 12 contact(s); engagement depth 0.150 mm, X -9.78..9.78, Y 58.47..72.43
 
-== Switch cap travel (cap + actuator shifted together) ==
-cap shift -1       x front_shell        0.0
-cap shift -1       x back_shell         0.0
-cap shift -1       x battery_frame      0.0
-cap shift -1       x switch/usb/jack    0.0
-cap shift 0        x front_shell        0.0
-cap shift 0        x back_shell         0.0
-cap shift 0        x battery_frame      0.0
-cap shift 0        x switch/usb/jack    0.0
-cap shift 1        x front_shell        0.0
-cap shift 1        x back_shell         0.0
-cap shift 1        x battery_frame      0.0
-cap shift 1        x switch/usb/jack    0.0
+== Switch cap travel (carrier + knob + actuator shifted together) ==
+carrier shift -1       x front_shell          0.0
+carrier shift -1       x back_shell           0.0
+carrier shift -1       x switch/usb/jack      0.0
+carrier shift -1       x pcb                  0.0
+knob shift -1          x front_shell          0.0
+knob shift -1          x back_shell           0.0
+knob shift -1          x switch/usb/jack      0.0
+knob shift -1          x pcb                  0.0
+carrier shift -1       x knob                 0.0
+carrier shift 0        x front_shell          0.0
+carrier shift 0        x back_shell           0.0
+carrier shift 0        x switch/usb/jack      0.0
+carrier shift 0        x pcb                  0.0
+knob shift 0           x front_shell          0.0
+knob shift 0           x back_shell           0.0
+knob shift 0           x switch/usb/jack      0.0
+knob shift 0           x pcb                  0.0
+carrier shift 0        x knob                 0.0
+carrier shift 1        x front_shell          0.0
+carrier shift 1        x back_shell           0.0
+carrier shift 1        x switch/usb/jack      0.0
+carrier shift 1        x pcb                  0.0
+knob shift 1           x front_shell          0.0
+knob shift 1           x back_shell           0.0
+knob shift 1           x switch/usb/jack      0.0
+knob shift 1           x pcb                  0.0
+carrier shift 1        x knob                 0.0
 
-== Hardware ghosts (screws) ==
-screws x front_shell        2.605   (expected >0 only for the self-tapping top screw biting its 1.7 mm pilot)
-screws x back_shell         0.0
-screws x battery_frame      0.0
-screws x pcb                0.0
-screws x lcd+buttons        0.0
-screws x jack/usb/switch    0.0
-screws x 18650+holder       0.0
-
-== Battery frame ==
-frame plate underside (glue face) at z -7.15, plate 1.6 mm thick; trimmed holder pins reach z -5.75, inside the plate slots
-glue area (frame underside inside the holder's 20.9 x 77.7 mm footprint): 1586 mm2 of 1624 mm2
+== Board screws ==
+board screws x front_shell      7.814   (expected >0: self-tapping thread in the 1.7 mm pilots)
+board screws x back_shell       0.0
+board screws x pcb              0.0
+board screws x lcd+buttons      0.0
+board screws x jack/usb/switch  0.0
+board screws x 18650+holder     0.0
 
 RESULT: PASS (0 unexpected interferences)
