@@ -4,6 +4,12 @@ For the stock MI03 board (silk "MLA-M3(2291) V4.1 20240627"), with its 300 mAh L
 MPD BH-18650-PC holder (the same holder OpenALD uses). **CAD only: nothing has been printed, assembled or tested.**
 This folder is separate from the OpenALD v1.0 design: none of the OpenALD files were changed.
 
+**2026-11-24: this case is now the reference envelope** for the OpenALD single-board and Feather radios (same
+27.5/32.9 × 89.75 × 34.83 outside, same USB-C position: 30.3 mm from the top outer end, 7.55 mm behind the front face,
+mouth 1.0 mm inside the left face, 13.0 × 7.6 r 3 recess). The MI03 files themselves were not changed. It docks in
+the 6-slot charging dock lying on its USB-C side; `../charging_dock/scripts/check_dock_fit.py` exports these STL
+sources and checks them in all six pockets (0 interferences, smallest plug-to-case gap 0.60 mm, 6.0 mm insertion).
+
 ## Files
 * `mi03_case.scad`: the parametric source. Every measurement Victor gave is a named parameter at the top, and
   every guess is marked `ASSUMED`. `frame_mount = "front" | "back"` picks the battery-frame mounting option.
