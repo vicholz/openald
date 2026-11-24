@@ -22,7 +22,7 @@ XC = round((G.radio_box(0, 0)[2] + G.radio_box(1, 0)[0]) / 2 - G.PCB_X0, 3)     
 YC1 = round(G.PCB_Y1 - (G.radio_box(0, 0)[3] + G.radio_box(0, 1)[1]) / 2, 3)        # Y-channel 1 centre, ky 118.36
 YC2 = round(G.PCB_Y1 - (G.radio_box(0, 1)[3] + G.radio_box(0, 2)[1]) / 2, 3)        # Y-channel 2 centre, ky 58.13
 # M3 clamp screws: both ends of both Y-channels (in the 6 mm side margins) + two in the rear strip
-HOLES = [(2.6, YC1), (BOARD_W - 2.6, YC1), (2.6, YC2), (BOARD_W - 2.6, YC2), (17.1, 3.9), (BOARD_W - 17.1, 3.9)]
+HOLES = [(3.6, YC1), (BOARD_W - 3.6, YC1), (3.6, YC2), (BOARD_W - 3.6, YC2), (17.1, 3.9), (BOARD_W - 17.1, 3.9)]
 LEDPIPE = (XC, YC1)              # light-pipe axis (status LEDs D2/D3), where the X-channel crosses Y-channel 1
 PL = {f"H{i+1}": (round(x, 3), round(y, 3), 0) for i, (x, y) in enumerate(HOLES)}
 PL.update({f"H{i+7}": (x, y, 0) for i, (x, y) in enumerate(PEGS)})

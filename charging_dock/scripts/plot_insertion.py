@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Side section (to scale, through the plug centreline across the radio width) of one dock pocket with each radio
+"""Side section (to scale, through the plug centreline along the radio length; radios lie on their USB-C side) of one dock pocket with each radio
 variant docked: PCB, fixed vertical plug, floor pad, riser shim, radio bottom wall and USB-C receptacle mouth.
 All values from geom.py. Usage: plot_insertion.py out.png"""
 import sys, os
@@ -9,8 +9,8 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 out = sys.argv[1] if len(sys.argv) > 1 else "/tmp/dock_plug_insertion_per_radio.png"
-cases = [("Single-board radio (J1 0.9 past its board edge)", "single_board", 0.0), ("Feather RP2040 radio", "feather", 0.0)]
-fig, axs = plt.subplots(1, 2, figsize=(11, 7), sharey=True)
+cases = [("MI03 radio (18650 case)", "mi03", 0.0), ("Single-board radio", "single_board", 0.0), ("Feather RP2040 radio", "feather", 0.0)]
+fig, axs = plt.subplots(1, 3, figsize=(15, 7), sharey=True)
 for ax, (title, r, rise) in zip(axs, cases):
     m = G.MOUTHS[r]; rb = G.FLOOR_Z + rise; mouth = rb + m; ins = G.PLUG_TOP - mouth
     ax.add_patch(Rectangle((-14, G.PCB_Z0), 28, G.PCB_T, color="darkgreen"))
@@ -31,8 +31,8 @@ for ax, (title, r, rise) in zip(axs, cases):
     bad = ins > G.SEAT_NOM + G.SEAT_TOL
     ax.set_title(title + ("\ninsertion %.2f > %.2f: radio rests on the plug" % (ins, seat_hi - mouth) if bad else "\ninsertion %.2f, radio rests on the pad" % ins),
                  fontsize=10, color="firebrick" if bad else "k")
-    ax.set_xlim(-14, 14); ax.set_ylim(G.PCB_Z0 - 0.5, 24); ax.set_aspect("equal"); ax.set_xlabel("mm (across the radio width)")
+    ax.set_xlim(-14, 14); ax.set_ylim(G.PCB_Z0 - 0.5, 24); ax.set_aspect("equal"); ax.set_xlabel("mm (along the radio length)")
 axs[0].set_ylabel("Z above the dock bottom, mm")
-fig.suptitle("OpenALD Dock v1.0: plug insertion (pad %.2f, plug %.2f tall from the HX drawing)\nred band = USB-C full seat %.2f +/- %.2f past the receptacle mouth"
+fig.suptitle("OpenALD Dock v1.0 (2026-11-24 side-lying pockets): plug insertion (pad %.2f, plug %.2f tall from the HX drawing)\nred band = USB-C full seat %.2f +/- %.2f past the receptacle mouth"
              % (G.PAD_T, G.PLUG_H, G.SEAT_NOM, G.SEAT_TOL), fontsize=11)
 fig.tight_layout(); fig.savefig(out, dpi=110)
