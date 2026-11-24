@@ -1,7 +1,8 @@
-"""2026-11-24 post-route step (run after route_pcb.py, before stitch_gnd.py; idempotent).
+"""2026-11-24 PRE-route step on the 4-layer board (run after build_pcb.py, before route_pcb.py; idempotent).
 GND is not given to the autorouter on the 22.5 mm board (route_pcb.py); it is carried by the two pours. Every top-side
 GND pad gets a short stub + via into the bottom pour, placed where it clears all other-net copper, so no GND pad is
-left on an isolated top-pour island."""
+left on an isolated top-pour island. The vias land on the solid In1.Cu GND plane, so every fanned-out pad is
+connected no matter how the signals are routed; items are locked so Freerouting routes around them."""
 import os,sys,math,pcbnew
 sys.path.insert(0,os.path.dirname(__file__)); import placement as PLm
 PCB=os.path.join(os.path.dirname(__file__),"../kicad/openald.kicad_pcb")
@@ -50,11 +51,11 @@ for f in b.GetFootprints():
                 if not clear(x,y,VIA_R,[pcbnew.F_Cu,pcbnew.B_Cu]): continue
                 # stub from the pad edge region to the via
                 if not seg_clear(cx,cy,x,y,None): continue
-                v=pcbnew.PCB_VIA(b); v.SetPosition(pcbnew.VECTOR2I(mm(x),mm(y))); v.SetWidth(pcbnew.F_Cu,mm(2*VIA_R)); v.SetDrill(mm(0.3)); v.SetNet(gnd); b.Add(v); grp.AddItem(v)
-                t=pcbnew.PCB_TRACK(b); t.SetStart(p.GetPosition()); t.SetEnd(v.GetPosition()); t.SetWidth(mm(TW)); t.SetLayer(pcbnew.F_Cu); t.SetNet(gnd); b.Add(t); grp.AddItem(t)
+                v=pcbnew.PCB_VIA(b); v.SetPosition(pcbnew.VECTOR2I(mm(x),mm(y))); v.SetWidth(pcbnew.F_Cu,mm(2*VIA_R)); v.SetDrill(mm(0.3)); v.SetNet(gnd); v.SetLocked(True); b.Add(v); grp.AddItem(v)
+                t=pcbnew.PCB_TRACK(b); t.SetStart(p.GetPosition()); t.SetEnd(v.GetPosition()); t.SetWidth(mm(TW)); t.SetLayer(pcbnew.F_Cu); t.SetNet(gnd); t.SetLocked(True); b.Add(t); grp.AddItem(t)
                 mine.append((x,y)); n+=1; done=True; break
             if done: break
         if not done: miss.append(f"{f.GetReference()}-{p.GetNumber()}")
-pcbnew.ZONE_FILLER(b).Fill(b.Zones())
+if list(b.Zones()): pcbnew.ZONE_FILLER(b).Fill(b.Zones())
 pcbnew.SaveBoard(PCB,b)
 print("GND fan-out vias:",n,"| pads without a fan-out (rely on the top pour):",", ".join(miss) or "none")

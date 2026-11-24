@@ -1,6 +1,7 @@
 #!/bin/bash
 # Full regeneration: footprints -> symbols -> schematic -> ERC -> board -> route -> DRC
 set -e
+export KICAD9_3DMODEL_DIR=${KICAD9_3DMODEL_DIR:-/usr/share/kicad/3dmodels}
 cd "$(dirname "$0")"
 python3 make_footprints.py >/dev/null
 python3 make_symbols.py >/dev/null
@@ -8,6 +9,7 @@ python3 gen_sch.py
 (cd ../kicad && kicad-cli sch erc --severity-all --format report -o ../fab/erc_report.txt openald.kicad_sch >/dev/null; tail -1 ../fab/erc_report.txt)
 python3 build_pcb.py | head -1
 python3 fix_pro.py
+python3 gnd_fanout.py 2>&1 | grep -v "memory leak"   # 2026-11-24: 4-layer board, locked GND pad vias into the In1.Cu plane (before routing)
 python3 route_pcb.py ${1:-60} 2>&1 | grep -E "SES import|tracks|dangling"
 python3 stitch_gnd.py 2>&1 | grep -v SetWidth
 (cd ../kicad && kicad-cli pcb drc --severity-all --schematic-parity --format report -o ../fab/drc_report.txt openald.kicad_pcb >/dev/null; grep -E "^\*\* Found" ../fab/drc_report.txt; grep -E "^\[" ../fab/drc_report.txt | sed 's/:.*//' | sort | uniq -c)

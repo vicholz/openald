@@ -17,7 +17,10 @@ for n in t.find("nets"):
     if nm.startswith("unconnected-"): nm=nm.replace("/","{slash}")   # KiCad escapes '/' in net names (e.g. XTAL1/PB6)
     for nd in n.findall("node"): pinnet[(nd.get("ref"),nd.get("pin"))]=nm
 board=pcbnew.BOARD()
-board.GetDesignSettings().SetCopperLayerCount(2)
+# 2026-11-24 (unified 22.5 mm board): 4 layers. In1.Cu is a solid GND plane (power-type layer: the autorouter does not
+# use it), In2.Cu is a signal layer. The 2-layer attempt on the narrow board left GND split into pour islands.
+board.GetDesignSettings().SetCopperLayerCount(4)
+board.SetLayerType(pcbnew.In1_Cu,pcbnew.LT_POWER); board.SetLayerName(pcbnew.In1_Cu,"In1.Cu")
 board.GetDesignSettings().SetAuxOrigin(pcbnew.VECTOR2I(pcbnew.FromMM(100.0),pcbnew.FromMM(100.0+PLm.BOARD_H)))  # drill/place origin = board bottom-left corner
 nets={}
 def net(name):
