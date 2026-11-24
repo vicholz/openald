@@ -23,15 +23,9 @@ for (x0,y0,x1,y1) in ((0,0,W0,KO),(0,H0-KO,W0,H0),(0,0,KO,H0),(W0-KO,0,W0,H0)):
 # ---- USB D+/D- pre-route (locked, so Freerouting keeps it): both USB-C orientations tied right at the connector,
 # then a short coupled pair on the bottom layer to the CH340K. Coordinates in board mm (top-left origin, Y down).
 # 2026-11-12: J1 moved 0.9 mm toward the USB edge (pads now centred at y 80.205): the J1-side fan-out moved with it.
-USB_PREROUTE = {
- "USB_DP": dict(top=[[(18.75,79.50),(18.75,79.05),(19.75,79.05),(19.75,79.50)], [(19.25,79.05),(19.25,78.50)],
-                     [(27.40,78.00),(27.40,77.20)], [(25.46,79.65),(27.74,79.65)], [(27.40,79.65),(27.40,78.00)]],   # + USBLC6 I/O1 (pins 1-6)
-                bot=[[(19.25,78.50),(19.75,78.00),(27.40,78.00)]], vias=[(19.25,78.50),(27.40,78.00)]),
- "USB_DN": dict(top=[[(19.25,80.93),(19.25,81.40),(18.25,81.40),(18.25,80.93)], [(18.75,81.40),(18.75,81.85)],
-                     [(28.40,78.80),(28.40,77.20)], [(25.46,81.55),(29.00,81.55)]],                              # + USBLC6 I/O2 (pins 3-4)
-                bot=[[(18.75,81.85),(21.80,78.80),(28.40,78.80)], [(28.40,78.80),(29.00,79.40),(29.00,81.55)]],
-                vias=[(18.75,81.85),(28.40,78.80),(29.00,81.55)]),
-}
+# 2026-11-24 (unified envelope): J1 now sits on the left long edge (mouth -X); the old hand pre-route for the bottom-edge
+# J1 no longer applies. Freerouting routes D+/D- (both receptacle orientations are the same nets) like every other net.
+USB_PREROUTE = {}
 def _pt(x,y): return pcbnew.VECTOR2I(mm(x+OX),mm(y+OY))
 for nn,spec in USB_PREROUTE.items():
     nt=board.FindNet(nn)
@@ -44,6 +38,11 @@ for nn,spec in USB_PREROUTE.items():
 dsn="/tmp/fm.dsn"; ses="/tmp/fm.ses"
 if os.path.exists(ses): os.remove(ses)
 pcbnew.ExportSpecctraDSN(board,dsn)
+# 2026-11-24: GND is left to the two pours + stitching vias (stitch_gnd.py); taking its pins out of the DSN network lets
+# Freerouting spend the narrow 22.5 mm board on the signal and power nets (GND pads stay in as obstacles).
+if os.environ.get("ROUTE_GND","0")!="1":
+    import re as _re
+    _d=open(dsn).read(); _d=_re.sub(r"\(net GND\s*\(pins[^)]*\)\s*\)","(net GND)",_d); open(dsn,"w").write(_d)
 passes=sys.argv[1] if len(sys.argv)>1 else "40"
 cmd=[os.environ.get("JAVA","java"),"-Djava.awt.headless=true","-jar",os.environ.get("FREEROUTING",os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),"..","tools","freerouting.jar")),"-de",dsn,"-do",ses,"-mp",passes,"--gui.enabled=false"]
 print(" ".join(cmd),flush=True); r=subprocess.run(cmd,capture_output=True,text=True,timeout=1500)

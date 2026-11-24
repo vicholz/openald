@@ -1,93 +1,136 @@
 """OpenALD Feather RP2040 v1.0 - single source of truth for the mechanical layout.
-Everything is in the CASE frame (same frame as the single-board radio's case so the dock interface can be compared
-directly):  X across the case (case centre X = 19.0), Y = 0 at the single-board USB-C receptacle face (the Feather's is at FEATHER_DY = -0.9) (+Y toward the top end),
-Z = 0 at the Feather bottom face (= the single-board PCB bottom face).  Outer bottom (dock) face is at Y = -2.5."""
-# ---------------- dock interface (copied from the single-board case: case_params.scad + openald_case.scad) -------
-WALL=2.0; CLR=0.5; PCB_W=38.0; PCB_R=3.0; EDGE_R=2.0
-IN_X0, IN_X1 = -CLR, PCB_W+CLR                 # -0.5 .. 38.5   (outer -2.5 .. 40.5 = 43.0 wide)
-IN_R = PCB_R+CLR                               # 3.5 inner plan radius at the USB end
-OUT_R = IN_R+WALL                              # 5.5 outer plan radius at the USB end
-Y_IN0 = -CLR                                   # inner wall at the USB end
-Y_OUT0 = Y_IN0-WALL                            # -2.5 = dock (bottom) face
-TOP_IN, TOP_T = 8.2, 1.6                       # ceiling (inside) / top skin  -> outer top face Z = 9.8
-BOT_OUT = -23.61                               # outer back face Z (single board: holder 21.31 + 0.7 + 1.6 floor)
-USB_X, USB_Z, USB_W, USB_H = 19.0, 1.6+3.26/2, 8.94, 3.26
-DOCK_DEPTH = 50.8                              # 2 in pocket
-DOCK_LINE_Y = Y_OUT0+DOCK_DEPTH                # 48.3: above this the case may differ
+
+2026-11-24 UNIFIED ENVELOPE (still v1.0): the Feather radio now shares the MI03 / single-board outside length and
+thickness (89.75 L x 34.83 T, plan corner r 5, edge r 2) and their dock port: a USB-C receptacle on the LEFT long side,
+centred 30.3 mm from the top outer end and 7.55 mm below the front face, mouth 1.0 mm inside the side face. All three
+radios dock lying on that side, so only L, T and the port position have to match; the width does not (it becomes the
+height in the dock). This one is wider (32.9 mm) because the 27.25 mm FM module has to fit across it.
+
+Case frame (this variant): X across the case, X = 0 on the centre line, -X = the dock (USB) side; Y along the case,
+Y = 0 at the INNER face of the jack (bottom) end wall, +Y toward the top end; Z = 0 at the BACK outer face, +Z toward
+the front face (Z = T).
+
+Stack (back to front):  back shell floor | 18650 holder (base on the floor, cell opening toward the front) with the
+Feather RP2040 standing on its long edge beside it (left wall) | deck (separate printed plate) | front zone: FM module
+at the jack end, USB-C charge-port breakout on the left wall, thumbwheel + power switch on the right wall | front face.
+"""
+import json, os
+HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE)
+# ---------------- shared envelope (keep identical to mi03_case.scad / radio_single_board openald_case.scad) -------
+T = 34.83                 # outside thickness
+L_OUT = 89.75             # outside length
+WALL, EDGE_R, OUT_R = 2.0, 2.0, 5.0
+IN_R = 1.0                # inner plan corner radius (outside stays r 5; thicker corners let the holder reach the corner)
+USB_FROM_TOP = 30.3       # dock USB-C centre from the top outer end
+USB_FROM_FRONT = 7.55     # dock USB-C centre below the front face
+USB_MOUTH_IN = 1.0        # receptacle mouth inside the side face
+USB_W, USB_H, USB_LEN = 8.94, 3.26, 7.35
+USB_RECESS = (13.0, 7.6, 3.0)   # cable-plug recess on the side face (along the case x across it, r)
+USB_RECESS_GAP = 0.55           # recess floor this far outside the receptacle mouth (MI03)
 # ---------------- this variant ----------------
-FLOOR_T = 1.2                                  # thinner floor inside (outside unchanged): holder needs the room
-FLOOR_Z = BOT_OUT+FLOOR_T                      # -22.41 interior floor
-J0, J1 = 50.3, 54.3                            # taper from the dock cross-section to the wider upper body
-WIDEN = 1.25                                   # each side above J1  -> upper body 45.5 wide
-IN_X0U, IN_X1U = IN_X0-WIDEN, IN_X1+WIDEN      # -1.75 .. 39.75
-Y_IN1 = 87.5; Y_OUT1 = Y_IN1+WALL              # top end: outer 89.5 -> overall length 92.0 (single board: 92.0)
-TOP_OUT_R = 3.0; TOP_IN_R = TOP_OUT_R-WALL     # smaller plan radius at the (free) top end
-# 18650 holder MPD BH-18650-PC (77.7 x 20.9 x 21.31, PC pins 72.9 apart), base on the floor, cell opening up
-HOLDER = dict(x0=19.0-20.9/2, x1=19.0+20.9/2, y0=3.0, y1=3.0+77.7, z0=FLOOR_Z, z1=FLOOR_Z+21.31)
-HOLDER_PINS = [(19.0, 3.0+2.4, "+"), (19.0, 3.0+2.4+72.9, "-")]   # + end at the USB end
-# Feather: from scripts/feather_data.py (Adafruit Eagle file).
-# FEATHER_DY: the Feather (and its USB-C receptacle face) sits 0.9 mm closer to the USB/bottom face than the single
-# board's receptacle (Y 0): mouth 1.6 mm inside the bottom face, 0.1 mm behind the plug-overmold recess floor (Y -1.0),
-# so a cable plug seats fully (test print 52983f3: the cable barely held). Y = 0 is still the single board's mouth.
-FEATHER_DY = -0.9
-# frame (deck) under the Feather / boards
-DECK_Z0, DECK_Z1 = -1.0, 0.0
-# FM module (26.9 x 26.9, from the photo / listing; MEASURE YOURS) - components up, jack toward +Y (top end)
-FM = dict(x0=IN_X0U+0.5, y1=Y_IN1-0.5, w=26.9, h=26.9, z0=0.6, t=1.6)
-FM["x1"]=FM["x0"]+FM["w"]; FM["y0"]=FM["y1"]-FM["h"]
-FM_HOLE_INSET = 2.5          # ESTIMATE: corner hole centres 2.5 mm in from each edge (photo not measurable)
-FM_HOLE_D = 2.2              # ESTIMATE
-FM_JACK_X = FM["x0"]+FM["w"]/2   # ESTIMATE: jack axis X (centre of the board edge)
-FM_JACK_AXIS_H = 2.5         # jack axis above the FM board top (PJ-313 / PJ-320 class, 5 mm body)
-FM_JACK_BODY_H = 5.0
-FM_JACK_HOLE_D = 6.8
-# ---------------- direct-mount controls (no PCB; v1.0 "direct-mount" revision, 2026-11-11) ----------------
-# Thumbwheel: Mitsumi SIQ-02FVS3 bought loose, glued into a printed cradle on the frame, wires soldered to its 4 tabs.
-# Datasheet: https://datasheet.lcsc.com/datasheet/pdf/7bff72617d5a3503f5ed21ab02a77dea.pdf?productCode=C2925423
-#   body 10.3 (across) x 11.1 (3.85 toward the dial side + 7.25 toward the terminals), dial D14.5 x 2 thick on top,
-#   overall height 4.0 (dial Z 2..4 above the seat), 2 locating bosses D1.55 at 4.5 toward the terminals, 6 apart,
-#   terminals A / S(push) / C(common) / B along the rear edge, slide (push) operating force 3-6 N.
-WHEEL = (IN_X1U-4.3, 62.5)   # dial centre: 4.3 mm in from the inner wall (was 4.9 on the PCB version) -> 0.6 mm more protrusion
-WHEEL_R = 7.25               # dial radius
-WHEEL_SEAT_Z = 1.6           # encoder body bottom (cradle top) = old PCB top, so the dial height (Z 3.6..5.6) is unchanged
-WHEEL_DIAL_Z = (2.0, 4.0)    # dial above the seat
-WHEEL_PUSH = 1.0             # assumed push travel (datasheet gives none); everything behind the dial clears >= 1.5 mm
-# Power switch: SS-12F16 SPDT (1P2T) panel slide switch, SCREWLESS: its plate drops into a groove inside the LEFT wall
-# of the bottom half (ears trapped between the outer skin and printed ribs), the frame tab above it and a top-half
-# tongue in the knob channel close it in. (The right wall has no room: the wheel slot occupies it.)
-# Datasheets: G-Switch SS-12F16-GXXX https://xonstorage.z8.web.core.windows.net/pdf/gswitch_ss12f16g050_apr22_xonlink.pdf
-#             Light Country SS12F16 (SS-001B) https://yibeiic-shop.oss-cn-hangzhou.aliyuncs.com/media/collection/ss12d02-9bziHfGW-yoDg9ny3q.pdf
-#   mounting plate 19.5-19.7 x 5.6-5.7 x 0.4-0.5 (cheap copies up to 0.6), 2x M2 holes 15 apart (not used), body 11 x
-#   ~5.7 x 5 deep below the plate, 3 solder lugs 3 mm pitch, 3 mm long, knob 3 x 3, travel 3 mm,
-#   knob height L above the plate: G040/"G4" = 4.0, G050 = 5.0, G060/"G6" = 6.0.
-SW_L = 4.0                   # knob height above the plate (G4 default; 6.0 for G6, 5.0 for LCSC's G050)
-SW_Y, SW_Z = 72.0, -4.0      # switch centre on the LEFT wall (bottom half, above the dock line, under the FM module)
-SW_PLATE = (19.7, 5.7, 0.5)  # length (Y) x width (Z) x thickness used for the fit model
-SW_BODY = (11.0, 5.7, 5.0)   # length (Y) x width (Z) x depth (into the case)
+FLOOR_T, FRONT_T = 1.4, 1.6
+IN_L = L_OUT - 2*WALL                          # 85.75 inner length (Y 0 .. IN_L)
+HOLDER_W, HOLDER_L, HOLDER_H = 20.9, 77.7, 21.31   # MPD BH-18650-PC (datasheet), PC pins 72.9 apart, floor holes 3.2
+HOLDER_POCKET = 0.3                            # floor pocket the holder base sits in (locates it; glue optional)
+# Feather RP2040 (Adafruit 4884): 50.8 x 22.86 x 1.6, parts up to 5.5 mm (JST-PH) above its top face.
+F_LEN, F_W, F_T, F_PARTS_H = 50.8, 22.86, 1.6, 5.5
+F_FLOOR_GROOVE = 0.5                           # its lower long edge sits in a floor groove this deep
+GAP = 0.3
+# widths: [wall clr | Feather parts 5.5 | Feather 1.6 | gap | holder 20.9 | gap] -> inner width
+IN_W = GAP + F_PARTS_H + F_T + GAP + HOLDER_W + GAP      # 28.9
+W_OUT = IN_W + 2*WALL                                    # 32.9
+IN_X0, IN_X1 = -IN_W/2, IN_W/2
+# holder against the right wall and the top end wall, base in the floor pocket
+HOLDER = dict(x0=IN_X1-GAP-HOLDER_W, x1=IN_X1-GAP, y1=IN_L-0.5, z0=FLOOR_T-HOLDER_POCKET)
+HOLDER.update(y0=HOLDER["y1"]-HOLDER_L, z1=HOLDER["z0"]+HOLDER_H)
+HOLDER_CX = (HOLDER["x0"]+HOLDER["x1"])/2
+HOLDER_PINS = [(HOLDER_CX, HOLDER["y1"]-2.4, "+"), (HOLDER_CX, HOLDER["y0"]+2.4, "-")]   # + end at the top end
+# Feather standing on its long edge against the left wall, components facing the wall, USB-C (programming / firmware
+# only) facing the top end wall. Feather-local (u along the length from the USB end, v across from the centre, w up
+# from its bottom face) -> case: X = F_X_BACK - w, Y = F_USB_FACE_Y - (u + usb_overhang), Z = F_ZC + v.
+F_X_BACK = HOLDER["x0"] - GAP                  # Feather bottom face (toward the holder)
+F_USB_FACE_Y = IN_L - 0.1                      # its receptacle face, 0.1 inside the top end wall
+F_ZC = FLOOR_T - F_FLOOR_GROOVE + F_W/2        # Feather centre line height
+# deck (separate plate) over the holder and the Feather's top edge
+DECK_Z0 = HOLDER["z1"] + GAP + 0.3             # 0.6 above the cell top
+DECK_T = 1.0
+DECK_Z1 = DECK_Z0 + DECK_T                     # = front/back split
+Z_SPLIT = DECK_Z1
+Z_CEIL = T - FRONT_T
+# dock USB-C (charge port): a USB-C receptacle breakout in a cradle on the left wall (ASSUMED generic 2-pin/6-pin
+# "power only" USB-C breakout with 5.1k CC pull-downs, receptacle on the board edge; measure yours)
+DOCK_USB_Y = (IN_L + WALL) - USB_FROM_TOP     # 57.45 (inner frame)
+DOCK_USB_Z = T - USB_FROM_FRONT               # 27.28
+DOCK_USB_MOUTH_X = IN_X0 - WALL + USB_MOUTH_IN
+BRK_W, BRK_D, BRK_T = 12.7, 10.0, 1.0          # ASSUMED breakout PCB: width (Y) x depth (X, from the mouth) x thickness
+BRK_PARTS_H = 1.2                              # ASSUMED: CC resistors / pads under the PCB at most this tall (bottom side)
+# FM module (Victor, 2026-11-24): 27.25 x 27.25 x 1.6 PCB, 3.8 mm holes in the corners 20 mm apart, standard 6.35 x 14
+# headphone jack (centred on the bottom edge, 1 mm past the board) and a 4-pin 90-degree through-board header, also
+# centred at the bottom edge. Jack toward the jack end of the case.
+FM_S, FM_T = 27.25, 1.6
+FM_HOLE_D, FM_HOLE_PITCH = 3.8, 20.0
+FM_JACK_D, FM_JACK_L, FM_JACK_OUT = 6.35, 14.0, 1.0
+FM_STANDOFF = 0.4                              # printed pads under the four corners
+FM = dict(x0=-FM_S/2, x1=FM_S/2, y0=FM_JACK_OUT, z0=DECK_Z1+FM_STANDOFF)
+FM.update(y1=FM["y0"]+FM_S, z1=FM["z0"]+FM_T)
+FM_CX, FM_CY = 0.0, FM["y0"]+FM_S/2
+FM_HOLES = [(FM_CX+sx*FM_HOLE_PITCH/2, FM_CY+sy*FM_HOLE_PITCH/2) for sy in (-1,1) for sx in (-1,1)]
+FM_JACK_AXIS_Z = FM["z1"] + FM_JACK_D/2
+FM_JACK_HOLE_D = 6.8                           # plug-overmold hole in the end wall
+# ASSUMED header: straight pins through the board, plastic + pins BELOW the board (wires soldered underneath), 2.54 mm
+# from the bottom edge; the deck has a window there and nothing is below it down to the floor (the holder starts at
+# HOLDER y0). If yours has the pins lying flat (right-angle) they must point down through the same window.
+FM_HDR = dict(w=4*2.54, d=2.54, below=8.5, y=FM["y0"]+2.54)
+# thumbwheel: Mitsumi SIQ-02FVS3 on a cradle on the deck, right wall (same dial protrusion as before: 4.3 in from the wall)
+WHEEL = (IN_X1-4.3, 41.0)
+WHEEL_R = 7.25
+WHEEL_SEAT_Z = DECK_Z1
+WHEEL_DIAL_Z = (2.0, 4.0)                      # dial above the seat
+WHEEL_BODY = (10.3, 3.85, 7.25)                # across (Y), toward the dial side (+X), toward the terminals (-X)
+WHEEL_PUSH = 1.0
+# power switch: SS-12F16 SPDT panel slide switch, plate in a groove inside the RIGHT wall of the front shell
+SW_L = 4.0                   # knob height above the plate (G4)
+SW_Y, SW_Z = 70.0, DECK_Z1 + 0.6 + 5.7/2
+SW_PLATE = (19.7, 5.7, 0.5)
+SW_BODY = (11.0, 5.7, 5.0)
 SW_LUG_L, SW_LUG_P = 3.0, 3.0
-SW_ACT = (3.0, 3.0)          # knob Y x Z
+SW_ACT = (3.0, 3.0)
 SW_TRAVEL = 3.0
-SW_SKIN = 1.2                # outer skin in front of the plate -> G4 knob 2.8 mm proud (same as the original radio)
-SW_GROOVE = 0.7              # plate groove width (fits 0.4-0.6 plates; crush ribs take up the slack)
-SW_RIB = 0.8                 # printed ribs behind the plate ears
-SW_CRUSH = 0.25              # crush bumps on the side blocks (effective groove 0.45)
-SW_PLATE_MAX = 0.6           # thickest plate allowed for (sets the back-wall position)
-SW_BACK = 2.0                # solid back wall behind the switch body (lug slot open to the top)
-SW_SIDE_EXT = 2.0            # side blocks run 2 mm past the groove ends
-# Optional dock-visible charge LEDs: two 3 mm THT LEDs pushed into sockets in the top half, wired with inline resistors.
-LED3 = [("red","CHG",30.0,74.0),("green","FULL",30.0,78.5)]
-LED3_ABOVE_FLANGE = 4.6      # 3 mm LED length from the flange top to the dome tip (measure yours; typical 4.3-4.8)
-# frame clamp tabs: the deck's tabs sit in notches at the parting line (bottom half below, top-half plugs above)
-# (side, position along that wall, width); "L"/"R" = left/right wall at Y, "T" = top end wall at X
-FRAME_TABS = [("L",25.0,6.0),("L",SW_Y,20.4),("R",25.0,6.0),("R",42.0,6.0),("R",79.0,6.0),("T",33.0,6.0)]
-# battery-holder seat: floor pocket under the holder; the deck underside over it is FLAT (2026-11-12 print feedback:
-# the old 0.4 mm underside relief was too shallow for supports and printed stringy) -> holder-to-deck gap 0.1 + 0.2 = 0.3 mm
-HOLDER_POCKET = 0.2          # floor pocket depth under the holder
-DECK_RELIEF = 0.0            # was 0.4 (underside relief over the holder); removed, kept as a knob
-# engraved locating outline of the holder footprint on the deck underside (bed face): a 0.9 mm groove bridges cleanly
-CELL_MARK_D = 0.4            # groove depth into the 1.0 mm deck
-CELL_MARK_W = 0.9            # groove width; inner edge 0.1 mm outside the holder footprint
-# case screws (M2, from the back into heat-set inserts in the top half)
-SCREWS = [(1.8,1.8),(36.2,1.8),(0.0,51.8),(38.0,51.8)]
-# the holder sits in its floor pocket
-HOLDER["z0"] -= HOLDER_POCKET; HOLDER["z1"] -= HOLDER_POCKET
+SW_SKIN = 1.2                # outer skin in front of the plate -> G4 knob 2.8 mm proud
+SW_GROOVE = 0.7
+SW_RIB = 0.8
+# dock-visible charge LEDs: two 3 mm THT LEDs in sockets in the front face (the Feather's own LEDs face the wall now)
+LED3 = [("red","CHG",3.0,80.5),("green","FULL",3.0,75.0)]
+LED3_ABOVE_FLANGE = 4.6
+FEATHER_DY = -0.9   # legacy: the old case frame used by ref/feather_rp2040_mech.json (feather_data.py); not a case position
+# ---------------- Feather geometry from Adafruit's board (scripts/feather_data.py -> ref/feather_rp2040_mech.json) -------
+def feather():
+    d=json.load(open(os.path.join(ROOT,"ref","feather_rp2040_mech.json")))
+    return d
+def f2case(u,v,w):
+    """Feather-local -> case frame (u from the board's USB-end edge, v from the centre line, w above its bottom face)"""
+    d=feather(); ovh=d["usb_overhang"]
+    return (F_X_BACK-w, F_USB_FACE_Y-(u+ovh), F_ZC+v)
+def feather_boxes():
+    """Feather board + every part envelope as case-frame boxes [x0,x1,y0,y1,z0,z1] (from the old case-frame json)."""
+    d=feather(); ovh=d["usb_overhang"]; y0b=d["board_case"]["y0"]          # y0b = ovh + old DY
+    out=[]
+    def conv(x0,x1,y0,y1,z0,z1):
+        us=[y0-y0b,y1-y0b]; vs=[19.0-x0,19.0-x1]
+        P=[f2case(u,v,w) for u in us for v in vs for w in (z0,z1)]
+        return [min(p[0] for p in P),max(p[0] for p in P),min(p[1] for p in P),max(p[1] for p in P),min(p[2] for p in P),max(p[2] for p in P)]
+    out.append(("board",conv(d["board_case"]["x0"],d["board_case"]["x1"],d["board_case"]["y0"],d["board_case"]["y1"],0,F_T)))
+    for p in d["parts"]: out.append((p["ref"],conv(p["x0"],p["x1"],p["y0"],p["y1"],p["z0"],p["z1"])))
+    u=d["usb"]; out.append(("USB",conv(u["center_x"]-u["w"]/2,u["center_x"]+u["w"]/2,u["face_y"],u["face_y"]+u["len"],F_T,F_T+u["h"])))
+    return out
+def feather_usb():
+    d=feather(); ovh=d["usb_overhang"]
+    x,y,z=f2case(-ovh, 0.0, F_T+d["usb"]["h"]/2)
+    return x,y,z
+def feather_holes():
+    d=feather(); y0b=d["board_case"]["y0"]
+    return [f2case(hy-y0b, 19.0-hx, 0)[1:] for hx,hy in d["holes"]]
+if __name__=="__main__":
+    print(f"outer {W_OUT:.2f} W x {L_OUT} L x {T} T; holder {HOLDER}; deck {DECK_Z0:.2f}..{DECK_Z1:.2f}; FM {FM}; jack axis {FM_JACK_AXIS_Z:.2f}")
+    print("feather usb", feather_usb(), "dock usb", (DOCK_USB_MOUTH_X, DOCK_USB_Y, DOCK_USB_Z))
+    for n,b in feather_boxes()[:3]+feather_boxes()[-1:]: print(n,[round(a,2) for a in b])

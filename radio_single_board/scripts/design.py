@@ -128,6 +128,6 @@ P+=[dict(ref="U4",lib="openald:RRD-102",val="RRD-102V2.0 (RDA5807M)",fp="openald
     dict(ref="J2",lib="Connector_Audio:AudioJack4",val="3.5mm jack PJ-320D-4A",fp="Connector_Audio:Jack_3.5mm_KoreanHropartsElec_PJ-320D-4A_Horizontal",lcsc="C95562",mpn="HRO PJ-320D-4A",grp="fm",
         pins={"T":"HP_L","R1":"HP_R","R2":"HP_GND","S":"HP_GND"})]
 # ---------------- mechanical ----------------
-for i in range(1,5):
+for i in range(1,1):   # 2026-11-24: no separate mounting holes; the case screws go through BT1's own floor holes
     P.append(dict(ref=f"H{i}",lib="Mechanical:MountingHole",val="M2",fp="MountingHole:MountingHole_2.2mm_M2",lcsc="",mpn="M2 screw hole",grp="mech",pins={},dnp=False,nobom=True,boardonly=True))
 PARTS={p["ref"]:p for p in P}

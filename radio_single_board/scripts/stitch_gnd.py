@@ -55,9 +55,9 @@ def free(x,y,r=0.3+0.35):          # via radius + 0.35 mm margin (> 0.25 mm zone
 n=0; placed=[]
 existing=[(pcbnew.ToMM(t.GetPosition().x)-OX,pcbnew.ToMM(t.GetPosition().y)-OY) for t in b.GetTracks() if t.GetClass()=="PCB_VIA"]
 y=1.5
-while y<86.0:
+while y<PLm.BOARD_H-1.0:
     x=1.5
-    while x<37.0:
+    while x<PLm.BOARD_W-1.0:
         if free(x,y) and all(math.hypot(x-a,y-c)>1.6 for a,c in existing+placed):
             via(x,y); placed.append((x,y)); n+=1
         x+=2.5
@@ -65,9 +65,9 @@ while y<86.0:
 # 2b. rev 4.2: second pass on a grid offset by half a pitch, to fill pour areas the first grid missed (the long
 #     Q2/Q3 gate traces split some pour regions); same keep-outs and 1.6 mm minimum via spacing
 y=2.75
-while y<86.0:
+while y<PLm.BOARD_H-1.0:
     x=2.75
-    while x<37.0:
+    while x<PLm.BOARD_W-1.0:
         if free(x,y) and all(math.hypot(x-a,y-c)>1.6 for a,c in existing+placed):
             via(x,y); placed.append((x,y)); n+=1
         x+=2.5

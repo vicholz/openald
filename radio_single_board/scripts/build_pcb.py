@@ -80,19 +80,18 @@ for p in design.P:
         if n and not n.startswith("unconnected-"): pad.SetNet(net(n))
         elif n: pad.SetNet(net(n))
 # Q4 sits against the jack-end edge: put its reference below the part instead of clipped by the board edge
-_q4=board.FindFootprintByReference("Q4"); _q4.Reference().SetPosition(P(31.9,5.0)) if _q4 else None
 # power-switch position labels (SK-12E12: knob toward pin 3 joins 2-3 = VBAT->VSYS = ON)
 def silk(txt,x,y,sz=0.9,ang=0):
     t=pcbnew.PCB_TEXT(board); t.SetText(txt); t.SetPosition(P(x,y)); t.SetLayer(pcbnew.F_SilkS)
     t.SetTextSize(pcbnew.VECTOR2I(mm(sz),mm(sz))); t.SetTextThickness(mm(0.15)); t.SetTextAngleDegrees(ang); board.Add(t)
 _sw=board.FindFootprintByReference("SW1"); _p={q.GetNumber():q.GetPosition() for q in _sw.Pads() if q.GetNumber()}
 _on_up = _p["3"].y < _p["1"].y
-_sy=pcbnew.ToMM(_sw.GetPosition().y)-OY; _top=_sy-7.6; _bot=_sy+7.6
-silk("ON",33.6,_top if _on_up else _bot); silk("OFF",33.6,_bot if _on_up else _top)
+_sy=pcbnew.ToMM(_sw.GetPosition().y)-OY; _top=_sy-8.6; _bot=_sy+8.6
+silk("ON",PLm.BOARD_W-1.6,_top if _on_up else _bot,0.8,90); silk("OFF",PLm.BOARD_W-1.6,_bot if _on_up else _top,0.8,90)
 # silkscreen title
-tx=pcbnew.PCB_TEXT(board); tx.SetText("OpenALD v1.0"); tx.SetPosition(P(19,61.5)); tx.SetLayer(pcbnew.F_SilkS)
-tx.SetTextSize(pcbnew.VECTOR2I(mm(1.0),mm(1.0))); tx.SetTextThickness(mm(0.15)); board.Add(tx)
-tb=pcbnew.PCB_TEXT(board); tb.SetText("18650  + end <- USB side"); tb.SetPosition(P(19,40)); tb.SetLayer(pcbnew.B_SilkS)
+tx=pcbnew.PCB_TEXT(board); tx.SetText("OpenALD v1.0"); tx.SetPosition(P(11.25,PLm.BOARD_H-0.9)); tx.SetLayer(pcbnew.F_SilkS)
+tx.SetTextSize(pcbnew.VECTOR2I(mm(0.8),mm(0.8))); tx.SetTextThickness(mm(0.15)); board.Add(tx)
+tb=pcbnew.PCB_TEXT(board); tb.SetText("18650  + end -> top"); tb.SetPosition(P(PLm.BOARD_W/2,40)); tb.SetLayer(pcbnew.B_SilkS)
 tb.SetTextSize(pcbnew.VECTOR2I(mm(1.2),mm(1.2))); tb.SetTextThickness(mm(0.18)); tb.SetMirrored(True); tb.SetTextAngleDegrees(90); board.Add(tb)
 # rev 4.2: large cell-polarity marks. Bottom (battery side, mirrored): in the free strips left and right of the holder at
 # both ends, readable with the holder fitted. Top: next to the holder's + (pin 1) and - (pin 2) solder pads.
@@ -104,6 +103,6 @@ for (txt,x,y,sz,layer) in PLm.POL_MARKS:
     board.Add(t)
 pcbnew.SaveBoard(PRJ+"openald.kicad_pcb",board)
 print("saved; footprints:",len(board.GetFootprints()),"nets:",len(nets))
-for ref in ("BT1","J2","SW3","SW1","J1","D1","D5","D6","Q4"):
+for ref in ("BT1","J2","SW3","SW1","J1","D1","D5","D6"):
     f=board.FindFootprintByReference(ref)
     print(ref,[(q.GetNumber(),round(pcbnew.ToMM(q.GetPosition().x)-OX,2),round(pcbnew.ToMM(q.GetPosition().y)-OY,2)) for q in f.Pads() if q.GetNumber() not in ("","MP")][:6])

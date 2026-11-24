@@ -6,8 +6,8 @@ r.update({"min_copper_edge_clearance":0.3,"min_clearance":0.15,"min_track_width"
           "min_through_hole_diameter":0.3,"min_hole_clearance":0.25,"min_hole_to_hole":0.25,"min_text_height":0.6})
 ns=d["net_settings"]
 base=dict(ns["classes"][0])
-base.update({"track_width":0.25,"clearance":0.2,"via_diameter":0.6,"via_drill":0.3})
-pw=dict(base); pw.update({"name":"Power","track_width":0.5,"clearance":0.2,"via_diameter":0.8,"via_drill":0.4,"priority":0})
+base.update({"track_width":0.2,"clearance":0.15,"via_diameter":0.6,"via_drill":0.3})
+pw=dict(base); pw.update({"name":"Power","track_width":0.4,"clearance":0.15,"via_diameter":0.8,"via_drill":0.4,"priority":0})
 ns["classes"]=[base,pw]
 ns["netclass_patterns"]=[{"netclass":"Power","pattern":n} for n in ["GND","VBUS","VBAT","BATN","BAT_P","Q_D","VSYS","+3V3","+3V3R","VMCU"]]
 d["board"]["design_settings"].setdefault("defaults",{})
