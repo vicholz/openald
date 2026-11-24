@@ -22,9 +22,8 @@ rm -f $R/dock_*.png
 openscad $P --camera=108,87,15,55,0,20,430  -D 'part="assembly"' -o $R/dock_assembly.png $S 2>/dev/null &
 openscad $P --camera=108,87,15,60,0,200,430 -D 'part="assembly"' -o $R/dock_assembly_rear.png $S 2>/dev/null &
 openscad $P --camera=108,87,25,55,0,20,480  -D 'part="exploded"' -o $R/dock_exploded.png $S 2>/dev/null &
-openscad $P --camera=40,25,20,75,0,0,150    -D 'part="assembly"' -o $R/dock_front_view_slot1.png $S 2>/dev/null &
-openscad $P --render --camera=18,87,14,90,0,90,240 -D 'part="section"' -o $R/dock_section_through_plugs.png $S 2>/dev/null &
-openscad $P --render --camera=200,120,0,40,0,20,600 -D 'part="print"' -o $R/dock_print_layout.png $S 2>/dev/null &
+openscad $P --camera=60,30,20,70,0,0,260    -D 'part="assembly"' -o $R/dock_front_view_slot1.png $S 2>/dev/null &
+openscad $P --render --camera=200,130,0,50,0,20,620 -D 'part="print"' -o $R/dock_print_layout.png $S 2>/dev/null &
 python3 ../scripts/plot_insertion.py $R/dock_plug_insertion_per_radio.png &
 wait
 tail -1 dock_fit_report.txt

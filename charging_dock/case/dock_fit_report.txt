@@ -1,22 +1,37 @@
-ok   radios x shell_raw                             0.000 mm^3
-ok   plugs x shell_raw                              0.000 mm^3
-ok   PCB x shell_raw                                0.000 mm^3
-ok   radios x base_raw                              0.000 mm^3
-ok   plugs x base_raw                               0.000 mm^3
-ok   PCB x base_raw                                 0.000 mm^3
-ok   radios x pads_raw                              0.000 mm^3
-ok   plugs x pads_raw                               0.000 mm^3
-ok   PCB x pads_raw                                 0.000 mm^3
-ok   plugs x radios (plug inside USB-C cavity)      0.000 mm^3
-ok   shell x pads                                   0.000 mm^3
-ok   shell x base                                   0.000 mm^3
-ok   pads x base                                    0.000 mm^3
-closest PCB part to the top shell: D3 at 0.19 mm (part boxes)
-insertion past the receptacle mouth: 6.00 mm (plug top Z 19.30, radio floor Z 11.70)
-  single_board receptacle mouth 1.60 inside the bottom face -> insertion 6.00 mm
-  feather      receptacle mouth 1.60 inside the bottom face -> insertion 6.00 mm
+ok   shell x pads                                                   0.000 mm^3
+ok   shell x base                                                   0.000 mm^3
+ok   pads x base                                                    0.000 mm^3
+ok   plugs x shell_raw                                              0.000 mm^3
+ok   plugs x base_raw                                               0.000 mm^3
+ok   plugs x pads_raw                                               0.000 mm^3
+--- mi03: case 27.50 W x 89.75 L x 34.83 T (shell parts front_raw, back_raw; extras plungers_raw, knob_raw)
+     slot 1: smallest gap plug -> mi03 case 0.60 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
+ok   mi03 (worst of 6 pockets) x shell_raw                          0.000 mm^3
+ok   mi03 (worst of 6 pockets) x base_raw                           0.000 mm^3
+ok   mi03 (worst of 6 pockets) x pads_raw                           0.000 mm^3
+ok   mi03 (worst of 6 pockets) x plug                               0.000 mm^3
+     docked height above the floor 27.50 (top 39.80 vs fins 26.30, deck 18.30)
+--- single_board: case 27.50 W x 89.75 L x 34.83 T (shell parts top_raw, bottom_raw; extras none)
+     slot 1: smallest gap plug -> single_board case 0.32 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
+ok   single_board (worst of 6 pockets) x shell_raw                  0.000 mm^3
+ok   single_board (worst of 6 pockets) x base_raw                   0.000 mm^3
+ok   single_board (worst of 6 pockets) x pads_raw                   0.000 mm^3
+ok   single_board (worst of 6 pockets) x plug                       0.000 mm^3
+     docked height above the floor 27.50 (top 39.80 vs fins 26.30, deck 18.30)
+--- feather: case 32.90 W x 89.75 L x 34.83 T (shell parts top_raw, bottom_raw, deck_raw; extras none)
+     slot 1: smallest gap plug -> feather case 0.32 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
+ok   feather (worst of 6 pockets) x shell_raw                       0.000 mm^3
+ok   feather (worst of 6 pockets) x base_raw                        0.000 mm^3
+ok   feather (worst of 6 pockets) x pads_raw                        0.000 mm^3
+ok   feather (worst of 6 pockets) x plug                            0.000 mm^3
+     docked height above the floor 32.90 (top 45.20 vs fins 26.30, deck 18.30)
+ok   PCB x shell_raw                                                0.000 mm^3
+ok   PCB x base_raw                                                 0.000 mm^3
+ok   PCB x pads_raw                                                 0.000 mm^3
+dock PCB parts: 80 checked against shell/base/pads; closest to the top shell: D2 at 0.19 mm (part boxes)
+insertion past the receptacle mouth: 6.00 mm (plug top Z 19.30, pocket floor Z 12.30, mouth 1.00 above the floor)
   USB-C full seat (spec effective receptacle shell) 6.20 +/- 0.20; design target 6.00
-Z stack: base 2.0, standoff 4.1, PCB 6.10..7.70, pad 4.00 -> floor 11.70, plug top 19.30, deck 62.50
-radio-to-guide clearance 0.35/side for 12 mm, 0.60/side above; pocket depth 50.8
-outer size 191.8 x 111.72 x 62.5 mm; radio gap 25.4 mm
+Z stack: base 2.0, standoff 4.1, PCB 6.10..7.70, pad 4.60 -> floor 12.30, plug top 19.30, deck 18.30, fins 26.30
+pocket: 89.75 x 34.83 footprint + 0.35/side; back/end walls 14 high, front wall 6
+outer size 216.9 x 174.79 x 26.3 mm; radio gap 25.4 mm
 INTERFERENCES: 0

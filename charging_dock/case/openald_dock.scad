@@ -146,25 +146,23 @@ if (part == "base_raw")  base_raw();
 if (part == "pads_raw")  for (i = [0:5]) pad_raw(i);
 if (part == "radios")    for (i = [0:5]) radio_env(i);
 if (part == "plugs")     for (i = [0:5]) plug(i);
-if (part == "assembly" || part == "section") {
-    intersection() {
-        union() {
-            color("gainsboro") base_raw(); pcb();
-            color("silver") for (i = [0:5]) plug(i);
-            color("dimgray") for (i = [0:5]) pad_raw(i);
-            color("lightsteelblue", 0.9) shell_raw();
-            color("orange", 0.85) for (i = [0, 3]) radio_env(i, 27.5);
-            color("gold", 0.85) for (i = [4]) radio_env(i, 32.9);
-        }
-        if (part == "section") translate([-1, -1, -1]) cube([plugs[0][0], OUT_D + 2, 200]);
-        else cube([1000, 1000, 1000]);
-    }
+// previews use the STLs exported by build_case.sh / check_dock_fit.py (OpenCSG cannot preview the full CSG tree)
+module assembly_parts() {
+    color("gainsboro") import("/tmp/dock_base_raw.stl"); pcb();
+    color("silver") import("/tmp/dock_plugs.stl");
+    color("dimgray") import("/tmp/dock_pads_raw.stl");
+    color("lightsteelblue") import("/tmp/dock_shell_raw.stl");
+    color("orange") import("/tmp/dock_docked_mi03.stl");          // slot 1
+    color("salmon") import("/tmp/dock_docked_single_board.stl");  // slot 4
+    color("gold") import("/tmp/dock_docked_feather.stl");         // slot 5
 }
+if (part == "assembly") assembly_parts();
+if (part == "section") intersection() { assembly_parts(); translate([-1, -1, -1]) cube([plugs[0][0], OUT_D + 2, 200]); }   // render with --render
 if (part == "exploded") {
-    color("gainsboro") base_raw(); pcb();
-    color("silver") for (i = [0:5]) plug(i);
-    color("dimgray") translate([0, 0, 15]) for (i = [0:5]) pad_raw(i);
-    color("lightsteelblue") translate([0, 0, 35]) shell_raw();
+    color("gainsboro") import("/tmp/dock_base_raw.stl"); pcb();
+    color("silver") import("/tmp/dock_plugs.stl");
+    color("dimgray") translate([0, 0, 15]) import("/tmp/dock_pads_raw.stl");
+    color("lightsteelblue") translate([0, 0, 35]) import("/tmp/dock_shell_raw.stl");
 }
 if (part == "print") {
     translate([0, 0, -BASE_T - SKIRT_GAP]) shell_raw();

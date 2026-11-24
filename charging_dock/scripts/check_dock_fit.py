@@ -58,6 +58,7 @@ for r, (scad, shells, extra) in RADIOS.items():
         M = np.array([[0, -1, 0, x0 + hi[1]], [0, 0, -1, y0 + hi[2]], [1, 0, 0, G.FLOOR_Z - lo[0]], [0, 0, 0, 1.0]])
         parts = [m.copy().apply_transform(M) for m in sh + ex]
         rad = trimesh.boolean.union(parts, engine="manifold") if len(parts) > 1 else parts[0]
+        if i == {'mi03': 0, 'single_board': 3, 'feather': 4}[r]: rad.export(f'/tmp/dock_docked_{r}.stl')   # for the previews
         for n, cpart in case.items():
             v = inter(rad, cpart); worst[n] = max(worst.get(n, 0), v)
         v = inter(rad, plug_mesh(i)); worst["plug"] = max(worst.get("plug", 0), v)
