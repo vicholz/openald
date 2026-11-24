@@ -4,7 +4,7 @@ KiCad board frame: kx = X - PCB_X0, ky = PCB_Y1 - Y (Y down, origin = board top-
 # ---- radio envelope (see ../DOCK_INTERFACE.md) ----
 # 2026-11-24 unified envelope: every OpenALD radio (MI03, single-board, Feather) is 89.75 long x 34.83 thick with the
 # USB-C on its -X long side, centred 30.3 from the top outer end and 7.55 behind the front face, mouth 1.0 inside the
-# side face. Widths differ (MI03 / single-board 27.5, Feather 32.9) and do not matter: radios dock LYING ON THEIR
+# side face. Widths differ (MI03 27.5, single-board 30.5, Feather 32.9) and do not matter: radios dock LYING ON THEIR
 # USB-C SIDE, front face toward the user, top end to the left, so the pocket footprint is length x thickness.
 RL, RT = 89.75, 34.83            # radio length (dock X) x thickness (dock Y)
 EDGE_R = 2.0                     # radio edge radius = pocket footprint corner radius
@@ -12,7 +12,7 @@ USB_FROM_END = 30.3              # USB-C centre from the radio's top outer end (
 USB_FROM_FRONT = 7.55            # USB-C centreline behind the radio front face (dock Y)
 MOUTH_UP = 1.00                  # receptacle mouth inside the radio's USB-C side face (above the pocket floor)
 MOUTHS = {"mi03": 1.00, "single_board": 1.00, "feather": 1.00}
-WIDTHS = {"mi03": 27.5, "single_board": 27.5, "feather": 32.9}   # height above the pocket floor when docked
+WIDTHS = {"mi03": 27.5, "single_board": 30.5, "feather": 32.9}   # height above the pocket floor when docked
 # ---- layout ----
 COLS, ROWS = 2, 3
 GAP = 25.4                       # 1.0 in between radios (X and Y)
