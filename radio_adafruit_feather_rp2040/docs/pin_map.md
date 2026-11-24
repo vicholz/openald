@@ -13,12 +13,12 @@ Nothing here has been hardware-validated yet. There is no controls PCB: the whee
 | **EN** | — (enables the AP2112 3.3 V regulator) | Switch **middle lug** (common); wire runs down the left channel and up the battery-wire deck slot to JP3 | 28–30 AWG | Knob at the OFF (USB) end ties EN to GND: the 3.3 V rail, the RP2040 and the FM module turn off. Knob at the ON end leaves EN open (the Feather's own pull-up turns it on). |
 | **BAT** (VBAT) | — | Divider top (220 k) | 28–30 AWG | Optional battery gauge. |
 | **A0** | GP26 / ADC0 | Divider middle (220 k / 220 k junction, 100 nF to GND) | 30 AWG | VBAT/2. |
-| **USB** (VBUS) | — | Optional: 1.5 k → red 3 mm LED anode | 30 AWG | About 2 mA while charging. |
+| **USB** (VBUS) | — | **Dock charging port** (2026-11-24): USB-C breakout VBUS through a Schottky diode (SS14 / 1N5817, anode at the breakout); breakout GND to the GND splice. Optional: 1.5 k → red 3 mm LED anode | 28 AWG (charge), 30 AWG (LED) | Charges at the Feather's 200 mA. The diode prevents back-feeding between the breakout and the Feather's own USB-C (programming, top end). |
 | **STAT tap** (no pad) | — | Optional: red LED cathode, and 1.5 k → green LED anode | 32–36 AWG enamel or wire-wrap | Solder to the **STAT end of Feather R2** (the 10 k in series with the CHG LED), case position (25.92, 7.77). |
 | **STEMMA QT** (JST SH 4-pin) | GP2 SDA / GP3 SCL, 3V3, GND | RDA5807M module VCC / GND / SDA / SCL | STEMMA QT cable #4210, one end cut | 3V3 is switched by EN, so the radio turns off with the switch. |
 | **JST PH battery** | — | 18650 holder + / − | JST PH cable #261 (cut) | **Check polarity** against the "+" mark on the Feather before plugging in. Red goes to the holder + pin (the USB end). |
 
-Spare pins remain free: A1–A3, D5, D6, D9–D13, SCK, MOSI, MISO, TX and RX. The red LED is D13 / GP13 and the NeoPixel is GP16. Both are visible through the top windows (undocked).
+Spare pins remain free: A1–A3, D5, D6, D9–D13, SCK, MOSI, MISO, TX and RX. The red LED is D13 / GP13 and the NeoPixel is GP16. Since 2026-11-24 both face the case wall (the Feather stands on its edge) and are **not visible**.
 
 Unchanged from the controls-board version: the GPIO assignment (A = D24, B = D25, push = D4, C = GND, switch common = EN, OFF = GND, divider on A0). Only the physical path changed (wires instead of PCB traces).
 
