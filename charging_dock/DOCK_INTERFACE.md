@@ -17,7 +17,7 @@ not matter (it is the height above the pocket floor when docked).
 |---|---|
 | Length (top end to jack end) | **89.75** |
 | Thickness (front face to back face) | **34.83** |
-| Width (USB-C side to the opposite side) | any: MI03 **27.5**, single-board **27.5**, Feather **32.9** |
+| Width (USB-C side to the opposite side) | any: MI03 **27.5**, single-board **30.5**, Feather **32.9** |
 | Edge radius (the edges between the front/back faces and the sides/ends) | **2.0** (pocket corner radius 2.0 + clearance) |
 | Plan-corner radius (in the width × length plane) | 5.0 (only rounds the radio's ends near the floor; not used by the pocket) |
 | Nothing may protrude from the USB-C side face, the back face or the two end faces; the front face may carry features up to ~1 proud **more than 6 above the USB-C side face** (MI03 plungers sit 13.75 up) |

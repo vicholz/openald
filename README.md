@@ -1,7 +1,7 @@
 # OpenALD v1.0
 
 **OpenALD** is an open, rechargeable pocket FM radio: an ATmega328PB + RDA5807M (RRD-102 module) board that runs from one
-18650 cell, charges and programs over USB-C, and lives in a 3D-printed 27.5 × 89.75 × 34.83 mm case. The repo also
+18650 cell, charges and programs over USB-C, and lives in a 3D-printed 30.5 × 89.75 × 34.83 mm case. The repo also
 holds an **Adafruit Feather RP2040 variant** built from off-the-shelf boards, a printed **18650 case for the stock MI03
 pocket radio**, and a **6-slot USB-C PD charging dock**. Since 2026-11-24 all three radios share one envelope
 (89.75 L × 34.83 T, USB-C on the left long side 30.3 mm from the top end and 7.55 mm behind the front face, the MI03's
@@ -16,10 +16,10 @@ constraints, open TODOs, test checklist and exact regeneration commands.
 
 | Folder | What it is | Status |
 |---|---|---|
-| [`radio_single_board/`](radio_single_board/README.md) | **OpenALD v1.0** single-board radio: ATmega328PB + RDA5807M, CH340K USB-C programming, TP4056 ~900 mA charging with DW01A/FS8205A protection and reverse-cell protection, thumbwheel (press = battery check), slide switch, 3-LED level bar. **22.5 × 84.75 mm 4-layer PCB**; case **27.5 × 89.75 × 34.83 mm**, USB-C on the long side | Designed; ERC/DRC/JLC-CPL/case fit pass; not built |
+| [`radio_single_board/`](radio_single_board/README.md) | **OpenALD v1.0** single-board radio: ATmega328PB + RDA5807M, CH340K USB-C programming, TP4056 ~900 mA charging with DW01A/FS8205A protection and reverse-cell protection, thumbwheel (press = battery check), slide switch, 3-LED level bar. **25.5 × 84.75 mm 2-layer PCB**; case **30.5 × 89.75 × 34.83 mm**, USB-C on the long side | Designed; ERC/DRC/JLC-CPL/case fit pass; not built |
 | [`charging_dock/`](charging_dock/README.md) | **OpenALD Dock v1.0**: 6 radios (2 × 3, 1 in apart) lie on their USB-C side in shallow pockets, any mix of single-board / Feather / MI03; one rear USB-C PD input (≥ 45 W charger, 15 V or 20 V); HUSB238 + 2 × SY8205 bucks + SY6280 limit per slot. **216.9 × 174.8 × 26.3 mm** | Designed; ERC/DRC/JLC-CPL/fit pass; not built |
 | [`radio_adafruit_feather_rp2040/`](radio_adafruit_feather_rp2040/README.md) | **OpenALD Feather RP2040 v1.0**: Feather RP2040 + 27.25 mm FM module with jack + 18650 holder; **no PCB**: SIQ-02FVS3 wheel glued into a deck cradle, screwless SS-12F16 switch, USB-C breakout as the dock port, all hand-wired. Case **32.9 × 89.75 × 34.83 mm** (wider for the FM module), same dock interface | Designed; fit check pass; FM-module header/jack details and the breakout are assumed; not built |
-| [`mi03_case/`](mi03_case/README.md) | 18650 case for the stock MI03 FM pocket radio, **27.5 × 89.75 × 34.83 mm**; the reference envelope for the other two | CAD only; fit check pass; not printed |
+| [`mi03_case/`](mi03_case/README.md) | 18650 case for the stock MI03 FM pocket radio, **27.5 × 89.75 × 34.83 mm**; the reference for the shared length/thickness/USB-C position (MI03 board is fixed, so its case stays 27.5 wide) | CAD only; fit check pass; not printed |
 
 Dock ↔ radio mechanical contract: [`charging_dock/DOCK_INTERFACE.md`](charging_dock/DOCK_INTERFACE.md).
 
@@ -30,7 +30,7 @@ Dock ↔ radio mechanical contract: [`charging_dock/DOCK_INTERFACE.md`](charging
 * Ready-made zip packages per subproject: GitHub Release **v1.0** assets (or build them with `tools/make_packages.sh`).
 
 ## How to order (JLCPCB)
-**Board settings:** single-board radio **4 layers**, dock 2 layers; both **1.6 mm** FR-4, **1 oz** copper, any colour, HASL lead-free (or ENIG),
+**Board settings for every board:** 2 layers, **1.6 mm** FR-4, **1 oz** copper, any colour, HASL lead-free (or ENIG),
 **PCB Assembly: Economic, top side**. Upload the gerber zip from the subproject's `fab/`, then the `*-BOM-jlcpcb.csv` and
 `*-CPL-jlcpcb.csv`. Use the centroid `.csv` or `.pos` only if a site asks for those formats.
 

@@ -16,8 +16,8 @@ The exact interface is in **[DOCK_INTERFACE.md](DOCK_INTERFACE.md)**.
 (191.8 × 111.7 × 62.5 mm). With the USB-C now on the long side, the radios lie down instead: the pockets are
 89.75 × 34.83 footprints (+0.35 mm per side), the back and end walls ("fins") stand 14 mm above the pocket floor and
 the front wall only 6 mm, so the front face — level bar, charge LEDs — stays in view. The dock is wider and deeper but
-**much lower (26.3 mm)**. The Feather radio is 32.9 mm wide instead of 27.5; width is just its height above the floor
-here, so it uses the same pockets. Same electronics and schematic; the PCB was re-laid out and re-routed for the new
+**much lower (26.3 mm)**. Widths differ (MI03 27.5, single board 30.5, Feather 32.9);
+width is just the radio's height above the floor here, so all use the same pockets. Same electronics and schematic; the PCB was re-laid out and re-routed for the new
 plug positions.
 
 ## Key numbers

@@ -9,14 +9,20 @@ OpenALD is an ATmega328PB + RDA5807M (RRD-102 module) FM radio, **programmable o
 > **2026-11-24 unified envelope (still v1.0; supersedes the size, mounting, USB-C, LED and case notes further down,
 > which are kept as history).** Victor asked for the single board and the Feather to match the MI03 case so all three
 > use one charging dock. Changes:
-> * **Board 22.5 × 84.75 mm, now 4 layers** (F.Cu signal + pours, **In1.Cu solid GND plane**, In2.Cu signal + GND
->   pour, B.Cu signal + pour), 1.6 mm. It was 38 × 87 mm, 2 layers. The 2-layer re-route on the narrower board left
->   GND islands that the autorouter could not join, so the board went to 4 layers (cost: see `fab/cost_estimate.txt`,
->   the 5-pc PCB price is a rough guess, not a quote). Same schematic, same parts, BH-18650-PC holder kept.
+> * **Board 25.5 × 84.75 mm, 2 layers**, 1.6 mm (was 38 × 87). A first cut at 22.5 mm wide only closed on 4 layers;
+>   Victor then asked to make the board and cases "slightly bigger if it helps to keep the board 2 layers", so the
+>   board was widened (length unchanged) and parts spread across the extra width (`placement.py`: J1 stays on the
+>   left edge, wheel and switch on the right edge, holder centred). Freerouting on 2 layers: **24.5 and 25.0 mm left
+>   3 unconnected nets** (U3 SCK/RX/TX area; 24.5 tried twice), **25.5 mm routed completely**, so 25.5 is the
+>   smallest width found (0.5 mm steps). GND is routed as copper like every other net, and both layers carry GND
+>   pours (islands removed) stitched with vias, so the ground is connected by tracks, not only by the pours. Same
+>   schematic, same parts, BH-18650-PC holder kept.
 > * **USB-C J1 moved to the left long edge**, centred 27.8 mm below the board's top end = **30.3 mm from the case's
 >   top outer end, 7.55 mm behind the front face, mouth 1.0 mm inside the side face** (MI03 values), with the MI03
 >   13.0 × 7.6 r 3 cable-plug recess. The radio docks **lying on that side**.
-> * **Case 27.5 W × 89.75 L × 34.83 T** (was 43 × 92 × 33.4): same outside as the MI03 (plan corners r 5, edges r 2).
+> * **Case 30.5 W × 89.75 L × 34.83 T** (was 43 × 92 × 33.4): same length, thickness, corners (r 5 / r 2) and USB-C
+>   position as the MI03 case; 3 mm wider than the MI03 (27.5) because of the 2-layer board. Width is the height above
+>   the pocket floor in the dock, so it uses the same pockets.
 >   **Thickness grew 1.43 mm (33.4 → 34.83)**: the USB-C must sit 7.55 mm behind the front face like the MI03's,
 >   and with the PCB at that depth the front shell is 10.78 mm tall; the holder under the board then needs 24.05 mm
 >   behind it. Keeping 33.4 would have meant moving the MI03's USB-C, which Victor gave as the reference.
@@ -25,23 +31,23 @@ OpenALD is an ATmega328PB + RDA5807M (RRD-102 module) FM radio, **programmable o
 > * Mounting: no more corner holes. The holder is screwed through its own two floor holes, a 0.8 mm printed
 >   **holder spacer** and the PCB into two front-shell bosses (2 × M2 self-tapping). The **back cover snaps on**
 >   (lip + 4 bumps), so the cell is changed without tools. The heat-set inserts and `case/nut_variant/` are gone.
-> * Checks: ERC 0 errors / 2 accepted warnings; **DRC 0 errors, 0 unconnected**, 98 cosmetic warnings (10
->   silk_edge_clearance, 38 silk_over_copper, 49 silk_overlap, 1 lib_footprint_mismatch on BT1, the same holder
->   footprint as before); JLC CPL correction table OK; case fit **0 interferences** (closest: Q4's LED tunnel, 0.40 mm);
->   all three STLs watertight single bodies. 934 tracks, 151 vias, 1.87 m of track.
+> * Checks: ERC 0 errors / 2 accepted warnings; **DRC 0 errors, 0 unconnected**, 87 cosmetic silkscreen warnings (10
+>   silk_edge_clearance, 33 silk_over_copper, 44 silk_overlap); JLC CPL correction table OK; case fit **0
+>   interferences** (closest: Q4's LED tunnel, 0.40 mm); all three STLs watertight single bodies. 1360 track segments,
+>   167 vias, 2.37 m of track.
 
 The hardware in this v1.0 package is the ~900 mA charge-current design (R3 = 1.2k, TP4056 PROG). Charge time for a 3000 mAh 18650 is about 3.7 h if the chip holds 900 mA through the CC phase, likely closer to ~4 h in the closed case if the TP4056 thermally throttles. Use a **≥ 1 A charger**. A laptop USB 2.0 port is only rated 500 mA. If you need to charge from a laptop USB-A port, change **R3 to 2.4k (C22940, Basic) for ~460 mA**. See the pre-release rev 4.3 notes for the thermal estimate, USB source details, and the first-board cell-temperature check.
 
 ## Board at a glance
 | | |
 |---|---|
-| Size | **22.5 x 84.75 mm**, 1.6 mm FR-4, **4 layers** (In1.Cu = GND plane), 1 oz outer, 2.5 mm corner radius (2026-11-24; was 38 x 87, 2 layers) |
-| Mounting | No corner holes. 2x M2 self-tapping screws through the holder's two floor holes, the spacer and the PCB at (11.25, 17.62) and (11.25, 73.23) mm from the top-left corner into front-shell bosses |
+| Size | **25.5 x 84.75 mm**, 1.6 mm FR-4, 2 layers, 1 oz, 2.5 mm corner radius (2026-11-24; was 38 x 87) |
+| Mounting | No corner holes. 2x M2 self-tapping screws through the holder's two floor holes, the spacer and the PCB at (12.75, 17.62) and (12.75, 73.23) mm from the top-left corner into front-shell bosses |
 | Top side | All SMT parts (including the 3 level-bar LEDs), plus the power switch (THT) and the hand-soldered RRD-102 module |
 | Bottom side | MPD BH-18650-PC holder only (THT, hand-soldered) |
-| Copper | 2026-11-24: solid GND plane on In1.Cu; GND pours on F.Cu, In2.Cu and B.Cu; every GND pad fanned out to the plane with its own via before routing. Power nets 0.5 mm, signals 0.25 mm (0.15 mm minimum at the TQFP/ESSOP pins). Freerouting on F/In2/B with a 0.45 mm edge keep-out. 934 tracks, 151 vias, 1.87 m |
+| Copper | 2026-11-24: GND routed by Freerouting like every other net, plus GND pours on F.Cu and B.Cu (islands removed) and stitching vias. Power nets 0.5 mm, signals 0.25 mm (0.15 mm minimum at the TQFP/ESSOP pins). 0.45 mm edge keep-out while routing. 1360 track segments, 167 vias, 2.37 m |
 | ERC | **0 errors**, 2 accepted warnings (`fab/erc_report.txt`): pin_to_pin on U3 pins 3/6 (PE0 tied to GND, PE1 tied to +3V3 for ATmega328P-AU drop-in). This is intentional |
-| DRC | **0 errors, 0 unconnected pads** (2026-11-24 re-route). 98 cosmetic warnings are waived: 10 silk_edge_clearance (the jack, wheel, switch and USB-C overhang the edge on purpose), 38 silk_over_copper, 49 silk_overlap, 1 lib_footprint_mismatch (BT1, unchanged holder footprint) |
+| DRC | **0 errors, 0 unconnected pads** (2026-11-24 2-layer re-route). 87 cosmetic silkscreen warnings are waived: 10 silk_edge_clearance (the jack, wheel, switch and USB-C overhang the edge on purpose), 33 silk_over_copper, 44 silk_overlap |
 
 ## How charging is shown (power switch off or on)
 The power switch cuts VSYS. In rev 4 the MCU also runs from USB with the switch off (see "Power path"), so firmware can show the charging animation on its own while USB is plugged in (optional). The rev 3 options still work:
@@ -97,7 +103,7 @@ scripts/                   generator scripts. run_all_pcb.sh regenerates everyth
 ```
 
 ## Ordering at JLCPCB (assembled)
-1. Upload `fab/openald-gerbers-jlcpcb.zip`. Settings: **4 layers**, 22.5x84.75 mm, 1.6 mm, default JLC 4-layer stack-up, any colour, HASL (lead-free) or ENIG.
+1. Upload `fab/openald-gerbers-jlcpcb.zip`. Settings: 2 layers, 25.5x84.75 mm, 1.6 mm, any colour, HASL (lead-free) or ENIG.
 2. Turn on **PCB Assembly**, top side.
 3. Upload `openald-BOM-jlcpcb.csv` and `openald-CPL-jlcpcb.csv`. If a site asks for a centroid or XY file instead, use `openald-centroid.csv` (same positions, plus value and footprint columns). If it asks for a `.pos` or KiCad position file, use `openald.pos`. U4, BT1 and J3 have no JLC placement, so they show as "not selected". Leave them that way, because you hand-solder them (J3 is not fitted).
 4. **SW1 (SK-12E12-G5) is a through-hole part.** If you want JLC to solder it, pick **Standard PCBA**, which adds JLC's THT soldering fee. To keep the cheaper Economic SMT-only service, deselect SW1 and hand-solder it, which is 5 easy joints. Buy it from LCSC (C136720) in that case.
@@ -282,7 +288,7 @@ To sleep in Power-down and wake on a turn or a press, enable PCI2 for PD2/PD3 an
 
 ## 3D-printed case
 - **2026-11-24:** two halves split at the PCB's bottom face plus a 0.8 mm holder spacer. The PCB and holder are screwed to the front shell with **2x M2 x 8-10 self-tapping screws** through the holder's floor holes (fit them before the cell); the back cover snaps on. Print the front shell face down, the back cover back face down, the spacer flat.
-- Outer size **27.5 x 89.75 x 34.83 mm** (same as the MI03): front shell 10.78 mm, back cover 24.05 mm. Corners r 5 in plan, r 2 on the edges. Walls 2 mm, front face 1.6 mm. USB-C on the left long side (30.3 mm from the top outer end, 7.55 mm behind the front face, mouth 1.0 mm inside, 13.0 x 7.6 r 3 recess). The opening list below is from before this change (history).
+- Outer size **30.5 x 89.75 x 34.83 mm** (MI03 length, thickness and USB-C position; 3 mm wider than the MI03): front shell 10.78 mm, back cover 24.05 mm. Corners r 5 in plan, r 2 on the edges. Walls 2 mm, front face 1.6 mm. USB-C on the left long side (30.3 mm from the top outer end, 7.55 mm behind the front face, mouth 1.0 mm inside, 13.0 x 7.6 r 3 recess). The opening list below is from before this change (history).
 - Openings, all generated from the real footprint positions:
   - **Top edge:** 3.5 mm jack hole (6.8 mm, chamfered). (The battery-check button hole and printed plunger are gone since 2026-11-11; that part of the wall is solid.)
   - **Front (top) face:** the 3-LED level bar as a vertical column **centred across the face** near the jack end (three 2.4 x 1.4 mm rounded windows at 2.8 mm pitch on the centre line, window centres 75.3 / 78.1 / 80.9 mm from the USB-C edge of the PCB = 77.8 / 80.6 / 83.4 mm from the case's USB-C end; D1's tunnel leans 2.3 mm from its LED up to the lowest window) and, at the USB-C end, the two 1.6 mm charge-LED windows just left of the USB-C. Every window has a 0.4 mm rounded rim and its own light tunnel (3.2 x 2.0 mm bore, 0.8 mm walls, ending 0.2 mm above the PCB).
@@ -367,7 +373,7 @@ R3 (TP4056 PROG) is now **1.2k 0603 1%, C22765, 0603WAF1201T5E, Basic** (stock 2
 | 5.0 V | ~1.72 W | ~1.08 W |
 | 5.25 V | ~1.95 W | ~1.31 W |
 
-The datasheet's thermal regulation kicks in at about **140–145 °C** (page 8 says ~145 °C, page 10 says ~140 °C; current falls to zero if the die goes past 150 °C). This was estimated for the 2-layer 1.6 mm board with 3 vias in the ESOP-8 exposed pad, inside a closed 43 × 92 × 33.4 mm case (the 2026-11-24 4-layer board with an inner GND plane spreads heat better; the case is smaller), so at 1.7–2.0 W the die will very likely hit that limit and the chip will cut the current until the cell voltage rises and the dissipation drops. That only makes charging slower; it does not damage the chip. This has not been measured on hardware.
+The datasheet's thermal regulation kicks in at about **140–145 °C** (page 8 says ~145 °C, page 10 says ~140 °C; current falls to zero if the die goes past 150 °C). This was estimated for the 2-layer 1.6 mm board with 3 vias in the ESOP-8 exposed pad, inside a closed 43 × 92 × 33.4 mm case (the 2026-11-24 board is smaller and so is the case; not re-estimated), so at 1.7–2.0 W the die will very likely hit that limit and the chip will cut the current until the cell voltage rises and the dissipation drops. That only makes charging slower; it does not damage the chip. This has not been measured on hardware.
 
 **Other parts at ~920 mA (all fine on paper):**
 - **Q2 AO3401A:** max drop 78 mV (85 mΩ × 917 mA), ~71 mW (typ ~45–55 mV / 40–50 mW). Rated −4 A. Still well inside limits; the cell finishes a few millivolts further behind the 4.2 V float (still < 10 mV at C/10).

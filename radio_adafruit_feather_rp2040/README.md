@@ -14,7 +14,7 @@ This is a variant of the OpenALD pocket FM radio built around an **Adafruit Feat
 USB-C position as the MI03 and single-board radios** (89.75 L × 34.83 T, USB-C on the left long side, centred 30.3 mm
 from the top outer end and 7.55 mm behind the front face, mouth 1.0 mm inside the side face), so all three use the
 same charging-dock pocket (they dock **lying on that side**, see `../charging_dock/DOCK_INTERFACE.md`). It is
-**32.9 mm wide** instead of 27.5: the 27.25 mm FM module has to fit across the inside, and that is the smallest width
+**32.9 mm wide** (MI03 27.5, single board 30.5): the 27.25 mm FM module has to fit across the inside, and that is the smallest width
 that holds it with 2 mm walls. Width is free in the dock (it is the height above the pocket floor).
 
 > **Status: design only. Nothing here has been printed, built or tested.**
@@ -125,7 +125,7 @@ breakout); the table above and `docs/pin_map.md` are current.
 
 ## Known risks and limits
 * Nothing has been printed or built. Fit is CAD-only, from datasheet dimensions and Victor's FM-module description.
-* **Wider than the other two** (32.9 vs 27.5 mm): needed for the 27.25 mm module plus walls. Same dock pocket.
+* **Widest of the three** (32.9 vs 30.5 single board / 27.5 MI03): needed for the 27.25 mm module plus walls. Same dock pocket.
 * **The Feather's NeoPixel and red LED now face the wall and cannot be seen.** The firmware's battery-level colour is
   therefore invisible; only the two optional 3 mm front LEDs (charge state) show. Open decision: move the battery
   display to a front LED (firmware change) or accept it.
