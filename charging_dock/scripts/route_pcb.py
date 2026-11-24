@@ -34,7 +34,9 @@ PRE = {   # net: list of (layer, width, polyline); vias
  "VBUS_F": dict(seg=[("F",0.8,[(86.7,4.4),(86.7,2.6)]), ("F",0.6,[(98.6,7.0),(99.6,6.175)]), ("F",0.3,[(99.6,6.175),(100.6,6.7),(101.4,6.7),(101.4,5.55)]),
                      ("B",0.8,[(86.7,2.6),(87.7,4.5),(98.6,4.5),(98.6,7.0)])], vias=[(86.7,2.6),(98.6,7.0)]),
 }
-def _pt(x,y): return pcbnew.VECTOR2I(mm(x+OX),mm(y+OY))
+# 2026-11-24: the input chain moved with the board centre (2 x 3 layout); PRE above is in the old frame, shift it
+_PDX=PLm._dx
+def _pt(x,y): return pcbnew.VECTOR2I(mm(x+_PDX+OX),mm(y+OY))
 for nn,spec in PRE.items():
     nt=board.FindNet(nn)
     for lay,w,poly in spec["seg"]:

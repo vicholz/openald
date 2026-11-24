@@ -59,7 +59,7 @@ def silk(txt,x,y,sz=0.9,ang=0,layer=pcbnew.F_SilkS):
     if layer==pcbnew.B_SilkS: t.SetMirrored(True)
     board.Add(t)
 for (txt,x,y,sz) in PLm.SILK: silk(txt,x,y,sz)
-for n,(px,py) in PLm.PLUG.items(): silk(f"SLOT {n}",px,py+(-4.2 if py>60 else 4.2),1.2)
+for n,(px,py) in PLm.PLUG.items(): silk(f"SLOT {n}",px-12.0,py,1.2)   # 2026-11-24: left of the plug, inside the pocket footprint
 # pocket footprints on the fab layer (where the printed floor pads sit: no parts allowed)
 for (x0,y0,x1,y1) in PLm.KEEPOUT:
     for a,b in (((x0,y0),(x1,y0)),((x1,y0),(x1,y1)),((x1,y1),(x0,y1)),((x0,y1),(x0,y0))):
@@ -74,7 +74,7 @@ for f in board.GetFootprints():
     bb=f.GetCourtyard(pcbnew.F_CrtYd).BBox()
     x0,y0,x1,y1=[pcbnew.ToMM(v) for v in (bb.GetLeft()-mm(OX),bb.GetTop()-mm(OY),bb.GetRight()-mm(OX),bb.GetBottom()-mm(OY))]
     crt[r]=(x0,y0,x1,y1)
-    if r.startswith("J"): continue      # plugs belong in the pockets; J1 pads reach 0.9 mm under the slot-5 pad rim (relieved in the case)
+    if r.startswith("J"): continue      # plugs belong in the pockets; J1 sits in the rear strip
     for (a0,b0,a1,b1) in PLm.KEEPOUT:
         if x0<a1 and x1>a0 and y0<b1 and y1>b0: print("IN POCKET:",r,(round(x0,2),round(y0,2),round(x1,2),round(y1,2))); bad+=1
     if x0<0.3 or y0<0 or x1>W-0.3 or y1>H: print("EDGE:",r)
