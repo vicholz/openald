@@ -61,7 +61,7 @@ p("sw_act_w",3.5); p("sw_act_z0",2.25); p("sw_act_z1",4.75); p("sw_body_h",6.0)
 p("usb_y",round(H-PL.USB_Y,3)); p("usb_mouth_x",-PL.USB_OVERHANG); p("usb_w",8.94); p("usb_h",3.26)
 hx0=PL.BT1_PAD1[0]-20.9/2   # Keystone 1043 / BH-18650-PC body 77.7 x 20.9, 21.31 above the board (datasheet)
 p("holder_box",[round(hx0,2),round(hx0+20.9,2),round(H-(PL.HOLDER_Y0+77.7),2),round(H-PL.HOLDER_Y0,2)]); p("holder_h",21.31)
-p("holder_pins",[[11.25,round(H-PL.BT1_PAD1[1],3)],[11.25,round(H-PL.BT1_PAD2[1],3)]])
+p("holder_pins",[[PL.BT1_PAD1[0],round(H-PL.BT1_PAD1[1],3)],[PL.BT1_PAD2[0],round(H-PL.BT1_PAD2[1],3)]])
 p("tails",tails)
 p("top_tallest",6.0)   # tallest top-side part = SK-12E12-G5 slide switch body
 open(os.path.join(ROOT,'case','case_params.scad'),'w').write("\n".join(L)+"\n")

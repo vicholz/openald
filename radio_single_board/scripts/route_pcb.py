@@ -1,5 +1,6 @@
-"""Phase 2: autoroute with Freerouting (Specctra DSN/SES), add GND pours (F, B, In2) and the solid In1.Cu GND plane, fill, save.
-2026-11-24: 4-layer board; run gnd_fanout.py first (locked GND pad vias into the In1 plane)."""
+"""Phase 2: autoroute with Freerouting (Specctra DSN/SES), add GND pours on both layers, fill, save.
+2-layer board (t115u, 2026-11-24). GND is routed by Freerouting like every other net (so it is connected by copper
+whatever the pours do); the pours on F.Cu and B.Cu then add area and are stitched by stitch_gnd.py."""
 import pcbnew,os,sys,subprocess,math
 sys.path.insert(0,os.path.dirname(__file__))
 import placement as PLm
@@ -36,25 +37,13 @@ for nn,spec in USB_PREROUTE.items():
                 t=pcbnew.PCB_TRACK(board); t.SetStart(_pt(*a)); t.SetEnd(_pt(*b2)); t.SetWidth(mm(0.2)); t.SetLayer(layer); t.SetNet(nt); t.SetLocked(True); board.Add(t)
     for (x,y) in spec["vias"]:
         v=pcbnew.PCB_VIA(board); v.SetPosition(_pt(x,y)); v.SetDrill(mm(0.3)); v.SetWidth(pcbnew.F_Cu,mm(0.6)); v.SetWidth(pcbnew.B_Cu,mm(0.6)); v.SetNet(nt); v.SetLocked(True); board.Add(v)
-dsn="/tmp/fm.dsn"; ses="/tmp/fm.ses"
+dsn=f"/tmp/fm_{os.getpid()}.dsn"; ses=f"/tmp/fm_{os.getpid()}.ses"
 if os.path.exists(ses): os.remove(ses)
 pcbnew.ExportSpecctraDSN(board,dsn)
-# 2026-11-24: GND is left to the two pours + stitching vias (stitch_gnd.py); taking its pins out of the DSN network lets
-# Freerouting spend the narrow 22.5 mm board on the signal and power nets (GND pads stay in as obstacles).
-if os.environ.get("ROUTE_GND","0")!="1":
-    import re as _re
-    _d=open(dsn).read(); _d=_re.sub(r"\(net GND\s*\(pins[^)]*\)\s*\)","(net GND)",_d); open(dsn,"w").write(_d)
-# 2026-11-24: In1.Cu is the solid GND plane. Freerouting only treats a "power" layer as a plane when the DSN declares a
-# plane on it, so add one (board rectangle, net GND): it then neither routes on In1.Cu nor counts GND as unrouted.
-_d=open(dsn).read()
-_x0,_y0,_x1,_y1=int(OX*1000),-int((OY+PLm.BOARD_H)*1000),int((OX+PLm.BOARD_W)*1000),-int(OY*1000)
-_pl=f"    (plane GND (polygon In1.Cu 0  {_x0} {_y0}  {_x1} {_y0}  {_x1} {_y1}  {_x0} {_y1}  {_x0} {_y0}))\n"
-_i=_d.index("    (via ",_d.index("  (structure")); _d=_d[:_i]+_pl+_d[_i:]
-open(dsn,"w").write(_d)
 passes=sys.argv[1] if len(sys.argv)>1 else "40"
 cmd=[os.environ.get("JAVA","java"),"-Djava.awt.headless=true","-jar",os.environ.get("FREEROUTING",os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),"..","tools","freerouting.jar")),"-de",dsn,"-do",ses,"-mp",passes,"--gui.enabled=false"]
 print(" ".join(cmd),flush=True); r=subprocess.run(cmd,capture_output=True,text=True,timeout=1500)
-open("/tmp/freerouting.log","w").write(r.stdout+r.stderr)
+open(f"/tmp/freerouting_{os.getpid()}.log","w").write(r.stdout+r.stderr)
 print("\n".join([l for l in (r.stdout+r.stderr).splitlines()][-12:]))
 ok=pcbnew.ImportSpecctraSES(board,ses); print("SES import:",ok)
 for z in kos: board.Remove(z)
@@ -67,7 +56,7 @@ def _touch(v,layer):
         for pd in f.Pads():
             if pd.GetNetCode()==v.GetNetCode() and pd.IsOnLayer(layer) and pd.HitTest(p): return True
     return False
-_dang=[v for v in board.GetTracks() if v.GetClass()=="PCB_VIA" and v.GetNetname()!="GND" and not v.IsLocked() and sum(_touch(v,L) for L in (pcbnew.F_Cu,pcbnew.In2_Cu,pcbnew.B_Cu))<2]
+_dang=[v for v in board.GetTracks() if v.GetClass()=="PCB_VIA" and v.GetNetname()!="GND" and not v.IsLocked() and sum(_touch(v,L) for L in (pcbnew.F_Cu,pcbnew.B_Cu))<2]
 for v in _dang: board.Remove(v)
 print("removed dangling vias:",len(_dang))
 # 2026-11-24: the stub clean-up below segfaulted pcbnew on a board edited in-process (stale connectivity after the via
@@ -99,12 +88,10 @@ def zone(layer):
     z.SetPadConnection(pcbnew.ZONE_CONNECTION_THERMAL); z.SetThermalReliefGap(mm(0.3)); z.SetThermalReliefSpokeWidth(mm(0.4))
     z.SetAssignedPriority(0); z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
     board.Add(z); return z
-zone(pcbnew.F_Cu); zone(pcbnew.B_Cu); zone(pcbnew.In2_Cu)
-zp=zone(pcbnew.In1_Cu); zp.SetLocalClearance(mm(0.2))   # solid GND plane (only via/hole clearances cut it)
+zone(pcbnew.F_Cu); zone(pcbnew.B_Cu)
 for fpx in board.GetFootprints():          # THT GND pins: solid zone connection (avoids starved thermals on tiny islands)
     for pad in fpx.Pads():
         if pad.GetNetname()=="GND" and pad.GetAttribute()==pcbnew.PAD_ATTRIB_PTH: pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)
-        if pad.GetNetname()=="GND": pad.SetLocalZoneConnection(pcbnew.ZONE_CONNECTION_FULL)   # 2026-11-24: all GND pads solid on the 22.5 mm board (thermal spokes were starved by the dense routing)
 pcbnew.ZONE_FILLER(board).Fill(board.Zones())
 pcbnew.SaveBoard(PCB,board)
 # KiCad 9 library has no EP2.41x3.3 SOIC-8 3D model: point U1 at the same-body EP2.41x3.81 model (3D view / fit check only)

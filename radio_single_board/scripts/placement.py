@@ -12,11 +12,17 @@
 #     floor holes (2 x M2 through holder + PCB into front-shell bosses), so the top side keeps those spots clear;
 #   * level bar: three LEDs in a row ACROSS the board near the top-right, so it reads as a vertical bar (D1 lowest)
 #     while the radio lies in the dock, and sits well above the pocket rim.
-BOARD_W, BOARD_H, CORNER_R = 22.5, 84.75, 2.5
+BASE_W = 22.5                                    # the coordinates below were laid out on a 22.5 mm board
+# t115u (2026-11-24): back to 2 layers. The board is widened (BOARD_W) so the 2-layer route closes with connected GND
+# pours; parts are spread across the extra width by the stretch at the end of this file (J1 stays on the left edge,
+# the wheel and switch stay on the right edge, the holder and its screw points stay centred).
+import os as _os
+BOARD_W = float(_os.environ.get("OPENALD_BOARD_W", "25.5"))   # smallest width that routed on 2 layers (24.5 and 25.0 left 3 unconnected)
+BOARD_H, CORNER_R = 84.75, 2.5
 HOLDER_Y0 = 6.0                                  # holder body top end (holder body 77.7: y 6.0 .. 83.7)
-BT1_PAD1 = (11.25, HOLDER_Y0 + 3.17)             # + pin (holder model: body 3.17 past pad 1, 1.63 past pad 2)
-BT1_PAD2 = (11.25, BT1_PAD1[1] + 72.9)           # - pin
-BT1_NPTH = [(11.25, BT1_PAD1[1] + 8.45), (11.25, BT1_PAD1[1] + 64.06)]   # holder floor holes = case screw points
+BT1_PAD1 = (BOARD_W/2, HOLDER_Y0 + 3.17)             # + pin (holder model: body 3.17 past pad 1, 1.63 past pad 2)
+BT1_PAD2 = (BOARD_W/2, BT1_PAD1[1] + 72.9)           # - pin
+BT1_NPTH = [(BOARD_W/2, BT1_PAD1[1] + 8.45), (BOARD_W/2, BT1_PAD1[1] + 64.06)]   # holder floor holes = case screw points
 SCREW_KEEP_R = 2.6                               # top-side keep-out radius around each screw point (front-shell boss r 2.2)
 HOLES = []                                       # no separate mounting holes any more (H1-H4 removed)
 USB_Y = 27.8                                     # J1 centre (from the board top)
@@ -57,8 +63,15 @@ PL = {
  "C10":(16.4,71.6,0), "C11":(16.4,74.2,0), "FB1":(20.8,71.6,0), "FB2":(20.8,74.2,0), "FB3":(14.6,76.6,0), "C12":(17.6,76.6,0), "R5":(20.8,76.6,0),
  "U2":(15.3,79.5,0), "Q1":(19.4,79.6,90), "C3":(14.8,82.8,0), "R4":(18.0,82.8,0),
 }
+# ---- stretch to BOARD_W: right-edge parts move with the right edge, J1 stays put, everything else scales in x
+_K = BOARD_W / BASE_W; _DW = BOARD_W - BASE_W
+_RIGHT = ("SW3", "SW1")
+for _r, (_x, _y, _a) in list(PL.items()):
+    if _r == "J1": continue
+    PL[_r] = (round(_x + _DW, 3) if _r in _RIGHT else round(_x * _K, 3), _y, _a)
+JACK_X = PL["J2"][0]
 # level-bar window centres in the case top (board coordinates, straight above each LED)
 BAR_WIN = {r: PL[r][:2] for r in ("D1","D5","D6")}
 # cell-polarity silkscreen marks: (text, x, y, size mm, layer). Bottom marks sit in the strips beyond the holder ends.
-POL_MARKS=[("+",3.0,2.6,1.6,"B"),("+",19.5,2.6,1.6,"B"),("BAT+",11.25,1.6,0.8,"B"),("−",14.6,84.0,0.8,"B"),
-           ("+",9.0,11.2,1.0,"F"),("−",13.4,84.0,0.8,"F")]
+POL_MARKS=[(t, round(x*_K,3), y, sz, l) for (t,x,y,sz,l) in [("+",3.0,2.6,1.6,"B"),("+",19.5,2.6,1.6,"B"),("BAT+",11.25,1.6,0.8,"B"),("−",14.6,84.0,0.8,"B"),
+           ("+",9.0,11.2,1.0,"F"),("−",13.4,84.0,0.8,"F")]]

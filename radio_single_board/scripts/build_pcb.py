@@ -17,10 +17,9 @@ for n in t.find("nets"):
     if nm.startswith("unconnected-"): nm=nm.replace("/","{slash}")   # KiCad escapes '/' in net names (e.g. XTAL1/PB6)
     for nd in n.findall("node"): pinnet[(nd.get("ref"),nd.get("pin"))]=nm
 board=pcbnew.BOARD()
-# 2026-11-24 (unified 22.5 mm board): 4 layers. In1.Cu is a solid GND plane (power-type layer: the autorouter does not
-# use it), In2.Cu is a signal layer. The 2-layer attempt on the narrow board left GND split into pour islands.
-board.GetDesignSettings().SetCopperLayerCount(4)
-board.SetLayerType(pcbnew.In1_Cu,pcbnew.LT_POWER); board.SetLayerName(pcbnew.In1_Cu,"In1.Cu")
+# 2 layers (t115u, 2026-11-24: the short-lived 4-layer version of the 22.5 mm board was dropped; the board was widened
+# instead so a 2-layer route closes with connected GND pours).
+board.GetDesignSettings().SetCopperLayerCount(2)
 board.GetDesignSettings().SetAuxOrigin(pcbnew.VECTOR2I(pcbnew.FromMM(100.0),pcbnew.FromMM(100.0+PLm.BOARD_H)))  # drill/place origin = board bottom-left corner
 nets={}
 def net(name):
@@ -92,7 +91,7 @@ _on_up = _p["3"].y < _p["1"].y
 _sy=pcbnew.ToMM(_sw.GetPosition().y)-OY; _top=_sy-8.6; _bot=_sy+8.6
 silk("ON",PLm.BOARD_W-1.6,_top if _on_up else _bot,0.8,90); silk("OFF",PLm.BOARD_W-1.6,_bot if _on_up else _top,0.8,90)
 # silkscreen title
-tx=pcbnew.PCB_TEXT(board); tx.SetText("OpenALD v1.0"); tx.SetPosition(P(11.25,PLm.BOARD_H-0.9)); tx.SetLayer(pcbnew.F_SilkS)
+tx=pcbnew.PCB_TEXT(board); tx.SetText("OpenALD v1.0"); tx.SetPosition(P(PLm.BOARD_W/2,PLm.BOARD_H-0.9)); tx.SetLayer(pcbnew.F_SilkS)
 tx.SetTextSize(pcbnew.VECTOR2I(mm(0.8),mm(0.8))); tx.SetTextThickness(mm(0.15)); board.Add(tx)
 tb=pcbnew.PCB_TEXT(board); tb.SetText("18650  + end -> top"); tb.SetPosition(P(PLm.BOARD_W/2,40)); tb.SetLayer(pcbnew.B_SilkS)
 tb.SetTextSize(pcbnew.VECTOR2I(mm(1.2),mm(1.2))); tb.SetTextThickness(mm(0.18)); tb.SetMirrored(True); tb.SetTextAngleDegrees(90); board.Add(tb)

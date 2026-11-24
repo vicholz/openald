@@ -149,7 +149,7 @@ def load_lookup():
 # ---- full fab (default) -------------------------------------------------
 def main():
     shutil.rmtree(GB,ignore_errors=True); os.makedirs(GB)
-    run(f'kicad-cli pcb export gerbers -o {GB} -l F.Cu,In1.Cu,In2.Cu,B.Cu,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts --subtract-soldermask --use-drill-file-origin {PCB}')
+    run(f'kicad-cli pcb export gerbers -o {GB} -l F.Cu,B.Cu,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts --subtract-soldermask --use-drill-file-origin {PCB}')
     run(f'kicad-cli pcb export drill -o {GB} --format excellon --excellon-units mm --excellon-zeros-format decimal --excellon-oval-format alternate --excellon-separate-th --generate-map --map-format gerberx2 --drill-origin plot {PCB}')
     zp=FAB+"openald-gerbers-jlcpcb.zip"
     with zipfile.ZipFile(zp,"w",zipfile.ZIP_DEFLATED) as z:
@@ -273,7 +273,7 @@ def write_handsolder_order(groups_full, info, out_path, boards=5):
 def write_minimal_cost(groups_min, info, out_path, boards=5):
     # Published Economic PCBA fees (JLCPCB PCB Assembly Cost page; same $3.07 feeder figure used in this README).
     SETUP=8.18; STENCIL=1.53; FEEDER=3.07; SMT_JOINT=0.0016; CONFIRM=0.45
-    PCB_5PCS=8.00  # 2026-11-24 rough guess for 5 pcs, 22.5x84.75 mm, 4-layer 1.6 mm (JLC 4-layer is no longer the $2 promo size class); not a live quote
+    PCB_5PCS=2.00  # earlier project estimate for 5 pcs of a 2-layer 1.6 mm board under 100x100 mm; not a live quote
     # Joints: count SMT pads on the four parts (from the board).
     joints_per_board=13+32+12+16  # U1 13, U3 32, U7 12, J1 16 SMT (J1 also has 6 mid-mount mechanical pads)
     fee_parts=[]; pref=[]; basic=[]
@@ -298,8 +298,8 @@ def write_minimal_cost(groups_min, info, out_path, boards=5):
     text=[]
     text.append("OpenALD v1.0 — estimated JLC cost for 5 boards, MINIMAL (hotplate) assembly")
     text.append("ESTIMATE ONLY. Fees from JLCPCB's published Economic PCBA table (setup $8.18, stencil $1.53,")
-    text.append("extended feeder $3.07 / type, SMT $0.0016 / joint, confirm-placement $0.45). PCB $8 is a rough")
-    text.append("2026-11-24 guess for 5 pcs of this 22.5x84.75 mm 4-layer 1.6 mm board, NOT a live quote.")
+    text.append("extended feeder $3.07 / type, SMT $0.0016 / joint, confirm-placement $0.45). PCB $2 is the")
+    text.append("earlier project estimate for 5 pcs of a 2-layer 1.6 mm board under 100x100 mm, not a live quote.")
     text.append("Shipping, tax and any US tariff are NOT included. Prices drift.")
     text.append("")
     text.append("Parts JLC places: J1 USB-C (C165948), U1 TP4056 (C16581, Preferred ext.), U3 ATmega328PB-AU")
