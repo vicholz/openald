@@ -37,5 +37,4 @@ U4,1,RRD-102V2.0 RDA5807M FM module (11x11mm castellated),RRD-102V2.0 RDA5807M m
 BT1,1,"MPD BH-18650-PC 18650 PCB holder (THT, 2 pins 72.9mm)",MPD BH-18650-PC,,—,—,~$3,Hand solder,https://www.digikey.com/en/products/result?keywords=BH-18650-PC
 J3,1,"2x3 2.54mm AVR-ISP pogo pads (ATmega328PB MISO/SCK/MOSI/RESET, 3.3 V) - bootloader burn only; do not leave a header fitted",2x3 2.54mm header / pogo (DNP),,—,—,~$0.10 (or a 2x3 pogo clip),DNP,https://www.digikey.com/en/products/result?keywords=2x3%20pin%20header%202.54mm
 —,1,18650 Li-ion cell (flat or button top; protected cells up to ~69mm fit the MPD holder),,,,,~$5,Off-board,https://www.amazon.com/s?k=18650+battery
-—,4,"M2 x 12 mm screws, pan or socket head (M2 x 16 if using the hex-nut case option)",,,,,~$0.05,Off-board,https://www.amazon.com/s?k=M2+x+12mm+socket+head+screws
-—,4,"M2 brass heat-set inserts, OD 3.2-3.5 mm x L 3-4 mm (or M2 hex nuts)",,,,,~$0.05,Off-board,https://www.amazon.com/s?k=M2+heat+set+inserts
+—,2,"M2 x 8-10 mm self-tapping pan-head screws (through the holder floor holes, spacer and PCB into the front-shell bosses; 1.7 mm pilot 7.2 mm deep; holder floor thickness not verified)",,,,,~$0.05,Off-board,https://www.amazon.com/s?k=M2+self+tapping+screws+pan+head

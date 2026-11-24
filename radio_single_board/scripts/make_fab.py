@@ -190,8 +190,7 @@ def main():
      "J3":("2x3 2.54mm AVR-ISP pogo pads (ATmega328PB MISO/SCK/MOSI/RESET, 3.3 V) - bootloader burn only; do not leave a header fitted","~$0.10 (or a 2x3 pogo clip)","https://www.digikey.com/en/products/result?keywords=2x3%20pin%20header%202.54mm"),
     }
     EXTRA=[("—","1","18650 Li-ion cell (flat or button top; protected cells up to ~69mm fit the MPD holder)","~$5","https://www.amazon.com/s?k=18650+battery"),
-           ("—","4","M2 x 12 mm screws, pan or socket head (M2 x 16 if using the hex-nut case option)","~$0.05","https://www.amazon.com/s?k=M2+x+12mm+socket+head+screws"),
-           ("—","4","M2 brass heat-set inserts, OD 3.2-3.5 mm x L 3-4 mm (or M2 hex nuts)","~$0.05","https://www.amazon.com/s?k=M2+heat+set+inserts")]
+           ("—","2","M2 x 8-10 mm self-tapping pan-head screws (through the holder floor holes, spacer and PCB into the front-shell bosses; 1.7 mm pilot 7.2 mm deep; holder floor thickness not verified)","~$0.05","https://www.amazon.com/s?k=M2+self+tapping+screws+pan+head")]
     tot1=0
     with open(FAB+"openald-BOM-human.csv","w",newline="") as f:
         w=csv.writer(f)
