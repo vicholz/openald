@@ -111,8 +111,9 @@ floor) and the NeoPixel (≈ 20 mm); the switch (≈ 58 mm) and the wheel (from 
 6.0 mm past the receptacle mouth (same as the single-board radio).
 
 ## Print and assemble
-1. Print `case/case_bottom.stl` (back face down), `case/case_top.stl` (front face down) and `case/deck.stl` (flat,
-   top face down). PLA or PETG, 0.2 mm layers; the FM plug hole and the USB-C opening bridge ≤ 9 mm.
+1. Print `case/case_bottom.stl` (back face down), `case/case_top.stl` (front face down) and `case/deck.stl` (as
+   exported: flat underside down, posts and pegs up). PLA or PETG, 0.2 mm layers, ≥ 3 perimeters (thin studs and
+   pegs); the USB-C opening bridges ≤ 9 mm.
 2. Back shell: trim the holder's PC pins, solder the battery leads (+ red, − black) and glue/tape the holder into its
    floor pocket (+ end toward the USB end). Run the leads up the side channels.
 3. Wire the Feather per `docs/pin_map.md` (wheel, switch, divider, FM header, battery to the BAT / GND pads, or a
