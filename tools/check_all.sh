@@ -4,9 +4,9 @@
 #   tools/check_all.sh          ERC + DRC + JLC CPL fit check for every board
 #   tools/check_all.sh --case   also rebuild the cases and run the 3D fit checks (slow: ~3-10 min each;
 #                               this DOES rewrite the STLs/previews/fit reports in the working tree)
-# Expected results (v1.0, 2026-11-24 unified envelope):
-#   radio_single_board  ERC 0 errors / 2 warnings (accepted PE0/PE1 pin_to_pin), DRC 87 silk-only, 0 unconnected, 0 parity (2-layer)
-#   charging_dock       ERC 0 / 0, DRC 69 silk-only, 0 unconnected, 0 parity
+# Expected results (v1.0, t116u 2026-11-24: bottom-end USB-C, upright 3 + 3 dock):
+#   radio_single_board  ERC 0 errors / 2 warnings (accepted PE0/PE1 pin_to_pin), DRC 82 silk-only, 0 unconnected, 0 parity (2-layer)
+#   charging_dock       ERC 0 / 0, DRC 72 silk-only, 0 unconnected, 0 parity
 #   radio_adafruit_feather_rp2040  no PCB: wiring schematic ERC 0 / 0, firmware compiles (if arduino-cli is set up), case fit (--case)
 #   every board         jlc_cpl_fit.py --check -> "correction table: OK"
 #   --case              INTERFERENCES: 0 in each fit report

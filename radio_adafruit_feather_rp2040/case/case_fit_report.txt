@@ -16,8 +16,8 @@
   front x deck: 0.000
   back x deck: 0.000
 == assembly path (front shell lowered straight down)
-  feather: reaches past the inner wall (x -4.47..4.47 y -1.00..-0.02 z 25.61..28.87); swept volume x front shell 0.000: OK
-  wheel: reaches past the inner wall (x 13.95..16.90 y 52.88..64.54 z 25.61..27.61); swept volume x front shell 0.000: OK
+  feather: reaches past the inner wall (x -4.47..4.47 y -1.00..-0.01 z 25.61..28.87); swept volume x front shell 0.000: OK
+  wheel: reaches past the inner wall (x 13.95..16.90 y 52.89..64.53 z 25.61..27.61); swept volume x front shell 0.000: OK
   fm: stays inside the inner walls
 == Feather LEDs / RESET: line of sight straight out through the front face
   chg   at (6.03, 1.98): clear

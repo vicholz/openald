@@ -31,7 +31,7 @@ ok   Feather LEDs, slot 6 (0/15/30/45 deg up): chg 4.0 above floor: BLOCKED/clea
 ok   PCB x shell_raw                                                0.000 mm^3
 ok   PCB x base_raw                                                 0.000 mm^3
 ok   PCB x pads_raw                                                 0.000 mm^3
-dock PCB parts: 80 checked against shell/base/pads; closest to the top shell: C39 at 0.18 mm (part boxes)
+dock PCB parts: 80 checked against shell/base/pads; closest to the top shell: D3 at 0.19 mm (part boxes)
 insertion past the receptacle mouth: 6.00 mm (plug top Z 19.30, pocket floor Z 12.30, mouth 1.00 above the floor)
   USB-C full seat (spec effective receptacle shell) 6.20 +/- 0.20; design target 6.00
 Z stack: base 2.0, standoff 4.1, PCB 6.10..7.70, pad 4.60 -> floor 12.30, plug top 19.30, deck 14.80, fins 63.10

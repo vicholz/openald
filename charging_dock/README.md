@@ -97,7 +97,7 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
   against the shell, base, pads and plug; **sweeps the insertion path** (radio lowered straight down from above the
   walls); checks the PCB and its 80 part boxes against every case part; and the case parts against each other.
   Smallest plug-to-case gap 0.32 mm (both radios); plug centred on the radio's USB opening. Closest PCB part to the
-  shell: C39 (470 µF, under its housing), 0.18 mm. All printed STLs are watertight single bodies
+  shell: D3 (status LED under the light pipe), 0.19 mm. All printed STLs are watertight single bodies
   (`dock_floor_pads_x6.stl` is six bodies on purpose).
 * **Feather LEDs in the dock:** rays from its CHG (≈ 4 mm above the floor), red (≈ 4 mm) and NeoPixel (≈ 20 mm) holes
   toward the viewer at 15°, 30° and 45° upward are clear of the shell and of radios in the other five pockets, in every
