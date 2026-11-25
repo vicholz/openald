@@ -4,7 +4,8 @@ t116u (2026-11-24) BOTTOM-END USB-C: the radio stands upright in the charging do
 dock's USB-C plug. The Feather lies FLAT on the deck at the bottom end and its OWN USB-C is the dock / charging port
 (no breakout, no Schottky diode): the receptacle is centred across the case, DOCK_USB_FROM_FRONT below the front face,
 mouth 1.0 mm inside the bottom end face -- the same spot as the single-board radio, which also has the same outside
-width and thickness (31.9 x 33.86), so both fit the same dock pocket. This case is longer (the wheel sits between the
+width and thickness (31.9 x 33.86), so both fit the same dock pocket. (t122u: this case is 35.9 wide; the single-board
+case has a 35.9 dock collar and the dock pockets are 35.9.) This case is longer (the wheel sits between the
 Feather and the FM module); length does not matter in the dock. The Feather's CHG LED, red LED and NeoPixel face the
 front and are seen through light tunnels / holes in the front face. The MI03 keeps its side USB-C (not docked).
 

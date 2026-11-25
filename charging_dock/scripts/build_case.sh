@@ -20,11 +20,11 @@ P="--imgsize=1400,1000 --colorscheme=Tomorrow --projection=p"
 R=../previews
 rm -f $R/dock_*.png
 O="--imgsize=1400,1000 --colorscheme=Tomorrow --projection=o"
-openscad $P --camera=79,56,40,55,0,20,520  -D 'part="assembly"' -o $R/dock_assembly.png $S 2>/dev/null &
-openscad $P --camera=79,56,40,60,0,200,520 -D 'part="assembly"' -o $R/dock_assembly_rear.png $S 2>/dev/null &
-openscad $P --camera=79,56,40,55,0,20,560  -D 'part="exploded"' -o $R/dock_exploded.png $S 2>/dev/null &
-openscad $P --camera=50,40,55,75,0,0,300   -D 'part="assembly"' -o $R/dock_front_view.png $S 2>/dev/null &
-openscad $O --camera=79,56,30,0,0,0,290    -D 'part="assembly"' -o $R/dock_top_view.png $S 2>/dev/null &
+openscad $P --camera=85,56,40,55,0,20,550  -D 'part="assembly"' -o $R/dock_assembly.png $S 2>/dev/null &
+openscad $P --camera=85,56,40,60,0,200,550 -D 'part="assembly"' -o $R/dock_assembly_rear.png $S 2>/dev/null &
+openscad $P --camera=85,56,40,55,0,20,590  -D 'part="exploded"' -o $R/dock_exploded.png $S 2>/dev/null &
+openscad $P --camera=54,40,55,75,0,0,320   -D 'part="assembly"' -o $R/dock_front_view.png $S 2>/dev/null &
+openscad $O --camera=85,56,30,0,0,0,330    -D 'part="assembly"' -o $R/dock_top_view.png $S 2>/dev/null &
 openscad $P --render --camera=160,110,0,50,0,20,640 -D 'part="print"' -o $R/dock_print_layout.png $S 2>/dev/null &
 python3 ../scripts/plot_insertion.py $R/dock_plug_insertion_per_radio.png &
 wait

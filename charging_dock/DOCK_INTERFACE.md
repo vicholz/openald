@@ -19,7 +19,7 @@ it keeps its side USB-C and is not checked against or supported by the dock.
 ## 2. End footprint
 | Item | Value |
 |---|---|
-| Width (left side to right side) | **31.9** |
+| Width (left side to right side) | **35.9** (t122u; was 31.9). Feather case 35.9 wide; single-board case 31.9 body with a 35.9 dock collar over its lowest 27 mm |
 | Thickness (front face to back face) | **33.86** |
 | Length (bottom end to top end) | any: single-board **89.75**, Feather **98.71** |
 | Edge radius (the edges between the front/back faces and the sides) | **2.0** (pocket corner radius 2.0 + clearance) |
@@ -64,4 +64,4 @@ A future variant must keep the mouth at 1.00 (± ~0.2) or the pad thickness has 
 | Radio floor (pad top) | Z **12.30** above the dock bottom; flat top Z 37.30 (pocket depth 25.00) |
 | Plug top | Z 19.30 (HX drawing: 11.60 above the PCB) = 7.00 above the floor -> **6.0 mm insertion** past the 1.00 receptacle mouth |
 | If the plug measures taller (the drawing also shows a 12.50 overall) | every radio seats deeper by the difference (12.50: 6.90, past the 6.40 maximum seat, so the radio rests on the plug). Fix: pads thicker by the difference (`PAD_T` += measured − 11.60) and `STANDOFF` thinner by the same amount (shorter screws) |
-| Layout | **3 columns × 2 rows**, 25.4 mm (1.0 in) gap between radios in X and Y, **aligned grid** (t120u; back row directly behind the front row); outer **158.5 × 112.62 × 37.3** mm (t121u flat top) (fits a 220 × 180 bed; was 216.9 × 174.79 × 26.3 with the side-lying pockets) |
+| Layout | **3 columns × 2 rows**, 25.4 mm (1.0 in) gap between radios in X and Y, **aligned grid** (t120u; back row directly behind the front row); outer **170.5 × 112.62 × 37.3** mm (t122u 35.9 pockets; t121u flat top 158.5 wide) (fits a 220 × 180 bed; was 216.9 × 174.79 × 26.3 with the side-lying pockets) |

@@ -1,256 +1,256 @@
 ** Drc report for openald-dock.kicad_pcb **
-** Created on 2026-11-24T22:21:51-0800 **
+** Created on 2026-11-25T00:35:19-0800 **
 
 ** Found 72 DRC violations **
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; warning
     @(102.0000 mm, 100.0000 mm): Segment on Edge.Cuts
-    @(200.3000 mm, 101.6500 mm): Segment of J1 on F.Silkscreen
+    @(208.3000 mm, 101.6500 mm): Segment of J1 on F.Silkscreen
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; warning
     @(102.0000 mm, 100.0000 mm): Segment on Edge.Cuts
-    @(209.7000 mm, 101.6500 mm): Segment of J1 on F.Silkscreen
+    @(217.7000 mm, 101.6500 mm): Segment of J1 on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(140.3200 mm, 193.2900 mm): Reference field of C17
+    @(243.6500 mm, 163.9800 mm): Reference field of R53
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(233.6500 mm, 149.1100 mm): Reference field of U9
+    @(149.8700 mm, 117.5300 mm): Reference field of D3
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(150.9700 mm, 190.4900 mm): Reference field of R11
+    @(214.6700 mm, 190.4900 mm): Reference field of C40
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(211.8250 mm, 104.0000 mm): Reference field of U1
+    @(157.7500 mm, 182.2900 mm): Reference field of C11
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(149.3700 mm, 190.4900 mm): Reference field of C20
+    @(246.8500 mm, 163.9800 mm): Reference field of R63
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(209.8700 mm, 190.4900 mm): Reference field of R32
+    @(151.7700 mm, 190.4900 mm): Reference field of R14
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(176.3500 mm, 163.9800 mm): Reference field of R52
+    @(121.0500 mm, 163.9800 mm): Reference field of R51
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(142.5200 mm, 193.2900 mm): Reference field of C18
+    @(243.6500 mm, 149.1100 mm): Reference field of U9
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(122.2500 mm, 163.9800 mm): Reference field of R61
+    @(191.8500 mm, 104.4000 mm): Reference field of C1
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(140.6700 mm, 116.7200 mm): Reference field of R4
+    @(154.9700 mm, 190.4900 mm): Reference field of R11
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(211.0500 mm, 182.2900 mm): Reference field of C31
+    @(219.8250 mm, 104.0000 mm): Reference field of U1
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(150.4000 mm, 191.7400 mm): Reference field of C19
+    @(217.8700 mm, 190.4900 mm): Reference field of R32
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(177.8700 mm, 162.8100 mm): Reference field of C62
+    @(215.7000 mm, 191.7400 mm): Reference field of C39
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(147.7700 mm, 190.4900 mm): Reference field of R14
+    @(154.4000 mm, 191.7400 mm): Reference field of C19
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(153.7500 mm, 182.2900 mm): Reference field of C11
+    @(245.1700 mm, 151.5100 mm): Reference field of C66
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(119.0500 mm, 163.9800 mm): Reference field of R51
+    @(146.5200 mm, 193.2900 mm): Reference field of C18
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(177.8700 mm, 151.5100 mm): Reference field of C65
+    @(144.3200 mm, 193.2900 mm): Reference field of C17
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(205.0700 mm, 190.4900 mm): Reference field of R34
+    @(156.5700 mm, 190.4900 mm): Reference field of R12
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(120.5700 mm, 151.5100 mm): Reference field of C64
+    @(182.3500 mm, 163.9800 mm): Reference field of R52
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(179.5500 mm, 163.9800 mm): Reference field of R62
+    @(153.3700 mm, 190.4900 mm): Reference field of C20
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(203.4700 mm, 190.4900 mm): Reference field of R33
+    @(150.1700 mm, 190.4900 mm): Reference field of R13
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(152.5700 mm, 190.4900 mm): Reference field of R12
+    @(185.5500 mm, 163.9800 mm): Reference field of R62
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(119.0500 mm, 149.1100 mm): Reference field of U7
+    @(205.6200 mm, 193.2900 mm): Reference field of C37
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(183.8500 mm, 104.4000 mm): Reference field of C1
+    @(122.5700 mm, 162.8100 mm): Reference field of C61
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(233.6500 mm, 163.9800 mm): Reference field of R53
+    @(207.8200 mm, 193.2900 mm): Reference field of C38
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(206.6700 mm, 190.4900 mm): Reference field of C40
+    @(182.3500 mm, 149.1100 mm): Reference field of U8
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(146.1700 mm, 190.4900 mm): Reference field of R13
+    @(190.6000 mm, 102.4700 mm): Reference field of C3
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(182.6000 mm, 104.2700 mm): Reference field of R3
+    @(183.8700 mm, 162.8100 mm): Reference field of C62
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(145.8700 mm, 117.5300 mm): Reference field of D3
+    @(144.6700 mm, 116.7200 mm): Reference field of R4
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(176.3500 mm, 149.1100 mm): Reference field of U8
+    @(190.6000 mm, 104.2700 mm): Reference field of R3
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(235.1700 mm, 151.5100 mm): Reference field of C66
+    @(124.2500 mm, 163.9800 mm): Reference field of R61
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(199.8200 mm, 193.2900 mm): Reference field of C38
+    @(122.5700 mm, 151.5100 mm): Reference field of C64
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(182.6000 mm, 102.4700 mm): Reference field of C3
+    @(183.8700 mm, 151.5100 mm): Reference field of C65
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(197.6200 mm, 193.2900 mm): Reference field of C37
+    @(211.4700 mm, 190.4900 mm): Reference field of R33
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(236.8500 mm, 163.9800 mm): Reference field of R63
+    @(245.1700 mm, 162.8100 mm): Reference field of C63
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(208.2700 mm, 190.4900 mm): Reference field of R31
+    @(121.0500 mm, 149.1100 mm): Reference field of U7
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(120.5700 mm, 162.8100 mm): Reference field of C61
+    @(213.0700 mm, 190.4900 mm): Reference field of R34
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(235.1700 mm, 162.8100 mm): Reference field of C63
+    @(219.0500 mm, 182.2900 mm): Reference field of C31
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; warning
-    @(207.7000 mm, 191.7400 mm): Reference field of C39
+    @(216.2700 mm, 190.4900 mm): Reference field of R31
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(209.8700 mm, 190.4900 mm): Reference field of R32
-    @(210.2225 mm, 190.7273 mm): Segment of R31 on F.Silkscreen
+    @(215.7000 mm, 191.7400 mm): Reference field of C39
+    @(214.6700 mm, 190.4900 mm): Reference field of C40
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(197.8350 mm, 193.5513 mm): Segment of C36 on F.Silkscreen
-    @(197.6200 mm, 193.2900 mm): Reference field of C37
+    @(214.6700 mm, 190.4900 mm): Reference field of C40
+    @(215.0225 mm, 190.7273 mm): Segment of R34 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(176.3500 mm, 164.3700 mm): Segment of U5 on F.Silkscreen
-    @(176.3500 mm, 163.9800 mm): Reference field of R52
+    @(216.6100 mm, 190.6306 mm): Segment of C40 on F.Silkscreen
+    @(216.2700 mm, 190.4900 mm): Reference field of R31
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(176.3500 mm, 164.3700 mm): Segment of U5 on F.Silkscreen
-    @(176.3500 mm, 163.9800 mm): Reference field of R52
+    @(215.7000 mm, 191.7400 mm): Reference field of C39
+    @(216.2700 mm, 190.4900 mm): Reference field of R31
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(177.8700 mm, 162.8100 mm): Reference field of C62
-    @(176.3500 mm, 163.9800 mm): Reference field of R52
+    @(243.6500 mm, 163.9800 mm): Reference field of R53
+    @(243.6500 mm, 164.3700 mm): Segment of U6 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(208.6100 mm, 190.6306 mm): Segment of C40 on F.Silkscreen
-    @(208.2700 mm, 190.4900 mm): Reference field of R31
+    @(243.6500 mm, 163.9800 mm): Reference field of R53
+    @(243.6500 mm, 164.3700 mm): Segment of U6 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(207.7000 mm, 191.7400 mm): Reference field of C39
-    @(206.6700 mm, 190.4900 mm): Reference field of C40
+    @(243.6500 mm, 163.9800 mm): Reference field of R53
+    @(245.1700 mm, 162.8100 mm): Reference field of C63
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(207.7000 mm, 191.7400 mm): Reference field of C39
-    @(208.2700 mm, 190.4900 mm): Reference field of R31
+    @(218.2225 mm, 190.7273 mm): Segment of R31 on F.Silkscreen
+    @(217.8700 mm, 190.4900 mm): Reference field of R32
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(205.0700 mm, 190.4900 mm): Reference field of R34
-    @(205.4225 mm, 190.7273 mm): Segment of R33 on F.Silkscreen
+    @(243.4127 mm, 149.4325 mm): Segment of R56 on F.Silkscreen
+    @(243.6500 mm, 149.1100 mm): Reference field of U9
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(203.8100 mm, 190.6306 mm): Segment of C35 on F.Silkscreen
-    @(203.4700 mm, 190.4900 mm): Reference field of R33
+    @(207.8200 mm, 193.2900 mm): Reference field of C38
+    @(208.0350 mm, 193.5513 mm): Segment of C37 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(200.0350 mm, 193.5513 mm): Segment of C37 on F.Silkscreen
-    @(199.8200 mm, 193.2900 mm): Reference field of C38
+    @(211.8100 mm, 190.6306 mm): Segment of C35 on F.Silkscreen
+    @(211.4700 mm, 190.4900 mm): Reference field of R33
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(207.0225 mm, 190.7273 mm): Segment of R34 on F.Silkscreen
-    @(206.6700 mm, 190.4900 mm): Reference field of C40
+    @(213.0700 mm, 190.4900 mm): Reference field of R34
+    @(213.4225 mm, 190.7273 mm): Segment of R33 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(141.0225 mm, 116.9573 mm): Segment of R6 on F.Silkscreen
-    @(140.6700 mm, 116.7200 mm): Reference field of R4
+    @(205.8350 mm, 193.5513 mm): Segment of C36 on F.Silkscreen
+    @(205.6200 mm, 193.2900 mm): Reference field of C37
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(140.5350 mm, 193.5513 mm): Segment of C16 on F.Silkscreen
-    @(140.3200 mm, 193.2900 mm): Reference field of C17
+    @(150.5100 mm, 190.6306 mm): Segment of C15 on F.Silkscreen
+    @(150.1700 mm, 190.4900 mm): Reference field of R13
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(142.5200 mm, 193.2900 mm): Reference field of C18
-    @(142.7350 mm, 193.5513 mm): Segment of C17 on F.Silkscreen
+    @(151.7700 mm, 190.4900 mm): Reference field of R14
+    @(152.1225 mm, 190.7273 mm): Segment of R13 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(150.4000 mm, 191.7400 mm): Reference field of C19
-    @(149.3700 mm, 190.4900 mm): Reference field of C20
+    @(153.7225 mm, 190.7273 mm): Segment of R14 on F.Silkscreen
+    @(153.3700 mm, 190.4900 mm): Reference field of C20
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(148.1225 mm, 190.7273 mm): Segment of R13 on F.Silkscreen
-    @(147.7700 mm, 190.4900 mm): Reference field of R14
+    @(154.4000 mm, 191.7400 mm): Reference field of C19
+    @(153.3700 mm, 190.4900 mm): Reference field of C20
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(149.7225 mm, 190.7273 mm): Segment of R14 on F.Silkscreen
-    @(149.3700 mm, 190.4900 mm): Reference field of C20
+    @(146.7350 mm, 193.5513 mm): Segment of C17 on F.Silkscreen
+    @(146.5200 mm, 193.2900 mm): Reference field of C18
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(150.9700 mm, 190.4900 mm): Reference field of R11
-    @(150.4000 mm, 191.7400 mm): Reference field of C19
+    @(144.3200 mm, 193.2900 mm): Reference field of C17
+    @(144.5350 mm, 193.5513 mm): Segment of C16 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(146.1700 mm, 190.4900 mm): Reference field of R13
-    @(146.5100 mm, 190.6306 mm): Segment of C15 on F.Silkscreen
+    @(156.5700 mm, 190.4900 mm): Reference field of R12
+    @(156.9225 mm, 190.7273 mm): Segment of R11 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(118.8127 mm, 149.4325 mm): Segment of R54 on F.Silkscreen
-    @(119.0500 mm, 149.1100 mm): Reference field of U7
+    @(121.0500 mm, 164.3700 mm): Segment of U4 on F.Silkscreen
+    @(121.0500 mm, 163.9800 mm): Reference field of R51
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(151.3100 mm, 190.6306 mm): Segment of C20 on F.Silkscreen
-    @(150.9700 mm, 190.4900 mm): Reference field of R11
+    @(121.0500 mm, 164.3700 mm): Segment of U4 on F.Silkscreen
+    @(121.0500 mm, 163.9800 mm): Reference field of R51
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(152.9225 mm, 190.7273 mm): Segment of R11 on F.Silkscreen
-    @(152.5700 mm, 190.4900 mm): Reference field of R12
+    @(154.4000 mm, 191.7400 mm): Reference field of C19
+    @(154.9700 mm, 190.4900 mm): Reference field of R11
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(119.0500 mm, 164.3700 mm): Segment of U4 on F.Silkscreen
-    @(119.0500 mm, 163.9800 mm): Reference field of R51
+    @(155.3100 mm, 190.6306 mm): Segment of C20 on F.Silkscreen
+    @(154.9700 mm, 190.4900 mm): Reference field of R11
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(119.0500 mm, 164.3700 mm): Segment of U4 on F.Silkscreen
-    @(119.0500 mm, 163.9800 mm): Reference field of R51
+    @(145.0225 mm, 116.9573 mm): Segment of R6 on F.Silkscreen
+    @(144.6700 mm, 116.7200 mm): Reference field of R4
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(209.7000 mm, 105.5500 mm): Segment of J1 on F.Silkscreen
-    @(210.1700 mm, 105.4000 mm): Reference field of C2
+    @(182.3500 mm, 149.1100 mm): Reference field of U8
+    @(182.1127 mm, 149.4325 mm): Segment of R55 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(176.3500 mm, 149.1100 mm): Reference field of U8
-    @(176.1127 mm, 149.4325 mm): Segment of R55 on F.Silkscreen
+    @(182.3500 mm, 163.9800 mm): Reference field of R52
+    @(182.3500 mm, 164.3700 mm): Segment of U5 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(233.6500 mm, 149.1100 mm): Reference field of U9
-    @(233.4127 mm, 149.4325 mm): Segment of R56 on F.Silkscreen
+    @(182.3500 mm, 164.3700 mm): Segment of U5 on F.Silkscreen
+    @(182.3500 mm, 163.9800 mm): Reference field of R52
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(233.6500 mm, 163.9800 mm): Reference field of R53
-    @(233.6500 mm, 164.3700 mm): Segment of U6 on F.Silkscreen
+    @(183.8700 mm, 162.8100 mm): Reference field of C62
+    @(182.3500 mm, 163.9800 mm): Reference field of R52
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(233.6500 mm, 163.9800 mm): Reference field of R53
-    @(235.1700 mm, 162.8100 mm): Reference field of C63
+    @(218.1700 mm, 105.4000 mm): Reference field of C2
+    @(217.7000 mm, 105.5500 mm): Segment of J1 on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; warning
-    @(233.6500 mm, 164.3700 mm): Segment of U6 on F.Silkscreen
-    @(233.6500 mm, 163.9800 mm): Reference field of R53
+    @(121.0500 mm, 149.1100 mm): Reference field of U7
+    @(120.8127 mm, 149.4325 mm): Segment of R54 on F.Silkscreen
 
 ** Found 0 unconnected pads **
 

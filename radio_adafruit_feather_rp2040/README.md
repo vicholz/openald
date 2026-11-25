@@ -40,7 +40,7 @@ its side USB-C and does not dock.
   **Ø3.4 pegs** that go 0.6 mm into the Ø3.8 holes. The deck has Ø6 support posts under the module's corners with the
   same pegs from below. The jack now hangs below the board and dips through a notch in the deck. **Cut the 4-pin header
   pins and the jack's solder tails to ≤ 1.2 mm on the flat side.** The wires are soldered there before you close the
-  case. Seen from the flat side, the header pin order is mirrored (see the wiring diagram).
+  case. Seen from the flat side the header pin order is mirrored, so wire by the pin labels, not by position (the connections in the wiring diagram are unchanged).
 * **Headphone hole Ø6.95** (the 6.35 barrel + 0.3 mm per side; was 6.8 with a Ø8.6 outer chamfer, now a 0.3 mm edge
   break). The jack axis is 25.99 above the back face. The hole straddles the shell split: a U-notch in the front shell
   plus a tab on the back shell.

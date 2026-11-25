@@ -17,11 +17,15 @@ OpenALD is an ATmega328PB + RDA5807M (RRD-102 module) FM radio, **programmable o
 >   **USB-C in the bottom end face, centred across the width, 6.62 mm behind the front face, mouth 1.0 mm inside
 >   the face**, 13.0 × 7.6 r 3 cable-plug recess — identical to the Feather radio, so both stand in the same dock
 >   pocket (`../charging_dock/DOCK_INTERFACE.md`). Jack hole in the top end wall. Switch knob 2.8 mm and wheel
->   0.35 mm proud of the right side (the dock pockets have a notch for them).
+>   0.35 mm proud of the right side (above the pocket; t122u: no notch).
 > * Checks: ERC 0 errors / 2 accepted warnings; **DRC 0 errors, 0 unconnected**, 82 silk-only (9 edge / 35 over
 >   copper / 38 overlap); JLC CPL correction table OK; case fit **0 interferences** (closest LED tunnel: Q1, 0.25 mm).
 >   JLC parts ≈ $7.32 / board. Fab outputs, vendor BOMs and previews regenerated.
 > * The notes below (side USB-C, 25.5 mm board, 30.5 × 89.75 × 34.83 case) are history.
+> * **t122u dock collar:** the Feather case grew to 35.9 wide, so the dock pockets are 35.9 × 33.86 now. This case
+>   keeps its 31.9 body but its **lowest 27 mm (the part in the 25 mm pocket) is 35.9 wide**, 2 mm extra per side,
+>   with a 2 mm 45° step back to the body (`dock_W`, `dock_collar_h` in `case/openald_case.scad`). The switch knob
+>   and wheel are above the collar and unchanged. Outer bounding box 35.9 × 89.75 × 33.86; fit 0 interferences.
 
 > **2026-11-24 unified envelope (still v1.0; supersedes the size, mounting, USB-C, LED and case notes further down,
 > which are kept as history).** Victor asked for the single board and the Feather to match the MI03 case so all three

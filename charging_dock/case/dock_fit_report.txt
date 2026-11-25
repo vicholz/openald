@@ -4,18 +4,18 @@ ok   pads x base                                                    0.000 mm^3
 ok   plugs x shell_raw                                              0.000 mm^3
 ok   plugs x base_raw                                               0.000 mm^3
 ok   plugs x pads_raw                                               0.000 mm^3
---- single_board: case 31.90 W x 89.75 L x 33.86 T (shell parts top_raw, bottom_raw; extras switch knob (on/off), wheel)
+--- single_board: case 35.90 W x 89.75 L x 33.86 T (shell parts top_raw, bottom_raw; extras switch knob (on/off), wheel)
      slot 1: smallest gap plug -> single_board case 0.32 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
-     slot 1: single_board case X centre 21.95 vs plug X 21.95
+     slot 1: single_board case X centre 23.95 vs plug X 23.95
 ok   single_board (worst of 6 pockets) x shell (insertion path)     0.000 mm^3
 ok   single_board (worst of 6 pockets) x shell_raw                  0.000 mm^3
 ok   single_board (worst of 6 pockets) x base_raw                   0.000 mm^3
 ok   single_board (worst of 6 pockets) x pads_raw                   0.000 mm^3
 ok   single_board (worst of 6 pockets) x plug                       0.000 mm^3
      docked height above the floor 89.75 (top 102.05 vs dock top 37.30: 64.75 stands above the top)
---- feather: case 31.90 W x 98.71 L x 33.86 T (shell parts top_raw, bottom_raw, deck_raw; extras g_wheel, g_switch_on, g_switch_off)
+--- feather: case 35.90 W x 98.71 L x 33.86 T (shell parts top_raw, bottom_raw, deck_raw; extras g_wheel, g_switch_on, g_switch_off)
      slot 1: smallest gap plug -> feather case 0.32 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
-     slot 1: feather case X centre 21.95 vs plug X 21.95
+     slot 1: feather case X centre 23.95 vs plug X 23.95
 ok   feather (worst of 6 pockets) x shell (insertion path)          0.000 mm^3
 ok   feather (worst of 6 pockets) x shell_raw                       0.000 mm^3
 ok   feather (worst of 6 pockets) x base_raw                        0.000 mm^3
@@ -35,6 +35,6 @@ dock PCB parts: 80 checked against shell/base/pads; closest to the top shell: D2
 insertion past the receptacle mouth: 6.00 mm (plug top Z 19.30, pocket floor Z 12.30, mouth 1.00 above the floor)
   USB-C full seat (spec effective receptacle shell) 6.20 +/- 0.20; design target 6.00
 Z stack: base 2.0, standoff 4.1, PCB 6.10..7.70, pad 4.60 -> floor 12.30, plug top 19.30, flat top 37.30
-pocket: 31.9 x 33.86 footprint + 0.35/side, recessed 25.0 deep (1.5 mm lead-in); 20 mm sight window from 2.0 above the floor (back row: trench floor at 50 deg); no side notch
-outer size 158.50 x 112.62 x 37.3 mm (bed 220 x 180: fits); radio gap 25.4 mm, aligned grid
+pocket: 35.9 x 33.86 footprint + 0.35/side, recessed 25.0 deep (1.5 mm lead-in); 20 mm sight window from 2.0 above the floor (back row: trench floor at 50 deg); no side notch
+outer size 170.50 x 112.62 x 37.3 mm (bed 220 x 180: fits); radio gap 25.4 mm, aligned grid
 INTERFERENCES: 0

@@ -1,7 +1,7 @@
 # OpenALD Dock v1.0 — 6-slot USB-C charging dock
 
 A charging dock for six OpenALD radios (**3 columns × 2 rows, aligned grid**). It is designed
-only for the **single-board and Feather radios**, which share one end footprint (31.9 W × 33.86 T) and one USB-C
+only for the **single-board and Feather radios**, which share one end footprint (35.9 W × 33.86 T since t122u) and one USB-C
 position (**bottom end face, centred across the width, 6.62 mm behind the front face, mouth 1.0 mm inside**), so every
 pocket takes either of them. **The MI03 radio is not dock-compatible** (Victor, 2026-11-24: "The mi03 version doesn't
 need to work with the dock."); it keeps its side USB-C. A radio **stands upright on its bottom end**, front face toward
@@ -35,18 +35,25 @@ below the top, so each pocket's front wall has a **20 mm sight window** down to 
 straight out through the dock's front face, back row into a closed trench in the top whose floor rises at 50° toward
 the front row. No side notch: both radios' switch knobs and wheels sit above 25 mm.
 
+**t122u (2026-11-24, still v1.0): 35.9 mm pockets.** Victor asked for 2 mm more room on each side of the Feather in
+its case, so the Feather case is now 35.9 wide. The pockets are **35.9 × 33.86** (+0.35/side). The single-board case
+keeps its 31.9 body but has a 35.9-wide **dock collar** on its lowest 27 mm, so both radios still share one end
+footprint. The 25.4 mm gap between radios stays, so the dock is **170.5 × 112.62 × 37.3 mm** (still fits 220 × 180).
+The PCB is now **164.70 × 106.82**, with the plugs re-placed at the new pocket centres and re-routed (ERC 0/0, DRC 0
+errors / 0 unconnected / 72 silk-only, CPL OK). Fit check: 0 interferences, both radios, all six pockets.
+
 ## Key numbers
 | | |
 |---|---|
-| Outer size | **158.5 × 112.62 × 37.3 mm** (W × D × H; flat top) — **fits a 220 × 180 bed** |
+| Outer size | **170.5 × 112.62 × 37.3 mm** (W × D × H; flat top) — **fits a 220 × 180 bed** |
 | Layout | 3 × 2 aligned grid, **25.4 mm (1.0 in)** between radios in X and Y; margins 6 sides/front, 13.5 back |
-| Pocket | 31.9 × 33.86 + 0.35/side, **recessed 25.0 mm** (floor Z 12.3, top Z 37.3, 1.5 mm lead-in chamfer); 20 mm sight window in the front wall from 2 mm above the floor (back row: sloped trench, 50°); no side notch |
+| Pocket | 35.9 × 33.86 + 0.35/side, **recessed 25.0 mm** (floor Z 12.3, top Z 37.3, 1.5 mm lead-in chamfer); 20 mm sight window in the front wall from 2 mm above the floor (back row: sloped trench, 50°); no side notch |
 | Plug | HX TYPE C-M 16P vertical, top Z 19.3 → **6.0 mm past the radio's receptacle mouth** (both radios; full seat 6.20 ± 0.20) |
 | Floor pads | 4.6 mm (`PAD_T`), one per slot |
-| PCB | **152.70 × 106.82 mm**, 2-layer, 1.6 mm, all SMT parts on top |
+| PCB | **164.70 × 106.82 mm**, 2-layer, 1.6 mm, all SMT parts on top |
 | Minimum charger | **USB-C PD, 45 W: must offer 20 V ≥ 2.25 A or 15 V ≥ 3 A** |
 | Per-slot limit | ~1.45 A (1.09–1.81 A, SY6280 ±25 %), 5.10 V |
-| Filament | solid volumes: top shell 104.5 cm³, base 47.5 cm³, 6 pads 37.4 cm³ (~235 g PLA if solid, less with infill) |
+| Filament | solid volumes: top shell 102.5 cm³, base 43.6 cm³, 6 pads 41.7 cm³ (~233 g PLA if solid, less with infill) |
 | Docked radios | single-board 89.75 mm tall, Feather 98.71 mm tall above the pocket floor (tops at Z 102 / 111) |
 
 ## Power architecture
@@ -189,3 +196,6 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
   20 mm sight windows (front) / sloped trenches (back) for the Feather LEDs, no side notch, raised housings dropped
   (27 mm room under the top), shell printed upside down. PCB, pads and plug height unchanged (DRC/ERC/CPL as t120u).
   Fit check 0 interferences, both radios, all six pockets, insertion sweep.
+* t122u (2026-11-24, still v1.0): pockets 35.9 wide for the wider Feather case (single-board case: 35.9 dock collar).
+  170.5 × 112.62 × 37.3 mm, PCB 164.70 × 106.82 re-placed and re-routed: ERC 0/0, DRC 0 err / 0 unconnected / 72 silk,
+  CPL OK. Fit check 0 interferences; Feather LED visibility unchanged (front row clear 0–75°, back row from ~75°).

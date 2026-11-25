@@ -1,7 +1,8 @@
 // OpenALD Dock v1.0 - 6-slot charging dock case.
+// t122u (2026-11-24): pockets 35.9 wide (wider Feather case; the single-board case has a 35.9 dock collar) -> 170.5 wide.
 // t121u (2026-11-24): FLAT dock. A closed box 158.5 x 112.62 x 37.3 with six pockets RECESSED 25 mm into its flat top,
 // aligned 3 x 2 grid; radios STAND UPRIGHT on their bottom-end USB-C (front face toward you). (t116u/t120u had 50.8 mm
-// pocket walls on a low deck.) The dockable OpenALD radios (single-board, Feather; NOT the MI03) share the 31.9 x 33.86
+// pocket walls on a low deck.) The dockable OpenALD radios (single-board, Feather; NOT the MI03) share the 35.9 x 33.86
 // end footprint and the USB-C position (centred across the width, 6.62 behind the front face, mouth 1.0 inside the
 // bottom end face). Each pocket's front wall has a 20 mm sight window down to 2 mm above the floor so the Feather's
 // CHG / red / NeoPixel LEDs stay visible: front row straight out through the dock front, back row through a sloped
