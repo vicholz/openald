@@ -6,7 +6,7 @@ ok   plugs x base_raw                                               0.000 mm^3
 ok   plugs x pads_raw                                               0.000 mm^3
 --- single_board: case 31.90 W x 89.75 L x 33.86 T (shell parts top_raw, bottom_raw; extras switch knob (on/off), wheel)
      slot 1: smallest gap plug -> single_board case 0.32 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
-     slot 1: single_board case X centre 50.60 vs plug X 50.60
+     slot 1: single_board case X centre 21.95 vs plug X 21.95
 ok   single_board (worst of 6 pockets) x shell (insertion path)     0.000 mm^3
 ok   single_board (worst of 6 pockets) x shell_raw                  0.000 mm^3
 ok   single_board (worst of 6 pockets) x base_raw                   0.000 mm^3
@@ -15,26 +15,26 @@ ok   single_board (worst of 6 pockets) x plug                       0.000 mm^3
      docked height above the floor 89.75 (top 102.05 vs pocket walls 63.10, deck 14.80)
 --- feather: case 31.90 W x 98.71 L x 33.86 T (shell parts top_raw, bottom_raw, deck_raw; extras g_wheel, g_switch_on, g_switch_off)
      slot 1: smallest gap plug -> feather case 0.32 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
-     slot 1: feather case X centre 50.60 vs plug X 50.60
+     slot 1: feather case X centre 21.95 vs plug X 21.95
 ok   feather (worst of 6 pockets) x shell (insertion path)          0.000 mm^3
 ok   feather (worst of 6 pockets) x shell_raw                       0.000 mm^3
 ok   feather (worst of 6 pockets) x base_raw                        0.000 mm^3
 ok   feather (worst of 6 pockets) x pads_raw                        0.000 mm^3
 ok   feather (worst of 6 pockets) x plug                            0.000 mm^3
      docked height above the floor 98.71 (top 111.01 vs pocket walls 63.10, deck 14.80)
-ok   Feather LEDs, slot 1 (0/15/30/45 deg up): chg 4.0 above floor: clear/clear/clear/clear; red 4.0 above floor: clear/clear/clear/clear; neo 20.0 above floor: clear/clear/clear/clear
-ok   Feather LEDs, slot 2 (0/15/30/45 deg up): chg 4.0 above floor: clear/clear/clear/clear; red 4.0 above floor: clear/clear/clear/clear; neo 20.0 above floor: clear/clear/clear/clear
-ok   Feather LEDs, slot 3 (0/15/30/45 deg up): chg 4.0 above floor: clear/clear/clear/clear; red 4.0 above floor: clear/clear/clear/clear; neo 20.0 above floor: clear/clear/clear/clear
-ok   Feather LEDs, slot 4 (0/15/30/45 deg up): chg 4.0 above floor: clear/clear/clear/clear; red 4.0 above floor: BLOCKED/clear/clear/clear; neo 20.0 above floor: clear/clear/clear/clear
-ok   Feather LEDs, slot 5 (0/15/30/45 deg up): chg 4.0 above floor: BLOCKED/clear/clear/clear; red 4.0 above floor: clear/clear/clear/clear; neo 20.0 above floor: clear/clear/clear/clear
-ok   Feather LEDs, slot 6 (0/15/30/45 deg up): chg 4.0 above floor: BLOCKED/clear/clear/clear; red 4.0 above floor: clear/clear/clear/clear; neo 20.0 above floor: clear/clear/clear/clear
+ok   Feather LEDs, slot 1 (0/15/30/45/60/75 deg up): chg 4.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up); red 4.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up); neo 20.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up)
+ok   Feather LEDs, slot 2 (0/15/30/45/60/75 deg up): chg 4.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up); red 4.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up); neo 20.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up)
+ok   Feather LEDs, slot 3 (0/15/30/45/60/75 deg up): chg 4.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up); red 4.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up); neo 20.0 up: clear/clear/clear/clear/clear/clear (visible from 0 deg up)
+info Feather LEDs, slot 4 (0/15/30/45/60/75 deg up): chg 4.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up); red 4.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up); neo 20.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up)
+info Feather LEDs, slot 5 (0/15/30/45/60/75 deg up): chg 4.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up); red 4.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up); neo 20.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up)
+info Feather LEDs, slot 6 (0/15/30/45/60/75 deg up): chg 4.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up); red 4.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up); neo 20.0 up: BLOCKED/BLOCKED/BLOCKED/BLOCKED/BLOCKED/clear (visible from 75 deg up)
 ok   PCB x shell_raw                                                0.000 mm^3
 ok   PCB x base_raw                                                 0.000 mm^3
 ok   PCB x pads_raw                                                 0.000 mm^3
-dock PCB parts: 80 checked against shell/base/pads; closest to the top shell: D3 at 0.19 mm (part boxes)
+dock PCB parts: 80 checked against shell/base/pads; closest to the top shell: C19 at 0.18 mm (part boxes)
 insertion past the receptacle mouth: 6.00 mm (plug top Z 19.30, pocket floor Z 12.30, mouth 1.00 above the floor)
   USB-C full seat (spec effective receptacle shell) 6.20 +/- 0.20; design target 6.00
 Z stack: base 2.0, standoff 4.1, PCB 6.10..7.70, pad 4.60 -> floor 12.30, plug top 19.30, deck 14.80, fins 63.10
 pocket: 31.9 x 33.86 footprint + 0.35/side; walls 50.8 high, front window above 2.5 between 5 mm corner returns; right-wall notch 8 deep above 30
-outer size 187.15 x 112.62 x 63.1 mm (bed 220 x 180: fits); radio gap 25.4 mm, back row offset 28.65
+outer size 158.50 x 112.62 x 63.1 mm (bed 220 x 180: fits); radio gap 25.4 mm, aligned grid
 INTERFERENCES: 0
