@@ -10,12 +10,11 @@ it keeps its side USB-C and is not checked against or supported by the dock.
 
 ## 1. Orientation in the dock
 * The radio **stands upright on its bottom end** (the end with the USB-C), **front face toward the user**.
-* The pocket walls are **50.8** (2 in) high on the back and both sides; the front wall is open above a **2.5** lip
-  except for **5** wide returns at the two front corners, so the front face (single-board level bar / charge LEDs,
-  Feather CHG LED and NeoPixel) stays visible.
-* The right side wall is cut away **8** deep from the front above **30** over the floor, for the single-board radio's
-  switch knob (2.8 proud) and wheel (0.35 proud) on its right side. Anything else on the sides must stay above 50.8 or
-  within the 0.35 clearance.
+* t121u: the pocket is **recessed 25.0** into the dock's flat top (no walls above it). Its front wall has a **20 wide
+  sight window** (centred) from **2.0** above the floor up through the top, so LEDs on the lowest 25 mm of the front
+  face (Feather CHG / red at 4, NeoPixel at 20) stay visible; the single-board level bar / charge LEDs are ~77–82 up.
+* No side notch: anything on the sides (single-board switch knob 2.8 proud / wheel 0.35 proud from ~36 up; Feather
+  wheel and switch higher) must stay above 25.0 or within the 0.35 clearance.
 
 ## 2. End footprint
 | Item | Value |
@@ -54,7 +53,7 @@ A future variant must keep the mouth at 1.00 (± ~0.2) or the pad thickness has 
 | Item | Value |
 |---|---|
 | Footprint | end footprint + **0.35 per side**: 32.6 × 34.56, corner r 2.35 |
-| Walls | back + both sides **50.8** above the floor (1.5 × 45° lead-in at the top); front: 2.5 lip (1.0 × 45° lead-in) with 5 wide corner returns up to 50.8; right-side notch 8 × (50.8 − 30) at the front |
+| Walls | recessed **25.0** deep into the flat top (1.5 × 45° lead-in at the rim); front: 20 wide sight window from 2.0 above the floor (back row: opens into a trench whose floor rises at 50°); no side notch |
 | Floor | flat printed pad (4.60 thick); hole for the plug 9.2 × 3.4 (r 1.0), long axis across the pocket |
 | Plug position in the pocket | centred across the width, 6.62 behind its front edge (radio footprint frame) |
 
@@ -62,7 +61,7 @@ A future variant must keep the mouth at 1.00 (± ~0.2) or the pad thickness has 
 | Item | Value |
 |---|---|
 | Z stack | base 2.0 + standoffs 4.1 -> PCB Z 6.10..7.70; floor pad **4.60** thick (`PAD_T`) |
-| Radio floor (pad top) | Z **12.30** above the dock bottom; deck Z 14.80; pocket walls Z 63.10 |
+| Radio floor (pad top) | Z **12.30** above the dock bottom; flat top Z 37.30 (pocket depth 25.00) |
 | Plug top | Z 19.30 (HX drawing: 11.60 above the PCB) = 7.00 above the floor -> **6.0 mm insertion** past the 1.00 receptacle mouth |
 | If the plug measures taller (the drawing also shows a 12.50 overall) | every radio seats deeper by the difference (12.50: 6.90, past the 6.40 maximum seat, so the radio rests on the plug). Fix: pads thicker by the difference (`PAD_T` += measured − 11.60) and `STANDOFF` thinner by the same amount (shorter screws) |
-| Layout | **3 columns × 2 rows**, 25.4 mm (1.0 in) gap between radios in X and Y, **aligned grid** (t120u; back row directly behind the front row); outer **158.5 × 112.62 × 63.1** mm (fits a 220 × 180 bed; was 216.9 × 174.79 × 26.3 with the side-lying pockets) |
+| Layout | **3 columns × 2 rows**, 25.4 mm (1.0 in) gap between radios in X and Y, **aligned grid** (t120u; back row directly behind the front row); outer **158.5 × 112.62 × 37.3** mm (t121u flat top) (fits a 220 × 180 bed; was 216.9 × 174.79 × 26.3 with the side-lying pockets) |

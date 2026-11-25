@@ -5,7 +5,7 @@ only for the **single-board and Feather radios**, which share one end footprint 
 position (**bottom end face, centred across the width, 6.62 mm behind the front face, mouth 1.0 mm inside**), so every
 pocket takes either of them. **The MI03 radio is not dock-compatible** (Victor, 2026-11-24: "The mi03 version doesn't
 need to work with the dock."); it keeps its side USB-C. A radio **stands upright on its bottom end**, front face toward
-you, and drops onto a vertical USB-C plug in a 50.8 mm deep pocket. **One USB-C PD input at the rear** powers all six
+you, and drops onto a vertical USB-C plug in a pocket **recessed 25 mm into the flat top** of the dock. **One USB-C PD input at the rear** powers all six
 slots.
 
 > **Status: design only, nothing here is hardware-validated.** ERC/DRC are clean and the CAD fit check passes for both
@@ -27,12 +27,20 @@ stands directly behind the front row (aligned 3 × 2 grid), which shrinks the do
 (PCB 152.70 × 106.82, re-placed and re-routed). Trade-off: front faces of back-row radios are hidden behind the
 front-row radios unless you look down from steeply above (see *Feather LEDs in the dock* below).
 
+**t121u (2026-11-24, still v1.0): flat dock.** Victor: "Remove the tall guides on the dock. The dock should be flat
+with recessed square holes that are 2-4cm deep to act as a guide." The 50.8 mm pocket walls, front lips and corner
+returns are gone: the dock is a closed **158.5 × 112.62 × 37.3 mm** box with six pockets **25 mm deep** in its flat
+top (same aligned grid, same PCB, pads and plug height). The Feather's LEDs (4 and 20 mm above the floor) would sit
+below the top, so each pocket's front wall has a **20 mm sight window** down to 2 mm above the floor: front row
+straight out through the dock's front face, back row into a closed trench in the top whose floor rises at 50° toward
+the front row. No side notch: both radios' switch knobs and wheels sit above 25 mm.
+
 ## Key numbers
 | | |
 |---|---|
-| Outer size | **158.5 × 112.62 × 63.1 mm** (W × D × H; deck 14.8) — **fits a 220 × 180 bed** |
+| Outer size | **158.5 × 112.62 × 37.3 mm** (W × D × H; flat top) — **fits a 220 × 180 bed** |
 | Layout | 3 × 2 aligned grid, **25.4 mm (1.0 in)** between radios in X and Y; margins 6 sides/front, 13.5 back |
-| Pocket | 31.9 × 33.86 + 0.35/side; floor Z 12.3; walls 50.8 above the floor (1.5 mm lead-in), front window above a 2.5 mm lip between 5 mm corner returns; right-wall notch 8 mm deep above 30 mm |
+| Pocket | 31.9 × 33.86 + 0.35/side, **recessed 25.0 mm** (floor Z 12.3, top Z 37.3, 1.5 mm lead-in chamfer); 20 mm sight window in the front wall from 2 mm above the floor (back row: sloped trench, 50°); no side notch |
 | Plug | HX TYPE C-M 16P vertical, top Z 19.3 → **6.0 mm past the radio's receptacle mouth** (both radios; full seat 6.20 ± 0.20) |
 | Floor pads | 4.6 mm (`PAD_T`), one per slot |
 | PCB | **152.70 × 106.82 mm**, 2-layer, 1.6 mm, all SMT parts on top |
@@ -51,7 +59,7 @@ USB-C IN (J1, HRO TYPE-C-31-M-12, CC1/CC2 -> HUSB238)
      -> U3 SY8205FCC buck B (same)                                                   -> slots 3, 5, 6
         each slot: SY6280AAC current-limited switch (Rset 4.7k -> ~1.45 A) + 10 uF -> vertical plug VBUS,
         22k Rp on CC ("default USB power" to the radio's 5.1k Rd), plug GND + shell to GND
-Status LED (light pipe in the deck, in the back-row gap between slots 4 and 5): green = 5 V up; red = input present but no usable PD
+Status LED (light pipe in the top, in the back-row gap between slots 4 and 5): green = 5 V up; red = input present but no usable PD
 ```
 * **HUSB238** (VSET open = request up to 20 V, ISET 13.7k = 2.25 A) picks the highest PDO ≤ 20 V that offers ≥ 2.25 A,
   otherwise it steps down. D+/D− are left open (PD only).
@@ -99,25 +107,27 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
   STLs of both radio cases (single board, Feather) plus what sticks out of them (single-board switch knob in both
   positions and wheel; Feather wheel and switch knob), stands each in every one of the six pockets and checks it
   against the shell, base, pads and plug; **sweeps the insertion path** (radio lowered straight down from above the
-  walls); checks the PCB and its 80 part boxes against every case part; and the case parts against each other.
+  top); checks the PCB and its 80 part boxes against every case part; and the case parts against each other.
   Smallest plug-to-case gap 0.32 mm (both radios); plug centred on the radio's USB opening. Closest PCB part to the
-  shell: C19 (under its raised housing), 0.18 mm (part boxes). All printed STLs are watertight single bodies
+  shell: D2, 0.19 mm (part boxes). All printed STLs are watertight single bodies
   (`dock_floor_pads_x6.stl` is six bodies on purpose).
 * **Feather LEDs in the dock** (rays at 0/15/30/45/60/75° upward from the CHG (≈ 4 mm above the floor), red (≈ 4 mm)
-  and NeoPixel (≈ 20 mm) holes, tested against the shell and radios in the other five pockets):
-  * **Front row, slots 1–3: clear at every angle**, including level.
-  * **Back row, slots 4–6: blocked from 0° to 60°, visible only from about 75° up** (looking almost straight down).
-    With the aligned grid each back-row radio stands about 59 mm behind a 90–99 mm tall front-row radio. The report
-    lists these as `info`, not failures. Fix if needed (not built): a stepped back row (back pockets raised ≈ 35 mm
-    for a 45° view, ≈ 60 mm for 30°), or a deeper gap between the rows (≈ +35 mm for 45°; depth ≈ 148 mm, still fits
-    the bed).
+  and NeoPixel (≈ 20 mm) holes through the sight windows, tested against the shell and radios in the other five
+  pockets). The single-board radio's level bar and charge LEDs sit ~77–82 mm up, well above the top.
+  * **Front row, slots 1–3: clear at every angle (0–75°)**, including level, through the front windows.
+  * **Back row, slots 4–6 with radios in the front row: blocked 0–60°, visible from about 75° up.** Removing the
+    walls did not change this: the blocker is the front-row radio itself (64–74 mm above the top, 25.4 mm in
+    front), which needs about 74° to look over. **With the front pocket empty**, the dock alone lets you see the
+    CHG / red LEDs from 60° and the NeoPixel from 15°. Reported as `info`, not failures. Fix if needed (not built):
+    a stepped back row (back pockets ≈ 60 mm higher for a ~45° view) or a much deeper gap between rows.
 * Previews: `previews/dock_assembly.png`, `dock_assembly_rear.png`, `dock_exploded.png`, `dock_top_view.png`
   (aligned grid), `dock_front_view.png`, `dock_print_layout.png`, `dock_plug_insertion_per_radio.png`
   (both radios on their plugs), PCB renders.
 
 ## Printing (no supports)
-* **Top shell:** print it **upright, skirt on the bed**, as exported. The deck between walls bridges ≤ ~21 mm (column gaps, with
-  bosses in between); the pocket walls, bosses, light pipe and housings grow straight up. Vents and the rear USB-C opening bridge short spans.
+* **Top shell:** print it **upside down, flat top on the bed**, as exported. Pocket walls, bosses, light pipe and the
+  window blocks grow straight up; the back-row trench floors overhang at 40° from vertical; the only bridges are the
+  20 mm front-window sills and the short vents / rear USB-C opening.
 * **Base:** print it flat, as exported.
 * **Floor pads (6):** print them as exported (one STL per slot in `floor_pads/`, or all six in `dock_floor_pads_x6.stl`).
 * PETG or PLA, 0.2 mm layers, 3 walls. Try one radio in one pocket before printing all six pads. If the fit is tight,
@@ -140,19 +150,20 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
   `scripts/geom.py` and rebuild.
 * **Receptacle depth:** the real seat depth of the radios' receptacles isn't on their drawings; 6.20 ± 0.20 is the
   USB-C spec value. Both radios have the mouth 1.0 mm inside the bottom end face.
-* **Tall radios on a plug:** the 50.8 mm walls (0.35 mm clearance) take side loads, not the plug; the radio's top
-  stands 39–48 mm above the walls. Lift straight up.
+* **Tall radios on a plug:** the 25 mm deep pocket (0.35 mm clearance, ≤ ~1.6° tilt) takes side loads, not the plug;
+  the radio guides for 18 mm before the plug tip reaches its opening, and its top stands 65–74 mm above the dock.
+  Lift straight up.
 * **Older radios** (side USB-C, 89.75 × 34.83, or the original end-USB 43 × 92 boards) **do not fit** this dock.
 * **Hand-soldered plugs:** fine pitch, must be perpendicular; ~0.5 mm misalignment tolerance.
 * **Plug supply:** only 782 in stock at LCSC when checked. Buy spares early.
 * **12 V fallback:** 12 V-only chargers are deliberately not supported.
 * **Autorouted power layout:** Freerouting plus scripted widening of high-current tracks and GND pours on both
   layers. Review the buck hot loops in `previews/pcb_*.png` before ordering.
-* **Heat:** six radios charging upright in open-front pockets, no fan; deck and skirt are vented over the bucks. Watch
+* **Heat:** six radios charging upright in recessed pockets, no fan; the top and skirt are vented over the bucks. Watch
   radio temperature on the first full charge.
-* **While docked:** the front faces show through the pocket front windows (single-board level bar and charge LEDs,
-  Feather CHG LED and NeoPixel). The single-board switch/wheel sit in the right-wall notch, the Feather's above the
-  walls.
+* **While docked:** the single-board level bar and charge LEDs are well above the top; the Feather CHG / red LEDs and
+  NeoPixel show through the 20 mm sight windows (back row only from steeply above, see above). Both radios' switches
+  and wheels sit above the 25 mm pockets.
 * **Not validated:** HUSB238 negotiation, buck stability, SY6280 limits, thermals and plug mating are all untested.
 
 ## History
@@ -173,3 +184,8 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
   158.5 × 112.62 × 63.1 mm (fits 220 × 180), PCB 152.70 × 106.82 re-placed (LEDs, light pipe and C4 in the back-row
   gap 4–5; title and a screw in gap 5–6) and re-routed: ERC 0/0, DRC 0 err / 0 unconnected / 72 silk, CPL OK. Fit
   check 0 interferences, both radios, all six pockets; back-row Feather LEDs visible only from ~75° up (front row clear).
+* t121u (2026-11-24, still v1.0): flat dock (Victor: "Remove the tall guides on the dock. The dock should be flat with
+  recessed square holes that are 2-4cm deep"). 158.5 × 112.62 × **37.3** mm (was 63.1 tall), pockets recessed 25 mm,
+  20 mm sight windows (front) / sloped trenches (back) for the Feather LEDs, no side notch, raised housings dropped
+  (27 mm room under the top), shell printed upside down. PCB, pads and plug height unchanged (DRC/ERC/CPL as t120u).
+  Fit check 0 interferences, both radios, all six pockets, insertion sweep.
