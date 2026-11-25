@@ -18,7 +18,12 @@ include <case_params.scad>
 part = "assembly";  // top | bottom | spacer | print | assembly | closed | cutaway | top_raw | bottom_raw | spacer_raw | tunnels_raw
 
 // ---------------- dock interface (keep identical to the feather case / charging_dock geom.py) ----------------
-env_W          = 31.9;   // outside width  = dock pocket width  (both docked radios)
+env_W          = 31.9;   // outside width of the body
+// t122u: the Feather radio grew to 35.9 wide (room for its battery plug), so the dock pockets are 35.9 wide. This case
+// keeps its 31.9 body and gets a DOCK COLLAR: the lowest dock_collar_h of the case (the part that sits in the 25 mm
+// pocket, + 2 mm) is 35.9 wide, 2 mm extra on each side, with a 2 mm 45-degree step back to the body above it.
+dock_W         = 35.9;   // dock pocket width (both docked radios)
+dock_collar_h  = 27.0;   // from the bottom end face (pocket depth 25)
 env_T          = 33.86;  // outside thickness = dock pocket depth (both docked radios)
 usb_from_front = 6.62;   // USB-C centre below the front face (both docked radios)
 usb_mouth_in   = 1.0;    // USB-C mouth inside the bottom end face
@@ -67,6 +72,7 @@ assert(-bot_in <= holder_low - 0.3, "back face too close to the holder");
 assert(abs((in_y0-wall) - usb_mouth_y + usb_mouth_in) < 0.01, "USB-C mouth must be 1.0 inside the bottom end face");
 assert(abs((in_x1-in_x0+2*wall) - env_W) < 0.01, "outside width must equal env_W (dock pocket)");
 assert(abs(usb_x - (in_x0+in_x1)/2) < 0.01, "USB-C must be centred across the width");
+echo(str("Dock collar: ", dock_W, " wide for the lowest ", dock_collar_h, " mm (body ", env_W, ")"));
 echo(str("Case outer: ", in_x1-in_x0+2*wall, " W x ", in_y1-in_y0+2*wall, " L x ", Ht+Hb, " T mm"));
 echo(str("Front face Z ", Ht, ", ceiling ", top_in, ", floor top ", -bot_in, ", back face ", -Hb, ", holder low ", holder_low, " (air ", holder_low+bot_in, ")"));
 echo(str("USB-C centre X ", usb_x-(in_x0-wall), " of ", in_x1-in_x0+2*wall, " (centred), ", Ht-usb_zc, " below the front face, mouth ", usb_mouth_y-(in_y0-wall), " inside the bottom end face"));
@@ -76,6 +82,17 @@ module rrect(x0,y0,x1,y1,r,h) { hull() for (x=[x0+r,x1-r]) for (y=[y0+r,y1-r]) t
 module rounded_shell(z0,z1) {
   hull() for (x=[in_x0-wall+out_r, in_x1+wall-out_r]) for (y=[in_y0-wall+out_r, in_y1+wall-out_r])
     for (z=[z0+edge_r, z1-edge_r]) translate([x,y,z]) rotate_extrude($fn=48) translate([out_r-edge_r,0]) circle(r=edge_r,$fn=24);
+}
+module dock_collar(z0,z1) {
+  cx = (in_x0+in_x1)/2; hw = dock_W/2; yb = in_y0-wall;
+  hull() {
+    intersection() {
+      hull() for (x=[cx-hw+out_r, cx+hw-out_r]) for (y=[yb+out_r, yb+dock_collar_h+10]) for (z=[z0+edge_r, z1-edge_r])
+        translate([x,y,z]) rotate_extrude($fn=48) translate([out_r-edge_r,0]) circle(r=edge_r,$fn=24);
+      translate([-50, yb-1, z0-1]) cube([200, dock_collar_h+1, z1-z0+2]);
+    }
+    intersection() { rounded_shell(z0,z1); translate([-50, yb+dock_collar_h+(hw-env_W/2), z0-1]) cube([200, 0.01, z1-z0+2]); }
+  }
 }
 module cavity(z0=-bot_in, z1=top_in) { translate([0,0,z0]) rrect(in_x0,in_y0,in_x1,in_y1,in_r,z1-z0); }
 module rr2d(w,h,r) { r2=min(r,w/2,h/2); hull() for (sx=[-1,1]) for (sy=[-1,1]) translate([sx*(w/2-r2),sy*(h/2-r2)]) circle(r=r2); }
@@ -154,7 +171,7 @@ module jack_end_no_lip() { translate([in_x0+in_r, in_y1, -1]) cube([in_x1-in_x0-
 module top_half() {
   difference() {
     union() {
-      difference() { intersection() { rounded_shell(-Hb,Ht); translate([-50,-50,0]) cube([200,200,Ht+1]); } cavity(); }
+      difference() { intersection() { union() { rounded_shell(-Hb,Ht); dock_collar(-Hb,Ht); } translate([-50,-50,0]) cube([200,200,Ht+1]); } cavity(); }
       led_tunnels();
       for (s=screws) translate([s[0],s[1],pcb_t]) cylinder(r=boss_r, h=top_in-pcb_t+0.01);
     }
@@ -168,7 +185,7 @@ module top_half() {
 module bottom_half() {
   difference() {
     union() {
-      difference() { intersection() { rounded_shell(-Hb,Ht); translate([-50,-50,-Hb-1]) cube([200,200,Hb+1]); } cavity(-bot_in, 1); }
+      difference() { intersection() { union() { rounded_shell(-Hb,Ht); dock_collar(-Hb,Ht); } translate([-50,-50,-Hb-1]) cube([200,200,Hb+1]); } cavity(-bot_in, 1); }
       translate([0,0,-0.01]) difference() { lip_outline(lip_t, lip_h+0.01); translate([0,0,-1]) lip_outline(0, lip_h+3); jack_end_no_lip(); }
       for (sx=[-1,1]) for (y=snap_ys) translate([sx*(sx>0 ? in_x1+lip_t-0.01 : -(in_x0-lip_t+0.01)), y, lip_h/2]) mirror([sx>0 ? 0 : 1,0,0])
         hull() { translate([0,-snap_len/2,-0.5]) cube([0.01, snap_len, 1.0]); translate([snap_bump,-snap_len/2+0.3,-0.25]) cube([0.01, snap_len-0.6, 0.5]); }
