@@ -19,7 +19,8 @@ Stack (back to front): back shell floor | 18650 holder lying on the floor (centr
 import json, os
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE)
 # ---------------- dock interface (keep identical to radio_single_board openald_case.scad / charging_dock geom.py) -------
-W_OUT = 31.9              # outside width  (dock pocket width)
+W_OUT = 35.9              # outside width  (dock pocket width). t122u: 31.9 -> 35.9 (Victor: 2 mm more room beside the
+                          # Feather on the battery-connector side and the same on the other side, Feather still centred)
 T = 33.86                 # outside thickness (dock pocket depth front-back)
 DOCK_USB_FROM_FRONT = 6.62    # USB-C centre below the front face
 USB_MOUTH_IN = 1.0        # receptacle mouth inside the bottom end face
@@ -30,14 +31,18 @@ USB_RECESS = (13.0, 7.6, 3.0)   # cable-plug recess on the bottom end face (X ac
 USB_RECESS_GAP = 0.55           # recess floor this far outside the receptacle mouth
 # ---------------- this variant ----------------
 FLOOR_T, FRONT_T = 1.4, 1.6
-IN_W = W_OUT - 2*WALL                          # 27.9
+IN_W = W_OUT - 2*WALL                          # 31.9 (t122u; was 27.9): Feather edge to inner wall 4.52 on both sides
 IN_X0, IN_X1 = -IN_W/2, IN_W/2
 HOLDER_W, HOLDER_L, HOLDER_H = 20.9, 77.7, 21.31   # MPD BH-18650-PC (datasheet), PC pins 72.9 apart
 HOLDER_POCKET = 0.5                            # floor pocket the holder base sits in (locates it; glue optional)
 DECK_GAP = 0.4                                 # cell top to deck underside
 DECK_T = 1.0
 F_STANDOFF = 0.4                               # printed pads under the Feather's four holes
-FM_STANDOFF = 0.4                              # printed pads under the FM module's four corners
+FM_GAP_FRONT = 1.5                             # t122u: FM module FLIPPED, flat (solder) side toward the front face, held
+                                               #   this far below the ceiling by short front-shell standoffs (cut the
+                                               #   header pins / jack tails on that side to <= 1.2 mm)
+FM_PEG_D = 3.4                                 # centring pegs in its 3.8 holes (front standoffs and deck posts)
+FM_PEG_IN = 0.6                                #   each peg reaches this far into the 1.6 mm hole
 # Feather RP2040 (Adafruit 4884): 50.8 x 22.86 x 1.6, parts up to 5.5 mm (JST-PH) above its top face.
 F_LEN, F_W, F_T, F_PARTS_H = 50.8, 22.86, 1.6, 5.5
 # Z stack
@@ -57,8 +62,9 @@ assert abs((T - DOCK_USB_Z) - DOCK_USB_FROM_FRONT) < 0.01, (T - DOCK_USB_Z)
 FM_S, FM_T = 27.25, 1.6
 FM_HOLE_D, FM_HOLE_PITCH = 3.8, 20.0
 FM_JACK_D, FM_JACK_L, FM_JACK_OUT = 6.35, 14.0, 1.0
-FM_JACK_HOLE_D = 6.8                           # plug-overmold hole in the end wall
-assert Z_CEIL >= DECK_Z1 + FM_STANDOFF + FM_T + FM_JACK_D + 0.3 - 0.001, "ceiling too low for the FM jack"
+FM_JACK_HOLE_D = round(FM_JACK_D + 2*0.3, 2)   # t122u: 6.95 = jack barrel + 0.3 per side (was 6.8 + a 1.8 mm outer chamfer);
+                                               #   the barrel now reaches 1.5 mm into the end wall
+FM_SHIFT = 1.5                                 # t122u: module 1.5 mm toward the top end (case length unchanged)
 # Feather along Y: its USB-C mouth USB_MOUTH_IN inside the bottom outer face (Y = -WALL)
 DOCK_USB_MOUTH_Y = -WALL + USB_MOUTH_IN        # -1.0
 DOCK_USB_X = 0.0
@@ -76,40 +82,49 @@ def _f_far_y():
 F_Y0 = DOCK_USB_MOUTH_Y + json.load(open(os.path.join(ROOT,"ref","feather_rp2040_mech.json")))["usb_overhang"]
 F_Y1 = F_Y0 + F_LEN
 WHEEL = (IN_X1-4.3, round(F_Y1 + WHEEL_GAP + WHEEL_R, 2))
-FM_Y0 = round(WHEEL[1] + WHEEL_R + 0.5, 2)
-FM = dict(x0=-FM_S/2, x1=FM_S/2, y0=FM_Y0, y1=FM_Y0+FM_S, z0=DECK_Z1+FM_STANDOFF)
-FM["z1"] = FM["z0"]+FM_T
-IN_L = round(FM["y1"] + FM_JACK_OUT, 2)        # jack face flush with the inner face of the top end wall
+FM_Y0_BASE = round(WHEEL[1] + WHEEL_R + 0.5, 2)
+IN_L = round(FM_Y0_BASE + FM_S + FM_JACK_OUT, 2)   # inner length unchanged by t122u (jack face was flush with the inner face)
+FM_Y0 = round(FM_Y0_BASE + FM_SHIFT, 2)        # jack face now 1.5 into the 2.0 end wall, board edge 0.5 into it (relief slot)
+FM = dict(x0=-FM_S/2, x1=FM_S/2, y0=FM_Y0, y1=FM_Y0+FM_S, z1=Z_CEIL-FM_GAP_FRONT)
+FM["z0"] = FM["z1"]-FM_T
+assert FM["z0"] - FM_JACK_D > DECK_Z0 + 0.15, "jack hits the deck underside / ledges"
 L_OUT = IN_L + 2*WALL
 FM_CX, FM_CY = 0.0, FM["y0"]+FM_S/2
 FM_HOLES = [(FM_CX+sx*FM_HOLE_PITCH/2, FM_CY+sy*FM_HOLE_PITCH/2) for sy in (-1,1) for sx in (-1,1)]
-FM_JACK_AXIS_Z = FM["z1"] + FM_JACK_D/2
-# ASSUMED header: straight pins through the board, plastic + pins BELOW the board (wires soldered underneath), 2.54 mm
-# from the jack edge; the deck has a window there and nothing is below it down to the floor (the holder ends earlier).
-FM_HDR = dict(w=4*2.54, d=2.54, below=8.5, y=FM["y1"]-2.54)
+FM_JACK_AXIS_Z = FM["z0"] - FM_JACK_D/2       # jack under the flipped board (it dips through a notch in the deck)
+# t122u header: Victor's 4-pin header sticks out of the module's centre on the flat side, i.e. toward the front face
+# after the flip; he cuts it back to the 1.5 mm gap (modelled as 1.2 mm stubs over the centre of the module).
+FM_HDR = dict(w=4*2.54, d=2.54, stub=1.2, y=FM["y0"]+FM_S/2)
 # holder: centred, 2.5 mm from the bottom end wall (wire room at both ends), + end at the BOTTOM (near the Feather BAT pin)
 HOLDER.update(y0=2.5); HOLDER["y1"] = HOLDER["y0"]+HOLDER_L
-assert HOLDER["y1"] < FM_HDR["y"] - FM_HDR["d"]/2 - 1.0, "holder runs under the FM header"
+assert HOLDER["y1"] < FM["y1"] + FM_JACK_OUT - FM_JACK_L - 1.0, "holder runs under the FM jack"
 HOLDER_CX = 0.0
 HOLDER_PINS = [(HOLDER_CX, HOLDER["y0"]+2.4, "+"), (HOLDER_CX, HOLDER["y1"]-2.4, "-")]
 # power switch: SS-12F16 SPDT panel slide switch, plate in a groove inside the LEFT wall of the front shell, beside the
 # wheel (geometry is built for the right wall and mirrored in the SCAD)
 SW_L = 4.0                   # knob height above the plate (G4)
 # switch: Y so its plate groove ends before the FM module; Z so its body clears the Feather's far edge (it rides above it)
-SW_Y, SW_Z = round(FM_Y0 - 0.4 - 19.7/2 - 0.2, 2), F_Z1 + 0.4 + 5.7/2
+SW_Y, SW_Z = round(FM_Y0_BASE - 0.4 - 19.7/2 - 0.2, 2), F_Z1 + 0.4 + 5.7/2
 SW_PLATE = (19.7, 5.7, 0.5)
 SW_BODY = (11.0, 5.7, 5.0)
 SW_LUG_L, SW_LUG_P = 3.0, 3.0
 SW_ACT = (3.0, 3.0)
 SW_TRAVEL = 3.0
 SW_SKIN = 1.2                # outer skin in front of the plate -> G4 knob 2.8 mm proud
-SW_GROOVE = 0.7
-SW_RIB = 0.8
+# t122u (Victor: "not possible to insert ... It can have stands/studs where the holes are on the switch and I can melt
+# them down"): the plate sits in a 0.8 mm pocket in the inner face of the left wall (put in from inside, no groove to
+# slide along) on two heat-stake studs through its M2 holes (15 mm apart), melted over; deck ribs back up both plate ends.
+SW_HOLE_P = 15.0             # SS-12F16 plate holes: M2 x 0.4 tapped (minor dia ~1.57), 15 mm apart
+SW_STUD_D = 1.4              # heat-stake stud through the hole
+SW_STUD_OUT = 1.5            # stud length past the 0.5 plate (material for the melted head)
+SW_BACK_RIB = 2.0            # deck backing ribs at both plate ends (thickness across)
 # Feather LEDs / RESET seen through the front face (light tunnels from the ceiling down to just above each part)
 LED_TUN = dict(chg=(1.6, 0.6, 0.8), red=(1.6, 0.6, 0.8), neo=(2.6, 0.6, 1.3))   # bore d, wall, wall bottom above the Feather top
 RESET_TUBE = (1.6, 0.6, 2.7)                   # bore d, wall, tube bottom above the Feather top (KMR2 button is 1.9 tall)
-F_POST_D = 3.0                                 # front-shell hold-down posts on the Feather's four holes
-F_PEG_D = 2.2                                  # deck pegs through the Feather's holes (2.5 / 2.54)
+F_POST_D = 4.0                                 # front-shell hold-down posts on the Feather's four holes (t122u: 3.0 -> 4.0,
+F_POST_SOCKET = (2.7, 1.3)                     #   with a 2.7 x 1.3 socket for the peg tip)
+F_PEG_D = 2.2                                  # deck pegs through the Feather's 2.5 holes (0.15 clearance per side)
+F_PEG_OUT = 1.0                                # t122u: pegs stick 1.0 mm out of the Feather's top face (centring)
 FEATHER_DY = -0.9   # legacy: the case frame of ref/feather_rp2040_mech.json (feather_data.py); not a case position
 # ---------------- Feather geometry from Adafruit's board (scripts/feather_data.py -> ref/feather_rp2040_mech.json) -------
 def feather():

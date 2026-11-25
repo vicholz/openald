@@ -52,6 +52,25 @@ for g in ("feather","wheel","fm"):
     o=np.vstack(O); lo,hi=o.min(0),o.max(0)
     msg=f"  {g}: reaches past the inner wall (x {lo[0]:.2f}..{hi[0]:.2f} y {lo[1]:.2f}..{hi[1]:.2f} z {lo[2]:.2f}..{hi[2]:.2f}); swept volume x front shell {v:.3f}"
     print(msg+("  <-- BLOCKED" if v>0.01 else ": OK")); bad+= v>0.01
+# t122u: the switch goes in from inside the front shell (moved sideways onto its two heat-stake studs, knob through the
+# slot), and once staked it is lowered with the front shell past the deck's backing ribs
+print("== switch insertion (front shell, plate pushed sideways onto the studs) and backing ribs")
+swg=trimesh.boolean.union([ghost["switch_on"],ghost["switch_off"]],engine="manifold")
+heads=[]
+for s_ in (-1,1):   # melted stud heads, assumed <= 3.4 across and 1.0 tall on the plate's inner face
+    c=trimesh.creation.cylinder(radius=1.7,height=1.0,sections=24); c.apply_transform(trimesh.transformations.rotation_matrix(np.pi/2,[0,1,0]))
+    c.apply_translation([L.IN_X0-0.3+0.5,L.SW_Y+s_*L.SW_HOLE_P/2,L.SW_Z]); heads.append(c)
+ins=[]
+for dx in np.arange(0.0,L.SW_L+0.6,0.25):
+    m=ghost["switch_off"].copy(); m.apply_translation([dx,0,0]); ins.append(m)
+v=vol(trimesh.boolean.union(ins,engine="manifold"),prt["front"]); print(f"  plate slid sideways from {L.SW_L+0.5:.1f} mm inside onto the studs: swept volume x front shell {v:.3f}"+("  <-- BLOCKED" if v>0.01 else ": OK")); bad+= v>0.01
+st=trimesh.boolean.union([swg]+heads,engine="manifold"); dn=[]
+for dz in np.arange(0.0,12.0,0.5):
+    m=st.copy(); m.apply_translation([0,0,dz]); dn.append(m)
+v=vol(trimesh.boolean.union(dn,engine="manifold"),prt["deck"]); print(f"  staked switch + 1.0 mm melted heads lowered onto the deck ribs: swept volume x deck {v:.3f}"+("  <-- BLOCKED" if v>0.01 else ": OK")); bad+= v>0.01
+rib_gap=(L.IN_X0+0.1)-(L.IN_X0-(L.WALL-L.SW_SKIN)+L.SW_PLATE[2])
+print(f"  backing ribs stop {abs(rib_gap):.1f} mm behind the plate's inner face at both plate ends (switch cannot be pushed in further)")
+print(f"  Feather pegs: d {L.F_PEG_D} in the 2.5 holes, {L.F_PEG_OUT:.1f} mm above the Feather top; FM pegs: d {L.FM_PEG_D} in the {L.FM_HOLE_D} holes, {L.FM_PEG_IN} mm in from each side")
 print("== Feather LEDs / RESET: line of sight straight out through the front face")
 for k,(x,y) in list(L.feather_leds().items())+[("reset",L.feather_reset())]:
     z0=L.F_Z1+(1.0 if k=="neo" else 0.6 if k!="reset" else 1.9)+0.05

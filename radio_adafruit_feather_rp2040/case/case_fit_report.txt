@@ -1,7 +1,7 @@
 == printed parts: watertight / volume
-  front  watertight=True bodies=1 volume=9017 mm3 bounds=[[-15.95, -2.0, 23.61], [15.95, 96.71, 33.86]]
-  back   watertight=True bodies=1 volume=14592 mm3 bounds=[[-15.95, -2.0, 0.0], [15.95, 96.71, 25.51]]
-  deck   watertight=True bodies=1 volume=2590 mm3 bounds=[[-13.75, 0.2, 22.61], [13.75, 94.51, 25.56]]
+  front  watertight=True bodies=1 volume=9414 mm3 bounds=[[-17.95, -2.0, 23.61], [17.95, 96.71, 33.86]]
+  back   watertight=True bodies=1 volume=15487 mm3 bounds=[[-17.95, -2.0, 0.0], [17.95, 96.71, 25.51]]
+  deck   watertight=True bodies=1 volume=3612 mm3 bounds=[[-15.85, 0.2, 22.61], [15.75, 94.58, 31.71]]
 == ghost vs printed parts (mm3, > 0.01 = interference)
   holder     clear of all printed parts
   feather    clear of all printed parts
@@ -16,16 +16,21 @@
   front x deck: 0.000
   back x deck: 0.000
 == assembly path (front shell lowered straight down)
-  feather: reaches past the inner wall (x -4.47..4.47 y -1.00..-0.01 z 25.61..28.87); swept volume x front shell 0.000: OK
-  wheel: reaches past the inner wall (x 13.95..16.90 y 52.89..64.53 z 25.61..27.61); swept volume x front shell 0.000: OK
-  fm: stays inside the inner walls
+  feather: reaches past the inner wall (x -4.47..4.47 y -1.00..-0.02 z 25.61..28.87); swept volume x front shell 0.000: OK
+  wheel: reaches past the inner wall (x 15.95..18.90 y 52.89..64.54 z 25.61..27.61); swept volume x front shell 0.000: OK
+  fm: reaches past the inner wall (x -13.62..13.62 y 94.71..96.21 z 23.61..30.76); swept volume x front shell 0.000: OK
+== switch insertion (front shell, plate pushed sideways onto the studs) and backing ribs
+  plate slid sideways from 4.5 mm inside onto the studs: swept volume x front shell 0.000: OK
+  staked switch + 1.0 mm melted heads lowered onto the deck ribs: swept volume x deck 0.000: OK
+  backing ribs stop 0.4 mm behind the plate's inner face at both plate ends (switch cannot be pushed in further)
+  Feather pegs: d 2.2 in the 2.5 holes, 1.0 mm above the Feather top; FM pegs: d 3.4 in the 3.8 holes, 0.6 mm in from each side
 == Feather LEDs / RESET: line of sight straight out through the front face
   chg   at (6.03, 1.98): clear
   red   at (-5.99, 2.03): clear
   neo   at (5.45, 17.96): clear
   reset at (5.02, 12.02): clear
 == dock interface (must match the single-board case and charging_dock/scripts/geom.py)
-  outer W 31.90  L 98.71  T 33.86
+  outer W 35.90  L 98.71  T 33.86
   USB-C centre X -0.00 from the centre line, 6.62 below the front face, mouth 1.00 inside the bottom end face
   dock interface: MATCH
 INTERFERENCES: 0
