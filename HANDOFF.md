@@ -25,7 +25,7 @@ stock MI03 radio. **Since t116u (2026-11-24) the single-board and Feather radios
 | Subproject | Main files | One-line status |
 |---|---|---|
 | `radio_single_board/` | `kicad/openald.kicad_{sch,pcb,pro}`, `case/openald_case.scad`, `fab/` | v1.0; t116u: **26.9 × 84.75 mm 2-layer** PCB, J1 centred on the bottom edge; case 31.9 × 89.75 × 33.86; ERC 0 err (2 accepted warnings), DRC 0 err / 0 unconnected / 82 silk-only, CPL check OK, case fit 0 interferences |
-| `charging_dock/` | `kicad/openald-dock.*`, `case/openald_dock.scad`, `scripts/geom.py` | v1.0; t116u: radios stand upright on their bottom-end USB-C, 3 + 3 with the back row offset half a pitch, **187.15 × 112.62 × 63.1 mm** (fits 220 × 180), PCB 181.35 × 106.82 2-layer; ERC 0/0, DRC 0 err/72 silk-only, CPL check OK, dock fit 0 interferences (both radios, all six pockets, insertion sweep, Feather-LED line of sight); 4.6 mm pads, 6.0 mm insertion |
+| `charging_dock/` | `kicad/openald-dock.*`, `case/openald_dock.scad`, `scripts/geom.py` | v1.0; t116u: radios stand upright on their bottom-end USB-C; t120u: aligned 3 × 2 grid, **158.5 × 112.62 × 63.1 mm** (fits 220 × 180), PCB 152.70 × 106.82 2-layer; ERC 0/0, DRC 0 err/72 silk-only, CPL check OK, dock fit 0 interferences (both radios, all six pockets, insertion sweep, Feather-LED line of sight: front row clear, back row only from ~75° up); 4.6 mm pads, 6.0 mm insertion |
 | `radio_adafruit_feather_rp2040/` | `case/openald_feather_case.scad`, `scripts/layout.py` (no PCB: direct-mount wheel + switch) | v1.0; t116u: case 31.9 × 98.71 × 33.86, Feather flat at the bottom end, **its own USB-C is the dock port**, CHG / red / NeoPixel LEDs through front-face holes, wheel right between Feather and FM module, switch left; fit 0 interferences, dock interface MATCH; FM header/jack details assumed |
 | `mi03_case/` | `mi03_case.scad`, `stl/` | CAD only; unchanged; side USB-C; **not dock-compatible** |
 
@@ -47,7 +47,7 @@ stock MI03 radio. **Since t116u (2026-11-24) the single-board and Feather radios
 5. **Don't claim hardware validation.** Everything is datasheet/CAD-checked only.
 6. Dock: 6 radios, **~1 in (25.4 mm) between radios**, **one USB-C PD input at the rear** powers all six,
    footprint as compact as possible (fits a 220 × 180 bed), radios **stand USB-C-end down in 2 in (50.8 mm) deep
-   pockets** (t116u; the side-lying variant is superseded), front faces / LEDs visible while docked.
+   pockets** (t116u; the side-lying variant is superseded), aligned 3 × 2 grid (t120u); front-row faces / LEDs visible while docked, back row only from above.
 7. Both dockable radios share `charging_dock/DOCK_INTERFACE.md`; length may differ (Feather 98.71).
 8. Dock files live in their own folder, separate from the radio.
 
@@ -84,6 +84,7 @@ Dates are 2026, America/Los_Angeles. "rev" names are the pre-release names; the 
 | **Single board back to 2 layers, 3 mm wider** (2026-11-24, still v1.0) | Victor: "Make the single board and all the cases slightly bigger if it helps to keep the board 2 layers." Board widened (length kept) and re-routed on 2 layers with GND routed as copper plus F/B pours; 24.5 and 25.0 mm left 3 unconnected (24.5 tried twice), **25.5 × 84.75 routed completely** → DRC 0 errors / 0 unconnected / 87 silk-only, ERC 0/2, CPL OK. `placement.py` stretches the 22.5 mm layout (`BOARD_W`, env `OPENALD_BOARD_W`): J1 fixed on the left edge, SW1/SW3 move with the right edge, holder and screw points centred, the rest scaled. `gnd_fanout.py` and the In1/In2 handling removed; gerbers back to F/B; 5-pc PCB estimate back to $2. Case **27.5 → 30.5 wide**, length/thickness/USB-C position unchanged, fit 0 interferences. **Dock unchanged:** the pockets are length × thickness (89.75 × 34.83 + 0.35/side) and width is only the height above the floor, so per-radio widths need no pocket change; dock fit re-run with the 30.5 case (0 interferences, plug gap 0.32, insertion 6.0). MI03 case unchanged (its board fixes it; it already defines the shared length/thickness/USB-C position). |
 | **MI03 dropped from the dock** (2026-11-24, still v1.0) | Victor: "The mi03 version doesn't need to work with the dock." `check_dock_fit.py`, `geom.py` (`MOUTHS`/`WIDTHS`), `plot_insertion.py`, the dock previews and docs now cover only the single-board and Feather radios; the MI03 README says it is not dock-compatible. Dock geometry, outer size (216.9 × 174.79 × 26.3) and PCB unchanged: both remaining radios use the same 89.75 × 34.83 footprint and USB-C position, so the MI03 imposed nothing extra. Dock fit 0 interferences. |
 | **t116u: USB-C on the bottom end, upright dock again** (2026-11-24, still v1.0) | Victor: "All boards except for the MI03 should have the USB-C connector in the same location at the bottom so they can be placed into the charging station for charging. Update the design of the single board if needed and board placement of the other cases as needed. Try to keep the single board 2 layer, and try to keep the feather position where its onboard LEDs can be seen through case holes." (+ "The mi03 version doesn't need to work with the doc".) **Shared dock interface:** 31.9 × 33.86 end footprint, USB-C in the bottom end face, centred, 6.62 behind the front face, mouth 1.0 inside. **Single board:** 26.9 × 84.75, 2-layer, J1 centred on the bottom edge, full re-place + re-route (983 segments, 146 vias), ERC 0/2, DRC 0 err / 0 unconnected / 82 silk, CPL OK, fab regenerated; case 31.9 × 89.75 × 33.86, fit 0. **Feather:** lies flat components-up at the bottom end, its own USB-C = dock port (breakout and Schottky removed, charging via its MCP73831 at 200 mA), CHG / red / NeoPixel LEDs and RESET under light tunnels to front-face holes (ray check clear), wheel on the right between Feather and FM module, switch on the left, FM module at the top end; battery to the BAT/GND pads, FM to 3V3/GND/SDA/SCL pads (no JST/QT plugs: no room); case 31.9 × 98.71 × 33.86, fit 0, wiring diagram + schematic (ERC 0/0), BOM, pin map, README updated. **Dock:** upright pockets 50.8 deep with a front window (2.5 lip, 5 mm corner returns) and a right-wall notch for the single board's knob/wheel; 3 + 3, back row offset 28.65 so back-row radios show through front-row gaps; 187.15 × 112.62 × 63.1 (fits 220 × 180); PCB 181.35 × 106.82 re-placed (slot switches in the Y-channel, bucks in the front-row gaps, LEDs/C4 front-left, input chain rear behind the slot 5/6 gap) and re-routed, ERC 0/0, DRC 0 err / 72 silk, CPL OK; `check_dock_fit.py` now also sweeps the insertion path, adds the radios' protruding knobs/wheels and ray-tests the Feather LEDs (clear at 15–45° upward in all slots). |
+| **t120u: dock slots in an aligned grid** (2026-11-24, still v1.0) | Victor: "Yes extra length is ok. One change for the dock, make the slots so they are in a grid and not offset." Feather length 98.71 approved. **Dock:** 3 × 2 aligned grid (STAGGER 0), 158.5 × 112.62 × 63.1 (fits 220 × 180; was 187.15 wide); PCB 152.70 × 106.82 re-placed (LEDs, light pipe, C4 and a screw in back-row gap 4–5; title + screw in gap 5–6; bucks still in the front-row gaps; input chain behind gap 5–6) and re-routed (826 tracks, 76 vias): ERC 0/0, DRC 0 err / 0 unconnected / 72 silk, CPL OK. Fit check 0 interferences, both radios, all six pockets. **Feather LEDs:** slots 1–3 clear at 0–75°; slots 4–6 blocked 0–60°, visible from ~75° up (front-row radios in the way). Not fixed (not asked); options: a stepped back row (≈ 35 mm raise for a 45° view) or a deeper row gap (≈ +35 mm). |
 | **Wheel press = battery check; bar centred** (2026-11-11, still v1.0) | Victor: remove the separate battery-check button and use the wheel press; centre the level bar and move it up for the dock. **SW2 EVQ-P7A01P (C79167) removed** (footprint, 3D model, case hole, printed plunger). The wheel's push switch S now drives the gate of new **P-FET Q4 AO3401A (C15127)** with **R25 1M (C22935)** pull-up to VBAT; Q4 replaces SW2 between VBAT and VBTN, so D2/D10/R6/R7 work as before (switch off: hold the wheel in → MCU powered → bar shows level). S left PD4 (it now sits at VBAT); the press is read as **BTN_SENSE high on PC1** (wake PCINT9); PD4 spare. Mapping: short press = battery check 3 s, hold = seek, push-and-turn = tune. **Bar: D6/D5/D1 at x = 19.0 (centreline), y = 6.1/8.9/14.0**, windows evenly spaced at y = 6.1/8.9/11.7 (D1 tunnel slanted, it has to skip the holder peg hole at (19, 11.34)); window centres 32.6/29.8/27.0 mm above the dock rim. FB1/FB2 moved to (24.0, 10.4/12.4). Re-routed. −$0.10/board parts, one fewer extended-part fee. Backup of the pre-change folder: `/workspace/openald-pre-button-removal-backup` on the build box (not in git; the previous commit 9509ac4 has it too). |
 
 ## 4. Single-board radio (radio_single_board) — key design facts
@@ -167,13 +168,13 @@ PD0/PD1 UART to CH340K (1k on TX) · D2/PD2 ENC_A. Spare: PB0, PB2, PB6, PB7, PC
   1/2/4 and 3/5/6) → **SY6280AAC per slot** (C55136, ~1.45 A limit, 1.09–1.81 A) → vertical plug VBUS; 22k Rp on CC.
 * **Charger requirement: USB-C PD ≥ 45 W offering 20 V ≥ 2.25 A or 15 V ≥ 3 A.** Bucks enable at ~11.2–13.1 V, so
   5 V/9 V never start them (red LED, dock off). **12 V-only chargers are unsupported.** Worst case 6 × ~0.95 A × 5.1 V ≈ 29 W.
-* Mechanics (t116u): **187.15 × 112.62 × 63.1 mm** (fits a 220 × 180 bed), radios **stand upright on the bottom-end
-  USB-C**, 3 + 3 with the back row offset 28.65 so back-row radios are seen between front-row radios, 25.4 mm gaps,
+* Mechanics (t120u): **158.5 × 112.62 × 63.1 mm** (fits a 220 × 180 bed), radios **stand upright on the bottom-end
+  USB-C**, aligned 3 × 2 grid (back row directly behind the front row), 25.4 mm gaps,
   pockets 31.9 × 33.86 + 0.35/side, walls 50.8 above the floor (1.5 mm chamfer), front window above a 2.5 mm lip
   between 5 mm corner returns, right-wall notch (8 deep above 30) for the single board's knob/wheel, floor Z 12.3, deck
-  14.8, pads 4.6, insertion 6.0. PCB 181.35 × 106.82: slot switches in the Y-channel between the rows, bucks in the
-  front-row gaps, status LEDs + light pipe + C4 front-left, input chain in the rear strip behind the slot 5/6 gap;
-  C4 / C19 / C39 under raised housings. (Was 216.9 × 174.79 × 26.3 side-lying, before that 191.8 × 111.7 × 62.5 upright.)
+  14.8, pads 4.6, insertion 6.0. PCB 152.70 × 106.82: slot switches in the Y-channel between the rows, bucks in the
+  front-row gaps, status LEDs + light pipe + C4 in the back-row gap 4–5, title + screw in gap 5–6, input chain in the rear strip behind the slot 5/6 gap;
+  C4 / C19 / C39 under raised housings. (Was 187.15 × 112.62 staggered (t116u), 216.9 × 174.79 × 26.3 side-lying, before that 191.8 × 111.7 × 62.5 upright.)
   Geometry source of truth: `charging_dock/scripts/geom.py`. Interface: `DOCK_INTERFACE.md`.
 * **Risks/TODO:** vertical plug **C55200592 only 782 in stock** (buy spares; hand-soldered, 0.8 mm pitch, must be
   perpendicular); **plug height**: drawing says 11.6 mm (used) and 12.5 mm overall — measure; if taller, set `PLUG_H` and
@@ -199,8 +200,8 @@ each                jlc_cpl_fit.py --check -> "correction table: OK"
 ALL CHECKS PASSED
 ```
 **Case fit:** `tools/check_all.sh --case` (or each `build_case.sh`) → `INTERFERENCES: 0` (radio: closest to tunnel
-walls Q1 0.25 mm; dock (t116u): outer 187.15 × 112.62 × 63.1, single-board and Feather radios upright in all six
-pockets incl. knobs/wheels and the insertion sweep, plug gaps 0.32 / 0.32, Feather LEDs clear at 15–45° up; the MI03
+walls Q1 0.25 mm; dock (t120u): outer 158.5 × 112.62 × 63.1, aligned grid, single-board and Feather radios upright in all six
+pockets incl. knobs/wheels and the insertion sweep, plug gaps 0.32 / 0.32, Feather LEDs clear in front-row slots 1–3, back-row slots 4–6 visible only from ~75° up (reported as info); the MI03
 is not checked: not dock-compatible); feather `INTERFERENCES: 0`, LED/RESET line of sight clear and
 `dock interface: MATCH` (no PCB checks: the Feather variant has no PCB). Takes ~3 min (radio),
 longer for the dock; rewrites STLs/previews (diffs are mesh-ordering/timestamp noise).
@@ -262,7 +263,7 @@ side walls), push travel and click with the case closed, glue joint after many p
 ## 9. Open decisions / TODOs
 * Write firmware for the single board (MiniCore/Arduino per §4). Feather: flash and test `firmware/openald_feather` (written 2026-11-12, compile-checked only).
 * Build and run §8; record measured values back into the READMEs (keep v1.0, add history notes).
-* Dock: review autorouted power layout; decide plug sourcing (buy spares now); maybe a light pipe / angle for back-row bars.
+* Dock: review autorouted power layout; decide plug sourcing (buy spares now); back-row visibility in the aligned grid (see t120u item).
 * Optional: generic (non-JLC) placement output for other assemblers.
 * Optional radio tweaks noted in reviews: RESET clamp Schottky if uploads are flaky; R3 2.4k for laptop USB charging;
   LED colour alternatives (KT-0603R C2286 basic).
@@ -270,8 +271,10 @@ side walls), push travel and click with the case closed, glue joint after many p
 * Repo is private; Victor may make it public.
 * t116u open items: measure the FM module header/jack and edit `layout.py`; check the Feather LED tunnels light up
   usefully (brightness, bleed); print one radio of each kind + one dock pocket to test the upright fit, the right-wall
-  notch over the single board's knob/wheel, plug insertion and plug side load; confirm the Feather's 98.71 mm length
-  is acceptable (it is longer than the single board because the wheel sits between the Feather and the FM module).
+  notch over the single board's knob/wheel, plug insertion and plug side load; Feather length 98.71 mm approved by Victor (t120u).
+* t120u open item: back-row (slots 4–6) radio front faces / Feather LEDs are hidden behind the front row in the
+  aligned grid (visible only from ~75° up). Decide whether that is fine or add a stepped back row (≈ 35 mm raise for
+  a 45° view) or a deeper row gap; not built.
 
 ## 10. Research summaries (estimates, dated 2026-11-10/11; re-check before relying on them)
 **Assembly vendors (5 boards, shipped to California):** JLCPCB Economic is the cheapest that could be priced with
