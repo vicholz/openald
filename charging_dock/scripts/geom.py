@@ -1,5 +1,6 @@
-"""OpenALD Dock v1.0 (t120u 2026-11-24: aligned 3 x 2 grid, radios STANDING UPRIGHT on their bottom-end USB-C;
-the t116u half-pitch back-row offset was removed at Victor's request) - single source of truth for the dock geometry (mm).
+"""OpenALD Dock v1.0 (t121u 2026-11-24: FLAT dock - a closed box with six RECESSED pockets, 25 mm deep, in an aligned
+3 x 2 grid; radios stand upright on their bottom-end USB-C. t120u had 50.8 mm pocket walls on a low deck, t116u a
+half-pitch back-row offset) - single source of truth for the dock geometry (mm).
 Dock frame: X right, Y toward the back, Z up; origin = front-left-bottom corner of the case.
 KiCad board frame: kx = X - PCB_X0, ky = PCB_Y1 - Y (Y down, origin = board top-left = rear-left)."""
 # ---- radio envelope (see ../DOCK_INTERFACE.md) ----
@@ -23,19 +24,22 @@ STAGGER = 0.0                    # t120u: aligned grid (t116u had the front row 
 OUT_W = 2*SIDE + STAGGER + COLS*RL + (COLS-1)*GAP     # 158.5
 OUT_D = FRONT + BACK + ROWS*RT + (ROWS-1)*GAP         # 112.62
 WALL = 2.0                       # outer skirt wall
-# ---- pockets (upright tubes; Victor's rule: 2 in deep) ----
+# ---- pockets (t121u: recessed into a flat top; Victor: "The dock should be flat with recessed square holes that are
+# 2-4cm deep to act as a guide") ----
 CLR_GUIDE = 0.35                 # radio-to-wall clearance per side
 POCKET_WALL = 2.0
-FIN_H = 50.8                     # pocket walls rise this far above the pocket floor (2 in)
-FRONT_WALL_H = 2.5               # deck top above the pocket floor; the pocket front wall is open above it except
-FRONT_RETURN = 5.0               #   for a FRONT_RETURN-wide return at each front corner, so the front face (and the
-                                 #   Feather's CHG / red LEDs 4 mm and NeoPixel 20 mm above the floor) stays visible
-CHAMFER = 1.5                    # lead-in on the fin tops
-# the single-board radio's slide-switch knob (2.8 proud) and wheel (0.35 proud) stick out of its RIGHT side face
-# 3.5-6.3 mm behind the front face, from 36 mm above the floor up: the right pocket wall is cut away in front of
-# SIDE_NOTCH_D (behind the front face) above SIDE_NOTCH_Z (above the pocket floor). The Feather's switch / wheel sit
-# above the 50.8 mm walls.
-SIDE_NOTCH_D, SIDE_NOTCH_Z = 8.0, 30.0
+POCKET_DEPTH = 25.0              # flat top above the pocket floor (pad top). 25 mm: the radio is guided for 18 mm before
+                                 #   the plug tip enters its opening and stands 25 mm deep (tilt <= ~1.6 deg in the clearance)
+CHAMFER = 1.5                    # lead-in on the pocket rims
+# Sight windows (the Feather's CHG / red LEDs sit 4 mm and its NeoPixel 20 mm above the floor, all below the top):
+# each pocket's front wall has a WIN_W wide window from WIN_Z above the floor up through the top. Front row: the window
+# runs straight out through the dock's front face. Back row: it opens into a closed trench in the top between the rows
+# whose floor rises toward the front at TRENCH_ANG (ends before the front-row pocket).
+WIN_W = 20.0                     # centred on the pocket (the LEDs are at -6.0 / +6.0 / +5.4 from the radio centre)
+WIN_Z = 2.0                      # window sill above the pocket floor (LED centres 4.0 / 20.0)
+TRENCH_ANG = 50.0
+# No side notch: the single-board radio's switch knob / wheel start ~36 mm above the floor and the Feather's are higher
+# still, all above the 25 mm pocket (checked by check_dock_fit.py).
 # ---- Z stack ----
 BASE_T = 2.0                     # base tray floor
 STANDOFF = 4.1                   # 2026-11-12: was 5.0; -0.9 so the +0.9 pad keeps the outer height and pocket depth
@@ -46,8 +50,7 @@ PAD_T = 4.6                      # floor pad thickness (2026-11-24: 4.0 -> 4.6 f
 FLOOR_Z = PCB_Z1 + PAD_T         # 12.3 radio rests here
 PLUG_H = 11.6                    # HX TYPE C-M 16P plug height above the PCB (drawing 11.60; see README risk)
 PLUG_TOP = PCB_Z1 + PLUG_H       # 19.3
-TOP_Z = FLOOR_Z + FRONT_WALL_H   # 14.8 deck top
-FIN_Z = FLOOR_Z + FIN_H          # 63.1 top of the pocket walls (overall dock height)
+TOP_Z = FLOOR_Z + POCKET_DEPTH   # 37.3 flat top = overall dock height
 INSERTION = PLUG_TOP - (FLOOR_Z + MOUTH_UP)       # 6.0 past the receptacle mouth (both radios)
 # USB Type-C (spec R2.x, sec. 3.2): receptacle effective shell length 6.20 +/- 0.20 = plug travel past the mouth at full
 # seat (plug shell 6.65 +/- 0.10, so a seated plug's base stands ~0.45 outside the mouth). Design target: 6.0, i.e. 0-0.4 mm
@@ -75,6 +78,6 @@ def d(kx, ky): return (kx + PCB_X0, PCB_Y1 - ky)                       # KiCad -
 SLOTS = [(c, r) for r in range(ROWS) for c in range(COLS)]   # slot n = index+1: 1-3 front row L->R, 4-6 back row L->R
 POCKET_OUT = CLR_GUIDE + POCKET_WALL                  # pocket tube outer face beyond the radio footprint
 if __name__ == "__main__":
-    print("outer %.2f x %.2f x %.2f (deck %.2f)" % (OUT_W, OUT_D, FIN_Z, TOP_Z), "pcb %.2f x %.2f" % (PCB_W, PCB_H), "insertion %.2f" % INSERTION)
+    print("outer %.2f x %.2f x %.2f (pocket depth %.2f)" % (OUT_W, OUT_D, TOP_Z, POCKET_DEPTH), "pcb %.2f x %.2f" % (PCB_W, PCB_H), "insertion %.2f" % INSERTION)
     for r in MOUTHS: print(r, "insertion %.2f" % insertion(r))
     for n, (c, r) in enumerate(SLOTS, 1): print(n, usb_xy(c, r), k(*usb_xy(c, r)))

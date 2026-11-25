@@ -1,6 +1,6 @@
 #!/bin/bash
 # Regenerate dock_params.scad from the PCB layout, export print STLs, run the fit check (all three radios), render previews.
-# t120u (2026-11-24): aligned 3 x 2 grid of upright pockets, radios standing on their bottom-end USB-C. Needs openscad, python3 trimesh+manifold3d+scipy,
+# t121u (2026-11-24): flat dock, 6 pockets recessed 25 mm (aligned 3 x 2 grid), radios standing on their bottom-end USB-C. Needs openscad, python3 trimesh+manifold3d+scipy,
 # KiCad 9 pcbnew (part boxes) and matplotlib. The radio cases are exported from their own SCAD files by the fit check.
 set -e
 cd "$(dirname "$0")"

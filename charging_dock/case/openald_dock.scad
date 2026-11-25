@@ -1,11 +1,13 @@
 // OpenALD Dock v1.0 - 6-slot charging dock case.
-// t116u/t120u (2026-11-24): aligned grid of 3 columns x 2 rows, radios STAND UPRIGHT on their bottom-end USB-C (front
-// face toward you) in 50.8 mm deep pockets (t120u removed the t116u half-pitch back-row offset). The dockable OpenALD radios (single-board, Feather; NOT the MI03) share the 31.9 x 33.86 end footprint and
-// the USB-C position (centred across the width, 6.62 behind the front face, mouth 1.0 inside the bottom end face).
-// The pocket front wall is open above the deck except for 5 mm corner returns, so the front faces (and the Feather's
-// CHG / NeoPixel LEDs) stay visible.
+// t121u (2026-11-24): FLAT dock. A closed box 158.5 x 112.62 x 37.3 with six pockets RECESSED 25 mm into its flat top,
+// aligned 3 x 2 grid; radios STAND UPRIGHT on their bottom-end USB-C (front face toward you). (t116u/t120u had 50.8 mm
+// pocket walls on a low deck.) The dockable OpenALD radios (single-board, Feather; NOT the MI03) share the 31.9 x 33.86
+// end footprint and the USB-C position (centred across the width, 6.62 behind the front face, mouth 1.0 inside the
+// bottom end face). Each pocket's front wall has a 20 mm sight window down to 2 mm above the floor so the Feather's
+// CHG / red / NeoPixel LEDs stay visible: front row straight out through the dock front, back row through a sloped
+// trench in the top between the rows.
 // Dock frame: X right, Y toward the back, Z up, origin = front-left-bottom corner. All mm.
-// Parts: part="base" | "shell" (print upright, skirt down) | "pad" (6x, one per pocket; pad_index 0-5) | "pads" (all 6)
+// Parts: part="base" | "shell" (print upside down, flat top on the bed) | "pad" (6x, one per pocket; pad_index 0-5) | "pads" (all 6)
 //        "assembly" | "exploded" | "print" | "section" | raw parts for the fit check: shell_raw, base_raw, pads_raw, radios, plugs
 include <dock_params.scad>
 part = "assembly";
@@ -26,65 +28,68 @@ module rrect(x0, y0, w, d, r, h) { translate([x0, y0, 0]) linear_extrude(h) offs
 module rbox_c(cx, cy, w, d, r, h) { rrect(cx - w/2, cy - d/2, w, d, r, h); }
 // radio footprint grown by o (corner radius = radio edge radius + o)
 module rfoot(i, o, h) { rrect(radios[i][0] - o, radios[i][1] - o, RL + 2*o, RT + 2*o, EDGE_R + o, h); }
-// ---------------------------------------------------------------- top shell
+// ---------------------------------------------------------------- top shell (t121u: flat box, recessed pockets)
+TR_RUN = (TOP_Z - FLOOR_Z - WIN_Z) / tan(TRENCH_ANG);   // back-row trench: horizontal run of its sloped floor
+WIN_WALL = 1.6;          // window / trench side walls and floor
+SOLID_Z0 = FLOOR_Z + TUBE_GAP;                          // window blocks and trench walls stay above the floor pads
 module pocket_cavity(i) {
-    x0 = radios[i][0]; y0 = radios[i][1];
-    translate([0, 0, FLOOR_Z - 0.01]) rfoot(i, CLR_GUIDE, FIN_Z - FLOOR_Z + 1);
-    // lead-in chamfer on the fin tops (back and end walls)
-    hull() { translate([0, 0, FIN_Z - CHAMFER]) rfoot(i, CLR_GUIDE, 0.01); translate([0, 0, FIN_Z]) rfoot(i, CLR_GUIDE + CHAMFER, 0.01);
-             translate([0, 0, FIN_Z + 1]) rfoot(i, CLR_GUIDE + CHAMFER, 0.01); }
-    // lead-in chamfer on the low front wall (in the front window only)
-    intersection() {
-        hull() { translate([0, 0, TOP_Z - 1.0]) rfoot(i, CLR_GUIDE, 0.01); translate([0, 0, TOP_Z]) rfoot(i, CLR_GUIDE + 1.0, 0.01);
-                 translate([0, 0, TOP_Z + 0.5]) rfoot(i, CLR_GUIDE + 1.0, 0.01); }
-        translate([x0 + FRONT_RETURN + 1, y0 - PW - 1, 0]) cube([RL - 2*FRONT_RETURN - 2, PW + 1 + 3, 100]);
+    translate([0, 0, FLOOR_Z - 0.01]) rfoot(i, CLR_GUIDE, TOP_Z - FLOOR_Z + 1);
+    // lead-in chamfer on the pocket rim
+    hull() { translate([0, 0, TOP_Z - CHAMFER]) rfoot(i, CLR_GUIDE, 0.01); translate([0, 0, TOP_Z]) rfoot(i, CLR_GUIDE + CHAMFER, 0.01);
+             translate([0, 0, TOP_Z + 1]) rfoot(i, CLR_GUIDE + CHAMFER, 0.01); }
+}
+// sight window in the pocket's front wall (YZ profile extruded along X, width w centred on the pocket)
+module xext(cx, w, pts) { translate([cx - w/2, 0, 0]) rotate([90, 0, 90]) linear_extrude(w) polygon(pts); }
+module win_solid(i) {    // material around the window / trench (inside the hollow shell)
+    cx = radios[i][0] + RL/2; yf = radios[i][1] - CLR_GUIDE;
+    if (i < 3) xext(cx, WIN_W + 2*WIN_WALL, [[WALL - 0.01, SOLID_Z0], [yf + 0.01, SOLID_Z0], [yf + 0.01, TOP_Z - 0.01], [WALL - 0.01, TOP_Z - 0.01]]);
+    else intersection() {
+        xext(cx, WIN_W + 2*WIN_WALL, [[yf + 0.01, SOLID_Z0], [yf + 0.01, TOP_Z - 0.01],
+                                      [yf - TR_RUN - 3.5, TOP_Z - 0.01], [yf - TR_RUN - 3.5, TOP_Z - 2.0], [yf, FLOOR_Z + WIN_Z - 2.6]]);
+        translate([0, 0, SOLID_Z0]) cube([OUT_W, OUT_D, 100]);
     }
 }
-module fins(i) {      // pocket walls above the deck: back, both sides and 5 mm front corner returns
-    x0 = radios[i][0]; y0 = radios[i][1];
-    difference() {
-        translate([0, 0, TOP_Z - 0.01]) rfoot(i, PW, FIN_Z - TOP_Z + 0.01);
-        // front window
-        translate([x0 + FRONT_RETURN, y0 - PW - 1, TOP_Z]) cube([RL - 2*FRONT_RETURN, PW + 1 + EDGE_R, FIN_Z]);
-        // right-wall notch for the single-board radio's switch knob and wheel (open at the top and the front)
-        translate([x0 + RL - 1, y0 - PW - 1, FLOOR_Z + SIDE_NOTCH_Z]) cube([PW + 2, PW + 1 + SIDE_NOTCH_D, FIN_Z]);
-    }
+module win_cut(i) {
+    cx = radios[i][0] + RL/2; yf = radios[i][1] - CLR_GUIDE; zs = FLOOR_Z + WIN_Z;
+    if (i < 3) xext(cx, WIN_W, [[-1, zs], [yf + 1, zs], [yf + 1, TOP_Z + 1], [-1, TOP_Z + 1]]);
+    else xext(cx, WIN_W, [[yf + 1, zs], [yf + 1, TOP_Z + 1], [yf - TR_RUN - 1/tan(TRENCH_ANG), TOP_Z + 1], [yf, zs]]);
 }
 module shell_raw() {
     difference() {
         union() {
-            // skirt + deck
+            // skirt + flat top
             difference() {
                 translate([0, 0, BASE_T + SKIRT_GAP]) rrect(0, 0, OUT_W, OUT_D, SHELL_R, TOP_Z - BASE_T - SKIRT_GAP);
                 translate([0, 0, BASE_T]) rrect(WALL, WALL, OUT_W - 2*WALL, OUT_D - 2*WALL, SHELL_R - WALL, TOP_Z - BASE_T - DECK_T);
             }
-            // pocket walls from just above the pad to the deck, and the fins above it
-            for (i = [0:5]) { translate([0, 0, FLOOR_Z + TUBE_GAP]) rfoot(i, PW, TOP_Z - FLOOR_Z - TUBE_GAP); fins(i); }
+            // pocket walls from just above the pad up to the top
+            for (i = [0:5]) translate([0, 0, FLOOR_Z + TUBE_GAP]) rfoot(i, PW, TOP_Z - FLOOR_Z - TUBE_GAP);
+            for (i = [0:5]) win_solid(i);
             // screw bosses (clamp the PCB onto the base standoffs)
             for (h = holes) translate([h[0], h[1], PCB_Z1]) cylinder(d = BOSS_D, h = TOP_Z - PCB_Z1 - 0.5);
             // status-LED light pipe
             translate([led_pipe[0], led_pipe[1], PIPE_Z0]) cylinder(d = PIPE_OD, h = TOP_Z - PIPE_Z0 - 0.5);
-            // raised housings over parts taller than the room under the deck
-            for (t = tall) translate([0, 0, TOP_Z - DECK_T]) rbox_c(t[0], t[1], t[2] + 2*(HOUSING_CLR + HOUSING_T), t[3] + 2*(HOUSING_CLR + HOUSING_T), 1.5,
-                                                                   PCB_Z1 + t[4] + HOUSING_CLR + HOUSING_T - (TOP_Z - DECK_T));
         }
-        for (i = [0:5]) pocket_cavity(i);
+        for (i = [0:5]) { pocket_cavity(i); win_cut(i); }
         for (h = holes) translate([h[0], h[1], PCB_Z1 - 0.01]) cylinder(d = INSERT_D, h = INSERT_L);
         translate([led_pipe[0], led_pipe[1], PIPE_Z0 - 1]) cylinder(d = PIPE_ID, h = 50);
+        // clearance around the tallest PCB parts (the room under the top is 27 mm; no raised housings needed any more)
         for (t = tall) translate([0, 0, PCB_Z1 - 1]) rbox_c(t[0], t[1], t[2] + 2*HOUSING_CLR, t[3] + 2*HOUSING_CLR, 1.0, t[4] + HOUSING_CLR + 1);
         // rear USB-C input opening (fits any USB-C cable overmold up to 12.4 x 6.5)
         translate([usb_in[0], OUT_D + 0.1, usb_in_z]) rotate([90, 0, 0]) translate([-6.5, -3.8, 0]) linear_extrude(WALL + 1) offset(r = 3) offset(delta = -3) square([13, 7.6]);
-        // deck vents over the two buck converters (front-row gaps; clear of the 470 uF housings in front of them)
+        // top vents over the two buck converters (front-row gaps)
         for (b = bucks) for (dx = [-6, -2, 2, 6])
             translate([b[0] + dx - 1.0, b[1] - 3, TOP_Z - DECK_T - 1]) cube([2.0, 12, DECK_T + 2]);
         // side skirt vents (low, near the PCB), clear of the Y-channel screws
         for (y = [20:8:44]) for (x = [-1, OUT_W - WALL - 1]) translate([x, y, BASE_T + 3]) cube([WALL + 2, 3, 7]);
         for (y = [60:8:100]) for (x = [-1, OUT_W - WALL - 1]) translate([x, y, BASE_T + 3]) cube([WALL + 2, 3, 7]);
-        // engraved labels on the deck: title in the rear strip, slot numbers in the Y-channel beside each plug
-        translate([10, OUT_D - WALL - 7.0, TOP_Z - 0.6])
-            linear_extrude(1) text("OpenALD Dock v1.0  -  USB-C PD 45 W+", size = 3.6, font = "Liberation Sans:style=Bold", halign = "left");
-        for (i = [0:5]) translate([radios[i][0] + RL/2 + 8, i < 3 ? radios[i][1] + RT + PW + 1.5 : radios[i][1] - PW - 5.5, TOP_Z - 0.6])
-            linear_extrude(1) text(str(i + 1), size = 4.0, font = "Liberation Sans:style=Bold", halign = "left");
+        // engraved labels on the top: title in the rear strip, slot numbers behind each pocket
+        translate([(radios[3][0] + radios[4][0] + RL) / 2, OUT_D - WALL - 6.6, TOP_Z - 0.6])
+            linear_extrude(1) text("OpenALD Dock v1.0", size = 3.4, font = "Liberation Sans:style=Bold", halign = "center");
+        translate([(radios[4][0] + radios[5][0] + RL) / 2, OUT_D - WALL - 6.6, TOP_Z - 0.6])
+            linear_extrude(1) text("USB-C PD 45 W+", size = 3.4, font = "Liberation Sans:style=Bold", halign = "center");
+        for (i = [0:5]) translate([radios[i][0] + RL/2 + (i < 3 ? 13 : 0), radios[i][1] + RT + PW + 1.5, TOP_Z - 0.6])
+            linear_extrude(1) text(str(i + 1), size = 4.0, font = "Liberation Sans:style=Bold", halign = "center");
     }
 }
 // ---------------------------------------------------------------- base tray
@@ -120,7 +125,7 @@ module pad_raw(i) {
         }
         translate([0, 0, PCB_Z1 - 1]) rbox_c(p[0], p[1], PLUG_HOLE[0], PLUG_HOLE[1], 1.0, PAD_T + 2);
         translate([0, 0, PCB_Z1 - 1]) rbox_c(p[0], p[1], PLUG_BORE[0], PLUG_BORE[1], 1.0, PLUG_BORE[2] + 1);
-        // finger notch to lift the pad out (front edge, under the low front wall)
+        // finger notch to lift the pad out (front edge, under the sight window)
         translate([radios[i][0] + RL/2, radios[i][1] - PAD_OFF, PCB_Z1 + PAD_T]) scale([1, 0.6, 1]) sphere(d = 8);
     }
 }
@@ -140,7 +145,7 @@ module plug(i) { p = plugs[i];
     translate([0, 0, PCB_Z1]) rbox_c(p[0], p[1], 7.96, 3.48, 0.3, 1.8);
     translate([0, 0, PCB_Z1]) rbox_c(p[0], p[1], 8.25, 2.40, 1.15, PLUG_H); }
 module pcb() { color("darkgreen") translate([PCB_X0, PCB_Y0, PCB_Z0]) cube([PCB_X1 - PCB_X0, PCB_Y1 - PCB_Y0, PCB_T]); }
-if (part == "shell")  translate([0, 0, -BASE_T - SKIRT_GAP]) shell_raw();     // print upright, skirt on the bed (deck bridges <= ~21 mm between walls)
+if (part == "shell")  translate([0, OUT_D, TOP_Z]) rotate([180, 0, 0]) shell_raw();   // print upside down, flat top on the bed (only bridges: 20 mm window sills)
 if (part == "base")   base_raw();
 if (part == "pad")    translate([0, 0, PCB_Z1 + PAD_T]) rotate([180, 0, 0]) pad_raw(pad_index);   // print top-down
 if (part == "pads")   for (i = [0:5]) translate([(i % 3) * 45 - radios[i][0], floor(i / 3) * 45 + radios[i][1] + RT + PAD_OFF, PCB_Z1 + PAD_T]) rotate([180, 0, 0]) pad_raw(i);
@@ -164,10 +169,10 @@ if (part == "exploded") {
     color("gainsboro") import("/tmp/dock_base_raw.stl"); pcb();
     color("silver") import("/tmp/dock_plugs.stl");
     color("dimgray") translate([0, 0, 15]) import("/tmp/dock_pads_raw.stl");
-    color("lightsteelblue") translate([0, 0, 35]) import("/tmp/dock_shell_raw.stl");
+    color("lightsteelblue") translate([0, 0, 30]) import("/tmp/dock_shell_raw.stl");
 }
 if (part == "print") {
-    translate([0, 0, -BASE_T - SKIRT_GAP]) shell_raw();
+    translate([0, OUT_D, TOP_Z]) rotate([180, 0, 0]) shell_raw();
     translate([0, OUT_D + 15, 0]) base_raw();
     for (i = [0:5]) translate([OUT_W + 15 + (i % 3) * 45 - radios[i][0], floor(i / 3) * 45 + radios[i][1] + RT + PAD_OFF, PCB_Z1 + PAD_T]) rotate([180, 0, 0]) pad_raw(i);
 }

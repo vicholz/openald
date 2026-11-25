@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""OpenALD Dock v1.0 fit check (trimesh + manifold booleans), dock frame.  t120u (2026-11-24): aligned 3 x 2 grid of upright pockets
-radios standing on their bottom-end USB-C (t116u had the back row offset half a pitch).
+"""OpenALD Dock v1.0 fit check (trimesh + manifold booleans), dock frame.  t121u (2026-11-24): flat dock, six pockets recessed
+25 mm in an aligned 3 x 2 grid, radios standing on their bottom-end USB-C (t116u/t120u had 50.8 mm pocket walls).
  * dock parts: shell_raw, base_raw, pads_raw, plugs from case/openald_dock.scad (STLs in /tmp, see build_case.sh)
  * radios: the REAL printed case parts of the two dockable OpenALD radios (single-board, Feather; the MI03 case is not
    dock-compatible since 2026-11-24 and is not checked), exported from their
    own SCAD files, plus what sticks out of them (single-board: switch knob and wheel; Feather: wheel, switch knob in
    both positions), rotated into the docked pose (bottom end down on the floor pad, front face toward the dock front)
    and dropped into every pocket: each must clear the shell, the pads and the plug, and the plug must pass through its
-   USB-C opening. The insertion path (straight down from above the pocket walls) is swept too.
+   USB-C opening. The insertion path (straight down from above the top) is swept too.
  * every dock PCB part as a box (courtyard shrunk 0.25 mm, height from HEIGHTS) against the printed dock parts."""
 import sys, os, math, subprocess, trimesh, numpy as np, pcbnew
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
@@ -81,7 +81,7 @@ for r, (scad, shells, extra) in RADIOS.items():
         rad = trimesh.boolean.union(parts, engine="manifold") if len(parts) > 1 else parts[0]
         if i in (0, 3):   # insertion path: the radio lowered straight down from above the pocket walls (sweep in 2 mm steps)
             sweep = []
-            for dz in np.arange(2.0, G.FIN_Z - G.FLOOR_Z + 4.0, 2.0):
+            for dz in np.arange(2.0, G.TOP_Z - G.FLOOR_Z + 4.0, 2.0):
                 m2 = rad.copy(); m2.apply_translation([0, 0, dz]); sweep.append(m2)
             sv = inter(trimesh.boolean.union(sweep, engine="manifold"), case["shell_raw"])
             worst["shell (insertion path)"] = max(worst.get("shell (insertion path)", 0), sv)
@@ -97,12 +97,12 @@ for r, (scad, shells, extra) in RADIOS.items():
             # plug centre vs the radio's USB opening centre (case frame -> dock)
             out.append(f"     slot 1: {r} case X centre {x0 + (hi[0]-lo[0])/2:.2f} vs plug X {G.usb_xy(c, rr)[0]:.2f}")
     for n, v in worst.items(): rep(f"{r} (worst of 6 pockets) x {n}", v)
-    out.append(f"     docked height above the floor {L:.2f} (top {G.FLOOR_Z + L:.2f} vs pocket walls {G.FIN_Z:.2f}, deck {G.TOP_Z:.2f})")
+    out.append(f"     docked height above the floor {L:.2f} (top {G.FLOOR_Z + L:.2f} vs dock top {G.TOP_Z:.2f}: {L - G.POCKET_DEPTH:.2f} stands above the top)")
 # ---------------- Feather LEDs visible in the dock: rays from its front-face LED holes toward the viewer (level, then
 # 15 ... 75 deg up) against the dock shell and radios in the other five pockets (single-board radios in the front row =
-# tallest neighbours, Feathers in the back row). Front-row slots must be clear at 15-45 deg (counted as a failure
-# otherwise); back-row slots sit straight behind a front-row radio in the aligned grid (t120u), so they are reported
-# with the lowest clear angle only (informational).
+# tallest neighbours, Feathers in the back row). t121u: the LEDs sit below the flat top and are seen through the
+# pocket sight windows. Front-row slots must be clear at every angle 0-75 deg (failure otherwise); back-row slots sit
+# straight behind a front-row radio in the aligned grid, so they are reported with the lowest clear angle (info).
 sys.path.insert(0, f"{ROOT}/radio_adafruit_feather_rp2040/scripts")
 import layout as FL
 from trimesh.ray.ray_triangle import RayMeshIntersector
@@ -110,7 +110,7 @@ ANG = (0, 15, 30, 45, 60, 75)
 for i in range(6):
     rad, M, lo, hi = DOCKED[("feather", i)]
     obst = trimesh.util.concatenate([case["shell_raw"]] + [DOCKED[("single_board" if j < 3 else "feather", j)][0] for j in range(6) if j != i])
-    ri = RayMeshIntersector(obst)
+    ri = RayMeshIntersector(obst); ri_sh = RayMeshIntersector(case["shell_raw"])
     res = []; fail = False
     for name, (lx, ly) in FL.feather_leds().items():
         pt = (M @ np.array([lx, ly, hi[2] + 0.05, 1.0]))[:3]
@@ -118,10 +118,14 @@ for i in range(6):
         for a in ANG:
             d = np.array([0.0, -math.cos(math.radians(a)), math.sin(math.radians(a))])
             clear.append(not ri.intersects_any(pt[None, :], d[None, :])[0])
-        if i < 3 and not all(clear[1:4]): fail = True
+        if i < 3 and not all(clear): fail = True
         first = next((a for a, c in zip(ANG, clear) if c), None)
+        if i >= 3:   # the dock alone (trench), without the radios in the other pockets
+            d0 = [np.array([0.0, -math.cos(math.radians(a)), math.sin(math.radians(a))]) for a in ANG]
+            sh_first = next((a for a, d in zip(ANG, d0) if not ri_sh.intersects_any(pt[None, :], d[None, :])[0]), None)
         res.append(f"{name} {pt[2] - G.FLOOR_Z:.1f} up: " + "/".join("clear" if c else "BLOCKED" for c in clear)
-                   + (f" (visible from {first} deg up)" if first is not None else " (blocked up to 75 deg)"))
+                   + (f" (visible from {first} deg up)" if first is not None else " (blocked up to 75 deg)")
+                   + (f" [dock alone: clear from {sh_first} deg]" if i >= 3 else ""))
     if fail: bad += 1
     tag = "FAIL" if fail else ("ok  " if i < 3 else "info")
     out.append(f"{tag} Feather LEDs, slot {i+1} ({'/'.join(map(str, ANG))} deg up): " + "; ".join(res))
@@ -164,9 +168,9 @@ out.append(f"dock PCB parts: {len(comps)} checked against shell/base/pads; close
 out.append(f"insertion past the receptacle mouth: {G.INSERTION:.2f} mm (plug top Z {G.PLUG_TOP:.2f}, pocket floor Z {G.FLOOR_Z:.2f}, mouth {G.MOUTH_UP:.2f} above the floor)")
 out.append(f"  USB-C full seat (spec effective receptacle shell) {G.SEAT_NOM:.2f} +/- {G.SEAT_TOL:.2f}; design target {G.TARGET_INSERTION:.2f}")
 out.append(f"Z stack: base {G.BASE_T:.1f}, standoff {G.STANDOFF:.1f}, PCB {G.PCB_Z0:.2f}..{G.PCB_Z1:.2f}, pad {G.PAD_T:.2f} -> floor {G.FLOOR_Z:.2f}, "
-           f"plug top {G.PLUG_TOP:.2f}, deck {G.TOP_Z:.2f}, fins {G.FIN_Z:.2f}")
-out.append(f"pocket: {G.RL} x {G.RT} footprint + {G.CLR_GUIDE:.2f}/side; walls {G.FIN_H:.1f} high, front window above {G.FRONT_WALL_H:.1f} "
-           f"between {G.FRONT_RETURN:.0f} mm corner returns; right-wall notch {G.SIDE_NOTCH_D:.0f} deep above {G.SIDE_NOTCH_Z:.0f}")
-out.append(f"outer size {G.OUT_W:.2f} x {G.OUT_D:.2f} x {G.FIN_Z:.1f} mm (bed 220 x 180: fits); radio gap {G.GAP:.1f} mm, aligned grid")
+           f"plug top {G.PLUG_TOP:.2f}, flat top {G.TOP_Z:.2f}")
+out.append(f"pocket: {G.RL} x {G.RT} footprint + {G.CLR_GUIDE:.2f}/side, recessed {G.POCKET_DEPTH:.1f} deep ({G.CHAMFER} mm lead-in); "
+           f"{G.WIN_W:.0f} mm sight window from {G.WIN_Z:.1f} above the floor (back row: trench floor at {G.TRENCH_ANG:.0f} deg); no side notch")
+out.append(f"outer size {G.OUT_W:.2f} x {G.OUT_D:.2f} x {G.TOP_Z:.1f} mm (bed 220 x 180: fits); radio gap {G.GAP:.1f} mm, aligned grid")
 out.append(f"INTERFERENCES: {bad}")
 print("\n".join(out))
