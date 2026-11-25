@@ -59,7 +59,7 @@ Z from the back face (0) to the front face (34.83).
 | Outside | **32.90 W × 89.75 L × 34.83 T**, plan corners r 5, edges r 2 (was 45.5 × 92.0 × 33.41) |
 | Walls / floor / front | 2.0 / 1.4 / 1.6 |
 | Parts | **back shell** (Z 0 – 23.01 + 1.4 lip), **deck** (Z 23.01 – 24.01, separate plate), **front shell** (Z 24.01 – 34.83) |
-| Dock USB-C (breakout) | centre 30.30 from the top outer end, 7.55 behind the front face, mouth 1.00 inside the left face — **identical to the MI03 and the single board** (fit report: "dock interface: MATCH") |
+| Dock USB-C (breakout) | centre 30.30 from the top outer end, 7.55 behind the front face, mouth 1.00 inside the left face — **identical to the single board** (and the MI03 case, which does not dock) (fit report: "dock interface: MATCH") |
 
 **Back shell (Z 0 – 23):** the **18650 holder** lies on the floor against the right wall and the top end
 (X −6.75…14.15, Y 7.55…85.25, in a 0.3 mm floor pocket). The **Feather stands on its long edge** against the left wall

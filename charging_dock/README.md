@@ -1,13 +1,13 @@
 # OpenALD Dock v1.0 — 6-slot USB-C charging dock
 
-A charging dock for six OpenALD radios (**2 columns × 3 rows**). Since 2026-11-24 all three radios — **MI03,
-single-board and Feather** — share one case envelope (89.75 L × 34.83 T, USB-C on the left long side, 30.3 mm from the
-top end, 7.55 mm behind the front face, mouth 1.0 mm inside), so every pocket takes any of them. A radio **lies on its
+A charging dock for six OpenALD radios (**2 columns × 3 rows**). It is designed only for the **single-board and Feather
+radios**, which share one case envelope (89.75 L × 34.83 T, USB-C on the left long side, 30.3 mm from the top end,
+7.55 mm behind the front face, mouth 1.0 mm inside), so every pocket takes either of them. **The MI03 radio is not dock-compatible** (Victor, 2026-11-24: "The mi03 version doesn't need to work with the dock."); the dock is designed and checked only for the single-board and Feather radios. A radio **lies on its
 USB-C side**, front face toward you, top end to the left, and drops onto a vertical USB-C plug in a shallow pocket.
 **One USB-C PD input at the rear centre** powers all six slots.
 
-> **Status: design only, nothing here is hardware-validated.** ERC/DRC are clean and the CAD fit check passes for all
-> three radios, but no board has been built, no charger tested, no part printed, and the plug height and insertion
+> **Status: design only, nothing here is hardware-validated.** ERC/DRC are clean and the CAD fit check passes for both
+> radios, but no board has been built, no charger tested, no part printed, and the plug height and insertion
 > have not been measured on a real part. Treat the first build as a prototype.
 
 The exact interface is in **[DOCK_INTERFACE.md](DOCK_INTERFACE.md)**.
@@ -16,7 +16,7 @@ The exact interface is in **[DOCK_INTERFACE.md](DOCK_INTERFACE.md)**.
 (191.8 × 111.7 × 62.5 mm). With the USB-C now on the long side, the radios lie down instead: the pockets are
 89.75 × 34.83 footprints (+0.35 mm per side), the back and end walls ("fins") stand 14 mm above the pocket floor and
 the front wall only 6 mm, so the front face — level bar, charge LEDs — stays in view. The dock is wider and deeper but
-**much lower (26.3 mm)**. Widths differ (MI03 27.5, single board 30.5, Feather 32.9);
+**much lower (26.3 mm)**. Widths differ (single board 30.5, Feather 32.9);
 width is just the radio's height above the floor here, so all use the same pockets. Same electronics and schematic; the PCB was re-laid out and re-routed for the new
 plug positions.
 
@@ -89,13 +89,13 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
 * **DRC:** 0 errors, **0 unconnected**. 69 silkscreen-only warnings (silk_edge_clearance, silk_over_copper, silk_overlap; cosmetic).
 * **JLC placement:** `jlc_cpl_fit.py --check` → *correction table: OK*. Overlays in `previews/cpl_overlay_*.png`.
 * **Case fit** (`scripts/check_dock_fit.py` → `case/dock_fit_report.txt`): **INTERFERENCES: 0**. It exports the real
-  STLs of all three radio cases (MI03 `mi03_case/`, single board, Feather), puts each in every one of the six pockets
+  STLs of both radio cases (single board, Feather), puts each in every one of the six pockets
   in the docked pose and checks it against the shell, base, pads and plug; then the PCB and its 80 part boxes against
-  every case part, and the case parts against each other. Smallest plug-to-case gap: MI03 0.60 mm, single board
-  0.32, Feather 0.32. Closest PCB part to the shell: D2, 0.19 mm. All printed STLs are watertight single bodies
+  every case part, and the case parts against each other. Smallest plug-to-case gap: single board 0.32 mm,
+  Feather 0.32. Closest PCB part to the shell: D2, 0.19 mm. All printed STLs are watertight single bodies
   (`dock_floor_pads_x6.stl` is six bodies on purpose).
 * Previews: `previews/dock_assembly.png`, `dock_assembly_rear.png`, `dock_exploded.png`, `dock_front_view_slot1.png`,
-  `dock_print_layout.png`, `dock_plug_insertion_per_radio.png` (the three radios on their plugs), PCB renders.
+  `dock_print_layout.png`, `dock_plug_insertion_per_radio.png` (both radios on their plugs), PCB renders.
 
 ## Printing (no supports)
 * **Top shell:** print it **upright, skirt on the bed**, as exported. The deck between walls bridges ≤ ~21 mm; the
@@ -142,3 +142,7 @@ The full list is in `fab/openald-dock-BOM-human.csv` (live stock and price); `fa
 * 2026-11-12: floor pads 3.1 → 4.0, standoffs 5.0 → 4.1 for 6.0 mm insertion.
 * 2026-11-24 (still v1.0): unified radio envelope; radios lie on the USB-C side; 2 × 3 layout, 216.9 × 174.79 ×
   26.3 mm, PCB 211.1 × 169.0, pads 4.6; fit-checked with all three radios.
+* 2026-11-24 (still v1.0): single-board radio widened to 30.5 (2-layer board), re-checked. MI03 support dropped
+  (Victor: "The mi03 version doesn't need to work with the dock."): fit check, previews and the insertion plot cover
+  the single-board and Feather radios only. Pocket geometry, outer size and PCB unchanged (both radios share the same
+  89.75 × 34.83 footprint, so dropping the MI03 frees nothing).

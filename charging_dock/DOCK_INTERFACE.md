@@ -1,15 +1,18 @@
 # OpenALD Dock v1.0 — radio ↔ pocket interface (for every radio variant)
 
 Status: **design values used by the dock CAD** (rewritten 2026-11-24 for the unified envelope; still v1.0). Nothing here
-is hardware-validated yet. All dimensions in mm. Any OpenALD radio (MI03 18650 case, single-board, Feather RP2040, ...)
+is hardware-validated yet. All dimensions in mm. The dockable radios are the OpenALD single-board and Feather RP2040 radios; a future variant
 fits the dock if its **outside footprint, edge radius and USB-C position** match this file. The width of the radio does
 not matter (it is the height above the pocket floor when docked).
+
+**The MI03 radio is not dock-compatible** (Victor, 2026-11-24: "The mi03 version doesn't need to work with the dock."); the dock is designed and checked only for the single-board and Feather radios. The MI03 case
+(`mi03_case/`) shares the envelope numbers but is not checked against or supported by the dock.
 
 ## 1. Orientation in the dock
 * The radio **lies on its USB-C long side** in a shallow tray (until 2026-11-24 radios stood USB-C-end down 50.8 deep).
 * **Front face** (LCD / LEDs / buttons) faces the user; the **top end is on the left**, the jack end on the right.
 * The pocket's back wall and both end walls are **14** high; the front wall is only **6** high, so the whole front face
-  (MI03 LCD, single-board level bar, Feather LED windows) stays visible. Everything on the radio's top long side
+  (single-board level bar, Feather LED windows) stays visible. Everything on the radio's top long side
   (power-switch knob, thumbwheel) points up and is free.
 
 ## 2. Outer envelope
@@ -17,19 +20,19 @@ not matter (it is the height above the pocket floor when docked).
 |---|---|
 | Length (top end to jack end) | **89.75** |
 | Thickness (front face to back face) | **34.83** |
-| Width (USB-C side to the opposite side) | any: MI03 **27.5**, single-board **30.5**, Feather **32.9** |
+| Width (USB-C side to the opposite side) | any: single-board **30.5**, Feather **32.9** |
 | Edge radius (the edges between the front/back faces and the sides/ends) | **2.0** (pocket corner radius 2.0 + clearance) |
 | Plan-corner radius (in the width × length plane) | 5.0 (only rounds the radio's ends near the floor; not used by the pocket) |
-| Nothing may protrude from the USB-C side face, the back face or the two end faces; the front face may carry features up to ~1 proud **more than 6 above the USB-C side face** (MI03 plungers sit 13.75 up) |
+| Nothing may protrude from the USB-C side face, the back face or the two end faces; the front face may carry features up to ~1 proud **more than 6 above the USB-C side face** |
 
-## 3. USB-C receptacle (any standard USB-C receptacle; MI03 stock, HRO TYPE-C-31-M-12, USB-C breakout on the Feather)
+## 3. USB-C receptacle (any standard USB-C receptacle; HRO TYPE-C-31-M-12 on the single board, USB-C breakout on the Feather)
 | Item | Value |
 |---|---|
 | Centre along the length | **30.3 from the top outer end** |
 | Centre through the thickness | **7.55 behind the front face** |
 | Receptacle mouth | **1.0 inside the USB-C side face** (all three radios) |
 | Connector long axis | along the radio length |
-| Case opening, outer | cable-plug recess **13.0 × 7.6, corner r 3.0**; its floor stops **0.55 outside the mouth** (0.45 deep), then a ~9.4 × 3.8 opening to the receptacle (MI03 geometry, copied by the other two cases) |
+| Case opening, outer | cable-plug recess **13.0 × 7.6, corner r 3.0**; its floor stops **0.55 outside the mouth** (0.45 deep), then a ~9.4 × 3.8 opening to the receptacle (same on both radios) |
 
 The dock plug (HX TYPE C-M 16P V-SMT, LCSC C55200592, shell 8.25 × 2.40) enters through these openings.
 Design insertion: plug shell tip reaches **6.0 past the receptacle mouth** with the radio resting on the pocket floor.
@@ -41,7 +44,6 @@ radio's weight stays on the printed pad, never on the plug.
 
 | Radio | Mouth inside the side face | Insertion on the 4.60 pad |
 |---|---|---|
-| MI03 (stock board, 18650 case) | **1.00** | **6.00** |
 | Single-board (J1 on the long edge since 2026-11-24) | **1.00** | **6.00** |
 | Feather RP2040 (USB-C breakout, since 2026-11-24) | **1.00** | **6.00** |
 

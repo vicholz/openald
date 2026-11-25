@@ -6,9 +6,9 @@ This folder is separate from the OpenALD v1.0 design: none of the OpenALD files 
 
 **2026-11-24: this case is now the reference envelope** for the OpenALD single-board and Feather radios (same
 89.75 × 34.83 length and thickness, widths 30.5 single board / 32.9 Feather vs 27.5 here, same USB-C position: 30.3 mm from the top outer end, 7.55 mm behind the front face,
-mouth 1.0 mm inside the left face, 13.0 × 7.6 r 3 recess). The MI03 files themselves were not changed. It docks in
-the 6-slot charging dock lying on its USB-C side; `../charging_dock/scripts/check_dock_fit.py` exports these STL
-sources and checks them in all six pockets (0 interferences, smallest plug-to-case gap 0.60 mm, 6.0 mm insertion).
+mouth 1.0 mm inside the left face, 13.0 × 7.6 r 3 recess). The MI03 files themselves were not changed. **The MI03 is not dock-compatible** (Victor, 2026-11-24: "The mi03 version doesn't need to work with the dock."): the
+charging dock is designed and checked only for the OpenALD single-board and Feather radios. Charge the MI03 with a
+USB-C cable.
 
 ## Files
 * `mi03_case.scad`: the parametric source. Every measurement Victor gave is a named parameter at the top, and
