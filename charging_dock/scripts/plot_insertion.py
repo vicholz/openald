@@ -9,8 +9,8 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 out = sys.argv[1] if len(sys.argv) > 1 else "/tmp/dock_plug_insertion_per_radio.png"
-cases = [("MI03 radio (18650 case)", "mi03", 0.0), ("Single-board radio", "single_board", 0.0), ("Feather RP2040 radio", "feather", 0.0)]
-fig, axs = plt.subplots(1, 3, figsize=(15, 7), sharey=True)
+cases = [("Single-board radio", "single_board", 0.0), ("Feather RP2040 radio", "feather", 0.0)]
+fig, axs = plt.subplots(1, 2, figsize=(10.5, 7), sharey=True)
 for ax, (title, r, rise) in zip(axs, cases):
     m = G.MOUTHS[r]; rb = G.FLOOR_Z + rise; mouth = rb + m; ins = G.PLUG_TOP - mouth
     ax.add_patch(Rectangle((-14, G.PCB_Z0), 28, G.PCB_T, color="darkgreen"))

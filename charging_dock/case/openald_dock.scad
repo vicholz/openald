@@ -1,6 +1,6 @@
 // OpenALD Dock v1.0 - 6-slot charging dock case.
 // 2026-11-24 unified layout: 2 columns x 3 rows, radios LIE ON THEIR USB-C SIDE (front face toward you, top end to
-// the left) in shallow trays: every OpenALD radio (MI03, single-board, Feather) shares the 89.75 x 34.83 footprint
+// the left) in shallow trays: the dockable OpenALD radios (single-board, Feather; not the MI03) share the 89.75 x 34.83 footprint
 // and the USB-C position (30.3 from the top end, 7.55 behind the front face, mouth 1.0 inside the side face).
 // Dock frame: X right, Y toward the back, Z up, origin = front-left-bottom corner. All mm.
 // Parts: part="base" | "shell" (print upright, skirt down) | "pad" (6x, one per pocket; pad_index 0-5) | "pads" (all 6)
@@ -152,9 +152,8 @@ module assembly_parts() {
     color("silver") import("/tmp/dock_plugs.stl");
     color("dimgray") import("/tmp/dock_pads_raw.stl");
     color("lightsteelblue") import("/tmp/dock_shell_raw.stl");
-    color("orange") import("/tmp/dock_docked_mi03.stl");          // slot 1
-    color("salmon") import("/tmp/dock_docked_single_board.stl");  // slot 4
-    color("gold") import("/tmp/dock_docked_feather.stl");         // slot 5
+    color("salmon") import("/tmp/dock_docked_single_board.stl");  // slot 1
+    color("gold") import("/tmp/dock_docked_feather.stl");         // slot 4
 }
 if (part == "assembly") assembly_parts();
 if (part == "section") intersection() { assembly_parts(); translate([-1, -1, -1]) cube([plugs[0][0], OUT_D + 2, 200]); }   // render with --render

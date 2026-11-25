@@ -2,7 +2,8 @@
 """OpenALD Dock v1.0 fit check (trimesh + manifold booleans), dock frame.  2026-11-24: 2 x 3 pockets, radios lying on
 their USB-C side.
  * dock parts: shell_raw, base_raw, pads_raw, plugs from case/openald_dock.scad (STLs in /tmp, see build_case.sh)
- * radios: the REAL printed case parts of all three OpenALD radios (MI03, single-board, Feather), exported from their
+ * radios: the REAL printed case parts of the two dockable OpenALD radios (single-board, Feather; the MI03 case is not
+   dock-compatible since 2026-11-24 and is not checked), exported from their
    own SCAD files, rotated into the docked pose (USB-C side down on the floor pad, front face toward the dock front,
    top end to the left) and dropped into every pocket: each must clear the shell, the pads and the plug, and the plug
    must pass through its USB-C opening.
@@ -28,7 +29,6 @@ rep("pads x base", inter(case["pads_raw"], case["base_raw"]))
 for n, c in case.items(): rep(f"plugs x {n}", inter(plugs, c))
 # ---------------- radios
 RADIOS = {   # name: (scad, outer shell parts, extra parts that stick out of the shell)
-    "mi03": (f"{ROOT}/mi03_case/mi03_case.scad", ["front_raw", "back_raw"], ["plungers_raw", "knob_raw"]),
     "single_board": (f"{ROOT}/radio_single_board/case/openald_case.scad", ["top_raw", "bottom_raw"], []),
     "feather": (f"{ROOT}/radio_adafruit_feather_rp2040/case/openald_feather_case.scad", ["top_raw", "bottom_raw", "deck_raw"], []),
 }
@@ -58,7 +58,7 @@ for r, (scad, shells, extra) in RADIOS.items():
         M = np.array([[0, -1, 0, x0 + hi[1]], [0, 0, -1, y0 + hi[2]], [1, 0, 0, G.FLOOR_Z - lo[0]], [0, 0, 0, 1.0]])
         parts = [m.copy().apply_transform(M) for m in sh + ex]
         rad = trimesh.boolean.union(parts, engine="manifold") if len(parts) > 1 else parts[0]
-        if i == {'mi03': 0, 'single_board': 3, 'feather': 4}[r]: rad.export(f'/tmp/dock_docked_{r}.stl')   # for the previews
+        if i == {'single_board': 0, 'feather': 3}[r]: rad.export(f'/tmp/dock_docked_{r}.stl')   # for the previews
         for n, cpart in case.items():
             v = inter(rad, cpart); worst[n] = max(worst.get(n, 0), v)
         v = inter(rad, plug_mesh(i)); worst["plug"] = max(worst.get("plug", 0), v)

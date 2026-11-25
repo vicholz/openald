@@ -4,13 +4,6 @@ ok   pads x base                                                    0.000 mm^3
 ok   plugs x shell_raw                                              0.000 mm^3
 ok   plugs x base_raw                                               0.000 mm^3
 ok   plugs x pads_raw                                               0.000 mm^3
---- mi03: case 27.50 W x 89.75 L x 34.83 T (shell parts front_raw, back_raw; extras plungers_raw, knob_raw)
-     slot 1: smallest gap plug -> mi03 case 0.60 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
-ok   mi03 (worst of 6 pockets) x shell_raw                          0.000 mm^3
-ok   mi03 (worst of 6 pockets) x base_raw                           0.000 mm^3
-ok   mi03 (worst of 6 pockets) x pads_raw                           0.000 mm^3
-ok   mi03 (worst of 6 pockets) x plug                               0.000 mm^3
-     docked height above the floor 27.50 (top 39.80 vs fins 26.30, deck 18.30)
 --- single_board: case 30.50 W x 89.75 L x 34.83 T (shell parts top_raw, bottom_raw; extras none)
      slot 1: smallest gap plug -> single_board case 0.32 mm; plug reaches 7.00 above the floor, 6.00 past the receptacle mouth
 ok   single_board (worst of 6 pockets) x shell_raw                  0.000 mm^3
