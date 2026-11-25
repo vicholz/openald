@@ -1,6 +1,6 @@
 #!/bin/bash
 # Regenerate dock_params.scad from the PCB layout, export print STLs, run the fit check (all three radios), render previews.
-# t116u (2026-11-24): 3 x 2 upright pockets (back row offset half a pitch), radios standing on their bottom-end USB-C. Needs openscad, python3 trimesh+manifold3d+scipy,
+# t120u (2026-11-24): aligned 3 x 2 grid of upright pockets, radios standing on their bottom-end USB-C. Needs openscad, python3 trimesh+manifold3d+scipy,
 # KiCad 9 pcbnew (part boxes) and matplotlib. The radio cases are exported from their own SCAD files by the fit check.
 set -e
 cd "$(dirname "$0")"
@@ -20,12 +20,12 @@ P="--imgsize=1400,1000 --colorscheme=Tomorrow --projection=p"
 R=../previews
 rm -f $R/dock_*.png
 O="--imgsize=1400,1000 --colorscheme=Tomorrow --projection=o"
-openscad $P --camera=94,56,40,55,0,20,520  -D 'part="assembly"' -o $R/dock_assembly.png $S 2>/dev/null &
-openscad $P --camera=94,56,40,60,0,200,520 -D 'part="assembly"' -o $R/dock_assembly_rear.png $S 2>/dev/null &
-openscad $P --camera=94,56,40,55,0,20,560  -D 'part="exploded"' -o $R/dock_exploded.png $S 2>/dev/null &
-openscad $P --camera=40,40,50,78,0,0,260   -D 'part="assembly"' -o $R/dock_front_view_slots1_4.png $S 2>/dev/null &
-openscad $O --camera=94,56,30,0,0,0,330    -D 'part="assembly"' -o $R/dock_top_view.png $S 2>/dev/null &
-openscad $P --render --camera=190,110,0,50,0,20,700 -D 'part="print"' -o $R/dock_print_layout.png $S 2>/dev/null &
+openscad $P --camera=79,56,40,55,0,20,520  -D 'part="assembly"' -o $R/dock_assembly.png $S 2>/dev/null &
+openscad $P --camera=79,56,40,60,0,200,520 -D 'part="assembly"' -o $R/dock_assembly_rear.png $S 2>/dev/null &
+openscad $P --camera=79,56,40,55,0,20,560  -D 'part="exploded"' -o $R/dock_exploded.png $S 2>/dev/null &
+openscad $P --camera=50,40,55,75,0,0,300   -D 'part="assembly"' -o $R/dock_front_view.png $S 2>/dev/null &
+openscad $O --camera=79,56,30,0,0,0,290    -D 'part="assembly"' -o $R/dock_top_view.png $S 2>/dev/null &
+openscad $P --render --camera=160,110,0,50,0,20,640 -D 'part="print"' -o $R/dock_print_layout.png $S 2>/dev/null &
 python3 ../scripts/plot_insertion.py $R/dock_plug_insertion_per_radio.png &
 wait
 tail -1 dock_fit_report.txt

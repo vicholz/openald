@@ -1,7 +1,6 @@
 // OpenALD Dock v1.0 - 6-slot charging dock case.
-// t116u (2026-11-24): 3 columns x 2 rows, radios STAND UPRIGHT on their bottom-end USB-C (front face toward you) in
-// 50.8 mm deep pockets; the back row is offset by half a pitch so each back-row radio shows between two front-row
-// radios. The dockable OpenALD radios (single-board, Feather; NOT the MI03) share the 31.9 x 33.86 end footprint and
+// t116u/t120u (2026-11-24): aligned grid of 3 columns x 2 rows, radios STAND UPRIGHT on their bottom-end USB-C (front
+// face toward you) in 50.8 mm deep pockets (t120u removed the t116u half-pitch back-row offset). The dockable OpenALD radios (single-board, Feather; NOT the MI03) share the 31.9 x 33.86 end footprint and
 // the USB-C position (centred across the width, 6.62 behind the front face, mouth 1.0 inside the bottom end face).
 // The pocket front wall is open above the deck except for 5 mm corner returns, so the front faces (and the Feather's
 // CHG / NeoPixel LEDs) stay visible.
@@ -81,12 +80,10 @@ module shell_raw() {
         // side skirt vents (low, near the PCB), clear of the Y-channel screws
         for (y = [20:8:44]) for (x = [-1, OUT_W - WALL - 1]) translate([x, y, BASE_T + 3]) cube([WALL + 2, 3, 7]);
         for (y = [60:8:100]) for (x = [-1, OUT_W - WALL - 1]) translate([x, y, BASE_T + 3]) cube([WALL + 2, 3, 7]);
-        // engraved labels on the deck (Y-channel between the rows)
-        translate([radios[3][0] + RL + PW + 4, ychan_y + 1.2, TOP_Z - 0.6])
-            linear_extrude(1) text("OpenALD Dock v1.0", size = 4.2, font = "Liberation Sans:style=Bold", halign = "left");
-        translate([radios[3][0] + RL + PW + 4, ychan_y - 6.2, TOP_Z - 0.6])
-            linear_extrude(1) text("USB-C PD 45 W+", size = 4.2, font = "Liberation Sans:style=Bold", halign = "left");
-        for (i = [0:5]) translate([radios[i][0] + RL + PW + 3.0, radios[i][1] + 2.0, TOP_Z - 0.6])
+        // engraved labels on the deck: title in the rear strip, slot numbers in the Y-channel beside each plug
+        translate([10, OUT_D - WALL - 7.0, TOP_Z - 0.6])
+            linear_extrude(1) text("OpenALD Dock v1.0  -  USB-C PD 45 W+", size = 3.6, font = "Liberation Sans:style=Bold", halign = "left");
+        for (i = [0:5]) translate([radios[i][0] + RL/2 + 8, i < 3 ? radios[i][1] + RT + PW + 1.5 : radios[i][1] - PW - 5.5, TOP_Z - 0.6])
             linear_extrude(1) text(str(i + 1), size = 4.0, font = "Liberation Sans:style=Bold", halign = "left");
     }
 }
@@ -143,7 +140,7 @@ module plug(i) { p = plugs[i];
     translate([0, 0, PCB_Z1]) rbox_c(p[0], p[1], 7.96, 3.48, 0.3, 1.8);
     translate([0, 0, PCB_Z1]) rbox_c(p[0], p[1], 8.25, 2.40, 1.15, PLUG_H); }
 module pcb() { color("darkgreen") translate([PCB_X0, PCB_Y0, PCB_Z0]) cube([PCB_X1 - PCB_X0, PCB_Y1 - PCB_Y0, PCB_T]); }
-if (part == "shell")  translate([0, 0, -BASE_T - SKIRT_GAP]) shell_raw();     // print upright, skirt on the bed (deck bridges <= ~30 mm between walls / bosses)
+if (part == "shell")  translate([0, 0, -BASE_T - SKIRT_GAP]) shell_raw();     // print upright, skirt on the bed (deck bridges <= ~21 mm between walls)
 if (part == "base")   base_raw();
 if (part == "pad")    translate([0, 0, PCB_Z1 + PAD_T]) rotate([180, 0, 0]) pad_raw(pad_index);   // print top-down
 if (part == "pads")   for (i = [0:5]) translate([(i % 3) * 45 - radios[i][0], floor(i / 3) * 45 + radios[i][1] + RT + PAD_OFF, PCB_Z1 + PAD_T]) rotate([180, 0, 0]) pad_raw(i);

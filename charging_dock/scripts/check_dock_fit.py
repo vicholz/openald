@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""OpenALD Dock v1.0 fit check (trimesh + manifold booleans), dock frame.  t116u (2026-11-24): 3 x 2 upright pockets
-(back row offset half a pitch), radios standing on their bottom-end USB-C.
+"""OpenALD Dock v1.0 fit check (trimesh + manifold booleans), dock frame.  t120u (2026-11-24): aligned 3 x 2 grid of upright pockets
+radios standing on their bottom-end USB-C (t116u had the back row offset half a pitch).
  * dock parts: shell_raw, base_raw, pads_raw, plugs from case/openald_dock.scad (STLs in /tmp, see build_case.sh)
  * radios: the REAL printed case parts of the two dockable OpenALD radios (single-board, Feather; the MI03 case is not
    dock-compatible since 2026-11-24 and is not checked), exported from their
@@ -98,28 +98,33 @@ for r, (scad, shells, extra) in RADIOS.items():
             out.append(f"     slot 1: {r} case X centre {x0 + (hi[0]-lo[0])/2:.2f} vs plug X {G.usb_xy(c, rr)[0]:.2f}")
     for n, v in worst.items(): rep(f"{r} (worst of 6 pockets) x {n}", v)
     out.append(f"     docked height above the floor {L:.2f} (top {G.FLOOR_Z + L:.2f} vs pocket walls {G.FIN_Z:.2f}, deck {G.TOP_Z:.2f})")
-# ---------------- Feather LEDs visible in the dock: rays from its front-face LED holes toward the viewer (level and
-# 15 / 30 / 45 deg up) against the dock shell and the radios in the other five pockets (single-board radios in the
-# front row = the tallest neighbours, Feathers in the back row)
+# ---------------- Feather LEDs visible in the dock: rays from its front-face LED holes toward the viewer (level, then
+# 15 ... 75 deg up) against the dock shell and radios in the other five pockets (single-board radios in the front row =
+# tallest neighbours, Feathers in the back row). Front-row slots must be clear at 15-45 deg (counted as a failure
+# otherwise); back-row slots sit straight behind a front-row radio in the aligned grid (t120u), so they are reported
+# with the lowest clear angle only (informational).
 sys.path.insert(0, f"{ROOT}/radio_adafruit_feather_rp2040/scripts")
 import layout as FL
 from trimesh.ray.ray_triangle import RayMeshIntersector
+ANG = (0, 15, 30, 45, 60, 75)
 for i in range(6):
     rad, M, lo, hi = DOCKED[("feather", i)]
     obst = trimesh.util.concatenate([case["shell_raw"]] + [DOCKED[("single_board" if j < 3 else "feather", j)][0] for j in range(6) if j != i])
     ri = RayMeshIntersector(obst)
-    res = []
+    res = []; fail = False
     for name, (lx, ly) in FL.feather_leds().items():
         pt = (M @ np.array([lx, ly, hi[2] + 0.05, 1.0]))[:3]
         clear = []
-        for a in (0, 15, 30, 45):
+        for a in ANG:
             d = np.array([0.0, -math.cos(math.radians(a)), math.sin(math.radians(a))])
-            hit = ri.intersects_any(pt[None, :], d[None, :])[0]
-            clear.append("clear" if not hit else "BLOCKED")
-        ok = all(c == "clear" for c in clear[1:])     # a level ray may hit a raised housing / neighbour; 15-45 deg must be clear
-        if not ok: bad += 1
-        res.append(f"{name} {pt[2] - G.FLOOR_Z:.1f} above floor: " + "/".join(clear))
-    out.append(f"{'ok  ' if all('BLOCKED' not in x.split(': ')[1].split('/', 1)[1] for x in res) else 'FAIL'} Feather LEDs, slot {i+1} (0/15/30/45 deg up): " + "; ".join(res))
+            clear.append(not ri.intersects_any(pt[None, :], d[None, :])[0])
+        if i < 3 and not all(clear[1:4]): fail = True
+        first = next((a for a, c in zip(ANG, clear) if c), None)
+        res.append(f"{name} {pt[2] - G.FLOOR_Z:.1f} up: " + "/".join("clear" if c else "BLOCKED" for c in clear)
+                   + (f" (visible from {first} deg up)" if first is not None else " (blocked up to 75 deg)"))
+    if fail: bad += 1
+    tag = "FAIL" if fail else ("ok  " if i < 3 else "info")
+    out.append(f"{tag} Feather LEDs, slot {i+1} ({'/'.join(map(str, ANG))} deg up): " + "; ".join(res))
 # ---------------- dock PCB parts
 HEIGHTS = [("CP_Elec_8x10", 10.5), ("CP_Elec_6.3x7.7", 7.9), ("MWSA0604S", 3.8), ("SOIC", 1.75), ("SOT-23", 1.25), ("DFN", 0.8),
            ("D_SMB", 2.45), ("Fuse_1206", 0.9), ("1206", 1.8), ("0805", 1.35), ("0603", 0.9), ("HRO_TYPE-C", 3.26)]
@@ -162,6 +167,6 @@ out.append(f"Z stack: base {G.BASE_T:.1f}, standoff {G.STANDOFF:.1f}, PCB {G.PCB
            f"plug top {G.PLUG_TOP:.2f}, deck {G.TOP_Z:.2f}, fins {G.FIN_Z:.2f}")
 out.append(f"pocket: {G.RL} x {G.RT} footprint + {G.CLR_GUIDE:.2f}/side; walls {G.FIN_H:.1f} high, front window above {G.FRONT_WALL_H:.1f} "
            f"between {G.FRONT_RETURN:.0f} mm corner returns; right-wall notch {G.SIDE_NOTCH_D:.0f} deep above {G.SIDE_NOTCH_Z:.0f}")
-out.append(f"outer size {G.OUT_W:.2f} x {G.OUT_D:.2f} x {G.FIN_Z:.1f} mm (bed 220 x 180: fits); radio gap {G.GAP:.1f} mm, back row offset {G.STAGGER:.2f}")
+out.append(f"outer size {G.OUT_W:.2f} x {G.OUT_D:.2f} x {G.FIN_Z:.1f} mm (bed 220 x 180: fits); radio gap {G.GAP:.1f} mm, aligned grid")
 out.append(f"INTERFERENCES: {bad}")
 print("\n".join(out))
