@@ -18,9 +18,10 @@ include <case_params.scad>
 part = "assembly";  // top | bottom | spacer | print | assembly | closed | cutaway | top_raw | bottom_raw | spacer_raw | tunnels_raw
 
 // ---------------- dock interface (keep identical to the feather case / charging_dock geom.py) ----------------
-usb_from_front = 7.55;   // USB-C centre below the front face (shared with the Feather radio)
+env_W          = 31.9;   // outside width  = dock pocket width  (both docked radios)
+env_T          = 33.86;  // outside thickness = dock pocket depth (both docked radios)
+usb_from_front = 6.62;   // USB-C centre below the front face (both docked radios)
 usb_mouth_in   = 1.0;    // USB-C mouth inside the bottom end face
-min_air        = 0.3;    // holder bottom to the back cover floor
 wall      = 2.0;
 edge_r    = 2.0;    // rounding of the front/back edges
 clr       = 0.5;    // PCB edge to inner wall (all four sides)
@@ -57,15 +58,15 @@ in_r  = pcb_r + clr;   // 3.0
 out_r = in_r + wall;   // 5.0 (MI03)
 usb_zc = pcb_t + usb_h/2;
 Ht = usb_zc + usb_from_front;   // front outer face
-holder_low0 = -(spacer_t + holder_h);
-Hb = -holder_low0 + min_air + floor_t;   // back outer face is at Z = -Hb (as thin as the holder allows)
-env_T = Ht + Hb;
+Hb = env_T - Ht;                // back outer face is at Z = -Hb
 top_in = Ht - front_t;          // ceiling
 bot_in = Hb - floor_t;          // floor top at Z = -bot_in
 holder_low = -(holder_shift + holder_h);
 assert(top_in >= pcb_t + top_tallest + 0.5, "ceiling too low for the tallest top part");
 assert(-bot_in <= holder_low - 0.3, "back face too close to the holder");
 assert(abs((in_y0-wall) - usb_mouth_y + usb_mouth_in) < 0.01, "USB-C mouth must be 1.0 inside the bottom end face");
+assert(abs((in_x1-in_x0+2*wall) - env_W) < 0.01, "outside width must equal env_W (dock pocket)");
+assert(abs(usb_x - (in_x0+in_x1)/2) < 0.01, "USB-C must be centred across the width");
 echo(str("Case outer: ", in_x1-in_x0+2*wall, " W x ", in_y1-in_y0+2*wall, " L x ", Ht+Hb, " T mm"));
 echo(str("Front face Z ", Ht, ", ceiling ", top_in, ", floor top ", -bot_in, ", back face ", -Hb, ", holder low ", holder_low, " (air ", holder_low+bot_in, ")"));
 echo(str("USB-C centre X ", usb_x-(in_x0-wall), " of ", in_x1-in_x0+2*wall, " (centred), ", Ht-usb_zc, " below the front face, mouth ", usb_mouth_y-(in_y0-wall), " inside the bottom end face"));

@@ -56,7 +56,12 @@ fu = feather_usb;     // [x, mouth y, z]
 
 // ---------------- ghosts (fit check + previews) ----------------
 module g_holder() { bx(holder_box); }
-module g_feather() { bx(fb); for (p=feather_parts) bx(p); }
+module g_feather() {
+  difference() { bx(fb); for (h=f_holes) translate([h[0],h[1],fb[4]-1]) cylinder(d=2.5, h=fb[5]-fb[4]+2); }
+  for (i=[0:len(feather_parts)-2]) bx(feather_parts[i]);
+  u=feather_parts[len(feather_parts)-1]; r=(u[5]-u[4])/2;    // USB-C receptacle: stadium (rounded ends), like the real shell
+  hull() for (x=[u[0]+r, u[1]-r]) translate([x, u[2], u[4]+r]) rotate([-90,0,0]) cylinder(r=r, h=u[3]-u[2]);
+}
 module g_fm() { bx(fm_b); translate([FM_CX, jack_b[2], fm_b[5]+FM_JACK_D/2]) rotate([-90,0,0]) cylinder(d=FM_JACK_D, h=FM_JACK_L); bx(hdr_b); }
 module g_wheel() { bx(wbody_b); translate([wx,wy,WHEEL_SEAT_Z+wheel_z0]) cylinder(r=WHEEL_R, h=wheel_z1-wheel_z0); }
 module g_switch(shift=0) { sw_side() { bx(sw_plate_b); bx(sw_body_b); bx(sw_lug_b); translate([0,shift,0]) bx(sw_knob_b); } }
@@ -74,7 +79,7 @@ module dock_usb_cuts() {   // bottom end wall: same geometry as the single-board
 // front shell: the receptacle reaches 1.0 into the end wall, so the wall below it is open down to the split ...
 module usb_notch() { translate([DOCK_USB_X-usb_open[0]/2, DOCK_USB_MOUTH_Y-0.15, Z_SPLIT-1]) cube([usb_open[0], IN_Y0+0.01-(DOCK_USB_MOUTH_Y-0.15), DOCK_USB_Z-(Z_SPLIT-1)]); }
 // ... and the back shell fills it back up to just under the receptacle
-module usb_tab() { translate([DOCK_USB_X-usb_open[0]/2+asm_fit, DOCK_USB_MOUTH_Y-0.15+asm_fit, Z_SPLIT-0.01]) cube([usb_open[0]-2*asm_fit, IN_Y0-(DOCK_USB_MOUTH_Y-0.15+asm_fit)+0.3, F_Z1-0.1-Z_SPLIT+0.01]); }
+module usb_tab() { translate([DOCK_USB_X-usb_open[0]/2+asm_fit, DOCK_USB_MOUTH_Y-0.15+asm_fit, Z_SPLIT-0.01]) cube([usb_open[0]-2*asm_fit, IN_Y0-(DOCK_USB_MOUTH_Y-0.15+asm_fit), F_Z1-0.1-Z_SPLIT+0.01]); }
 module lip_gaps() {   // no lip where the switch plate sits in the left-wall groove
   sw_side() translate([IN_X1-0.01, SW_Y-sw_plate[0]/2-0.5, Z_SPLIT-1]) cube([lip_t+1, sw_plate[0]+1.0, lip_h+2]);
 }
@@ -93,8 +98,8 @@ module switch_cuts() { sw_side() {
   translate([IN_X1-1, SW_Y-sw_body[0]/2-0.3, Z_SPLIT-1]) cube([sw_plate_x1-SW_GROOVE-IN_X1+1.01, sw_body[0]+0.6, sw_body_b[5]+0.3-(Z_SPLIT-1)]); // body window
 } }
 module switch_ribs() { sw_side()   // inner side of the plate groove beside the body
-  for (s=[-1,1]) translate([sw_plate_x1-SW_GROOVE-SW_RIB, s>0 ? SW_Y+sw_body[0]/2+0.3 : SW_Y-sw_plate[0]/2-0.2, Z_SPLIT+0.6])
-    cube([SW_RIB+0.01, sw_plate[0]/2+0.2-sw_body[0]/2-0.3, sw_plate_b[5]+0.2-Z_SPLIT-0.6]);
+  for (s=[-1,1]) translate([sw_plate_x1-SW_GROOVE-SW_RIB, s>0 ? SW_Y+sw_body[0]/2+0.3 : SW_Y-sw_plate[0]/2-0.2, sw_plate_b[4]-0.2])
+    cube([SW_RIB+0.01, sw_plate[0]/2+0.2-sw_body[0]/2-0.3, sw_plate_b[5]+0.2-(sw_plate_b[4]-0.2)]);
 }
 module switch_labels() {   // engraved on the LEFT face; ON toward the top end
   for (L=[["ON",1],["OFF",-1]]) translate([IN_X0-WALL+0.4, SW_Y+L[1]*(sw_slot[0]/2+0.8), SW_Z])

@@ -1,15 +1,12 @@
 == printed parts: watertight / volume
-  front  watertight=True bodies=1 volume=9043 mm3 bounds=[[-15.95, -2.0, 23.61], [15.95, 96.71, 33.86]]
-  back   watertight=True bodies=1 volume=14597 mm3 bounds=[[-15.95, -2.0, 0.0], [15.95, 96.71, 25.51]]
+  front  watertight=True bodies=1 volume=9017 mm3 bounds=[[-15.95, -2.0, 23.61], [15.95, 96.71, 33.86]]
+  back   watertight=True bodies=1 volume=14592 mm3 bounds=[[-15.95, -2.0, 0.0], [15.95, 96.71, 25.51]]
   deck   watertight=True bodies=1 volume=2590 mm3 bounds=[[-13.75, 0.2, 22.61], [13.75, 94.51, 25.56]]
 == ghost vs printed parts (mm3, > 0.01 = interference)
   holder     clear of all printed parts
   feather    x front: 0.112  <-- INTERFERENCE
-  feather    x back : 1.163  <-- INTERFERENCE
-  feather    x deck : 23.472  <-- INTERFERENCE
 
-  fm         x front: 1.208  <-- INTERFERENCE
-
+  fm         clear of all printed parts
   wheel      clear of all printed parts
   switch_on  clear of all printed parts
   switch_off clear of all printed parts
@@ -18,10 +15,10 @@
 == printed parts vs each other
   front x back: 0.000
   front x deck: 0.000
-  back x deck: 0.009
+  back x deck: 0.000
 == assembly path (front shell lowered straight down)
-  feather: reaches past the inner wall (x -4.47..4.47 y -1.00..-0.01 z 25.61..28.87); swept volume x front shell 0.062  <-- BLOCKED
-  wheel: reaches past the inner wall (x 13.95..16.90 y 52.90..64.52 z 25.61..27.61); swept volume x front shell 0.000: OK
+  feather: reaches past the inner wall (x -4.47..4.47 y -1.00..-0.01 z 25.61..28.87); swept volume x front shell 0.071  <-- BLOCKED
+  wheel: reaches past the inner wall (x 13.95..16.90 y 52.88..64.54 z 25.61..27.61); swept volume x front shell 0.000: OK
   fm: stays inside the inner walls
 == Feather LEDs / RESET: line of sight straight out through the front face
   chg   at (6.03, 1.98): clear
@@ -32,4 +29,4 @@
   outer W 31.90  L 98.71  T 33.86
   USB-C centre X -0.00 from the centre line, 6.62 below the front face, mouth 1.00 inside the bottom end face
   dock interface: MATCH
-INTERFERENCES: 5
+INTERFERENCES: 2

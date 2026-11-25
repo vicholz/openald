@@ -95,7 +95,8 @@ HOLDER_PINS = [(HOLDER_CX, HOLDER["y0"]+2.4, "+"), (HOLDER_CX, HOLDER["y1"]-2.4,
 # power switch: SS-12F16 SPDT panel slide switch, plate in a groove inside the LEFT wall of the front shell, beside the
 # wheel (geometry is built for the right wall and mirrored in the SCAD)
 SW_L = 4.0                   # knob height above the plate (G4)
-SW_Y, SW_Z = WHEEL[1], DECK_Z1 + 0.6 + 5.7/2
+# switch: Y so its plate groove ends before the FM module; Z so its body clears the Feather's far edge (it rides above it)
+SW_Y, SW_Z = round(FM_Y0 - 0.4 - 19.7/2 - 0.2, 2), F_Z1 + 0.4 + 5.7/2
 SW_PLATE = (19.7, 5.7, 0.5)
 SW_BODY = (11.0, 5.7, 5.0)
 SW_LUG_L, SW_LUG_P = 3.0, 3.0

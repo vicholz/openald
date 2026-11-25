@@ -25,11 +25,11 @@ cx=(x0+x1)/2-BW/2*s                                 # board x=0 in px (board cen
 def crop(img,bx0,by0,bx1,by1,out,flip=False):
     if flip: bx0,bx1=BW-bx1,BW-bx0
     img.crop((int(cx+bx0*s),int(y0+by0*s),int(cx+bx1*s),int(y0+by1*s))).save(out)
-crop(im,9,0,BW,10,f"{P}/pcb_closeup_led_bar.png")
-crop(im,0,8,BW,40,f"{P}/pcb_closeup_usb_serial.png")
-crop(im,0,0,13,13,f"{P}/pcb_closeup_reverse_polarity.png")
+crop(im,12,0,BW,16,f"{P}/pcb_closeup_led_bar.png")            # t116u: charge LEDs + level-bar column + cell protection, top right
+crop(im,0,BH-22,BW,BH,f"{P}/pcb_closeup_usb_serial.png")     # t116u: bottom end: USB-C, ESD, CH340K, charger
+crop(im,6,BH-18,21,BH-8,f"{P}/pcb_closeup_reverse_polarity.png")   # Q2/Q3 between the screw point and the holder + pin
 imb,bx0,bx1,by0,by1=board_box(bigb); 
-crop(imb,0,0,BW,20,f"{P}/pcb_closeup_polarity_marks_bottom.png",flip=True)
+crop(imb,0,BH-12,BW,BH,f"{P}/pcb_closeup_polarity_marks_bottom.png",flip=True)
 subprocess.run(["kicad-cli","sch","export","pdf","-o",f"{ROOT}/docs/openald-schematic.pdf",f"{K}/openald.kicad_sch"],check=True,capture_output=True)
 subprocess.run(["pdftoppm","-r","110","-png","-singlefile",f"{ROOT}/docs/openald-schematic.pdf",f"{P}/schematic-1"],check=True)
 print("rendered")
