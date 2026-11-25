@@ -6,6 +6,23 @@ OpenALD is an ATmega328PB + RDA5807M (RRD-102 module) FM radio, **programmable o
 
 > **OpenALD v1.0 is untested hardware.** This release is the former FM radio rev 4.3 design, renamed and reset to v1.0, with no electrical changes. Since then (all still v1.0): the level bar moved to a vertical column near the jack end for the charging dock, and on 2026-11-11 the separate battery-check button SW2 was removed (the wheel press does its job through a small P-FET, Q4) and the bar was centred across the board and moved up (see "Wheel press replaces the battery-check button"). On 2026-11-12 the USB-C receptacle J1 moved 0.9 mm toward the board edge and the case got the Feather's straight cable-plug recess plus assembly notches (see "USB-C 0.9 mm out to the case face"). It passes ERC, DRC and the 3D case-fit check. Pre-release rev 4.2 had two full datasheet reviews, and rev 4.3 (which only changed the charge-current resistor) had its own independent review (see "Pre-release history" below). No board has been built or programmed yet. Build one or two first.
 
+> **t116u (2026-11-24, still v1.0): USB-C on the bottom END, centred — supersedes the side-USB envelope below.**
+> Victor: "All boards except for the MI03 should have the USB-C connector in the same location at the bottom so they
+> can be placed into the charging station for charging … Try to keep the single board 2 layer."
+> * **Board 26.9 × 84.75 mm, still 2 layers** (was 25.5): J1 moved to the **bottom edge, centred** (shell 1.5 mm
+>   past the edge); everything re-placed around it (holder + pin now toward the USB end, level bar D1/D5/D6 as a
+>   column and the TP4056 charge LEDs D3/D4 at the top / jack end, wheel and switch on the right edge, jack top-left).
+>   Re-routed with Freerouting: 983 track segments, 146 vias, 2.11 m; GND pours on both layers.
+> * **Case 31.9 W × 89.75 L × 33.86 T** (front shell 9.85, back cover 24.01; thinner than the 34.83 side-USB case).
+>   **USB-C in the bottom end face, centred across the width, 6.62 mm behind the front face, mouth 1.0 mm inside
+>   the face**, 13.0 × 7.6 r 3 cable-plug recess — identical to the Feather radio, so both stand in the same dock
+>   pocket (`../charging_dock/DOCK_INTERFACE.md`). Jack hole in the top end wall. Switch knob 2.8 mm and wheel
+>   0.35 mm proud of the right side (the dock pockets have a notch for them).
+> * Checks: ERC 0 errors / 2 accepted warnings; **DRC 0 errors, 0 unconnected**, 82 silk-only (9 edge / 35 over
+>   copper / 38 overlap); JLC CPL correction table OK; case fit **0 interferences** (closest LED tunnel: Q1, 0.25 mm).
+>   JLC parts ≈ $7.32 / board. Fab outputs, vendor BOMs and previews regenerated.
+> * The notes below (side USB-C, 25.5 mm board, 30.5 × 89.75 × 34.83 case) are history.
+
 > **2026-11-24 unified envelope (still v1.0; supersedes the size, mounting, USB-C, LED and case notes further down,
 > which are kept as history).** Victor asked for the single board and the Feather to match the MI03 case so all three
 > use one charging dock. Changes:
@@ -41,7 +58,7 @@ The hardware in this v1.0 package is the ~900 mA charge-current design (R3 = 1.2
 ## Board at a glance
 | | |
 |---|---|
-| Size | **25.5 x 84.75 mm**, 1.6 mm FR-4, 2 layers, 1 oz, 2.5 mm corner radius (2026-11-24; was 38 x 87) |
+| Size | **26.9 x 84.75 mm**, 1.6 mm FR-4, 2 layers, 1 oz, 2.5 mm corner radius (t116u 2026-11-24; was 25.5 x 84.75, before that 38 x 87) |
 | Mounting | No corner holes. 2x M2 self-tapping screws through the holder's two floor holes, the spacer and the PCB at (12.75, 17.62) and (12.75, 73.23) mm from the top-left corner into front-shell bosses |
 | Top side | All SMT parts (including the 3 level-bar LEDs), plus the power switch (THT) and the hand-soldered RRD-102 module |
 | Bottom side | MPD BH-18650-PC holder only (THT, hand-soldered) |
@@ -103,7 +120,7 @@ scripts/                   generator scripts. run_all_pcb.sh regenerates everyth
 ```
 
 ## Ordering at JLCPCB (assembled)
-1. Upload `fab/openald-gerbers-jlcpcb.zip`. Settings: 2 layers, 25.5x84.75 mm, 1.6 mm, any colour, HASL (lead-free) or ENIG.
+1. Upload `fab/openald-gerbers-jlcpcb.zip`. Settings: 2 layers, 26.9x84.75 mm, 1.6 mm, any colour, HASL (lead-free) or ENIG.
 2. Turn on **PCB Assembly**, top side.
 3. Upload `openald-BOM-jlcpcb.csv` and `openald-CPL-jlcpcb.csv`. If a site asks for a centroid or XY file instead, use `openald-centroid.csv` (same positions, plus value and footprint columns). If it asks for a `.pos` or KiCad position file, use `openald.pos`. U4, BT1 and J3 have no JLC placement, so they show as "not selected". Leave them that way, because you hand-solder them (J3 is not fitted).
 4. **SW1 (SK-12E12-G5) is a through-hole part.** If you want JLC to solder it, pick **Standard PCBA**, which adds JLC's THT soldering fee. To keep the cheaper Economic SMT-only service, deselect SW1 and hand-solder it, which is 5 easy joints. Buy it from LCSC (C136720) in that case.
@@ -288,7 +305,7 @@ To sleep in Power-down and wake on a turn or a press, enable PCI2 for PD2/PD3 an
 
 ## 3D-printed case
 - **2026-11-24:** two halves split at the PCB's bottom face plus a 0.8 mm holder spacer. The PCB and holder are screwed to the front shell with **2x M2 x 8-10 self-tapping screws** through the holder's floor holes (fit them before the cell); the back cover snaps on. Print the front shell face down, the back cover back face down, the spacer flat.
-- Outer size **30.5 x 89.75 x 34.83 mm** (MI03 length, thickness and USB-C position; 3 mm wider than the MI03): front shell 10.78 mm, back cover 24.05 mm. Corners r 5 in plan, r 2 on the edges. Walls 2 mm, front face 1.6 mm. USB-C on the left long side (30.3 mm from the top outer end, 7.55 mm behind the front face, mouth 1.0 mm inside, 13.0 x 7.6 r 3 recess). The opening list below is from before this change (history).
+- **t116u:** outer size **31.9 x 89.75 x 33.86 mm**: front shell 9.85 mm, back cover 24.01 mm; USB-C in the bottom end face, centred, 6.62 mm behind the front face, mouth 1.0 mm inside, 13.0 x 7.6 r 3 recess (dock interface shared with the Feather). Before t116u: 30.5 x 89.75 x 34.83 mm (MI03 length, thickness and USB-C position): front shell 10.78 mm, back cover 24.05 mm. Corners r 5 in plan, r 2 on the edges. Walls 2 mm, front face 1.6 mm. USB-C on the left long side (30.3 mm from the top outer end, 7.55 mm behind the front face, mouth 1.0 mm inside, 13.0 x 7.6 r 3 recess). The opening list below is from before this change (history).
 - Openings, all generated from the real footprint positions:
   - **Top edge:** 3.5 mm jack hole (6.8 mm, chamfered). (The battery-check button hole and printed plunger are gone since 2026-11-11; that part of the wall is solid.)
   - **Front (top) face:** the 3-LED level bar as a vertical column **centred across the face** near the jack end (three 2.4 x 1.4 mm rounded windows at 2.8 mm pitch on the centre line, window centres 75.3 / 78.1 / 80.9 mm from the USB-C edge of the PCB = 77.8 / 80.6 / 83.4 mm from the case's USB-C end; D1's tunnel leans 2.3 mm from its LED up to the lowest window) and, at the USB-C end, the two 1.6 mm charge-LED windows just left of the USB-C. Every window has a 0.4 mm rounded rim and its own light tunnel (3.2 x 2.0 mm bore, 0.8 mm walls, ending 0.2 mm above the PCB).

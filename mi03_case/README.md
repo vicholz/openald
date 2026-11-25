@@ -4,7 +4,7 @@ For the stock MI03 board (silk "MLA-M3(2291) V4.1 20240627"), with its 300 mAh L
 MPD BH-18650-PC holder (the same holder OpenALD uses). **CAD only: nothing has been printed, assembled or tested.**
 This folder is separate from the OpenALD v1.0 design: none of the OpenALD files were changed.
 
-**2026-11-24: this case is now the reference envelope** for the OpenALD single-board and Feather radios (same
+**t116u (2026-11-24): the OpenALD single-board and Feather radios moved their USB-C to the bottom end** (31.9 × 33.86 end footprint, centred USB-C) and no longer share this case's envelope; the MI03 keeps its side USB-C and is **not dock-compatible**. Earlier on 2026-11-24 this case was the reference envelope for the OpenALD single-board and Feather radios (same
 89.75 × 34.83 length and thickness, widths 30.5 single board / 32.9 Feather vs 27.5 here, same USB-C position: 30.3 mm from the top outer end, 7.55 mm behind the front face,
 mouth 1.0 mm inside the left face, 13.0 × 7.6 r 3 recess). The MI03 files themselves were not changed. **The MI03 is not dock-compatible** (Victor, 2026-11-24: "The mi03 version doesn't need to work with the dock."): the
 charging dock is designed and checked only for the OpenALD single-board and Feather radios. Charge the MI03 with a
