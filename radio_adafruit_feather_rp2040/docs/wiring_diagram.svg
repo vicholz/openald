@@ -48,7 +48,7 @@
 <text x="1080" y="440" font-size="12.5" fill="#444" text-anchor="start">GND (one wire to the Feather's GND pad)</text>
 <rect x="70" y="140" width="310" height="250" rx="10" fill="#eef0ff" stroke="#333" stroke-width="2"/>
 <text x="225.0" y="166" font-size="18" fill="#222" text-anchor="middle" font-weight="bold">RDA5807M FM module</text>
-<text x="225.0" y="186" font-size="12.5" fill="#444" text-anchor="middle">27.25 × 27.25 mm, jack + 4-pin header at the top</text>
+<text x="225.0" y="186" font-size="12.5" fill="#444" text-anchor="middle">27.25 × 27.25 mm, flipped: flat side to the front face</text>
 <text x="225.0" y="203" font-size="12.5" fill="#444" text-anchor="middle">I2C 0x10 / 0x11, 3.3 V</text>
 <text x="225.0" y="220" font-size="12.5" fill="#444" text-anchor="middle">headphone cable = antenna</text>
 <circle cx="380" cy="230" r="6" fill="#e0b020" stroke="#333" stroke-width="1.5"/>
@@ -64,7 +64,7 @@
 <path d="M380,230 L560,230 L560,115 L1040,115 L1040,230 L1000,230" fill="none" stroke="#d22" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
 <text x="800" y="108" font-size="12.5" fill="#444" text-anchor="middle">VCC wire over the Feather to its 3V3 pad</text>
 <path d="M380,270 L620,270" fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-<text x="560.0" y="372" font-size="12" fill="#444" text-anchor="middle">4 wires from the FM header (deck window)</text>
+<text x="560.0" y="372" font-size="12" fill="#444" text-anchor="middle">4 wires from the FM header (pins cut back on the flat side)</text>
 <text x="80" y="376" font-size="11.5" fill="#a40" text-anchor="start">No I2C found? add 4.7k SDA→3V3, SCL→3V3</text>
 <rect x="70" y="410" width="310" height="180" rx="10" fill="#e6eefb" stroke="#333" stroke-width="2"/>
 <text x="225.0" y="436" font-size="18" fill="#222" text-anchor="middle" font-weight="bold">SS-12F16 slide switch</text>

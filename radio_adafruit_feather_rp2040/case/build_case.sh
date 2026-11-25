@@ -1,6 +1,6 @@
 #!/bin/bash
 # Regenerate case parameters, export print-ready STLs, run the fit check and render previews.
-# t116u: 31.9 x 98.71 x 33.86 mm, bottom-end USB-C = the Feather's own, same dock pocket as the single-board radio.
+# t122u: 35.9 x 98.71 x 33.86 mm (t116u was 31.9 wide), bottom-end USB-C = the Feather's own, same dock pocket as the single-board radio.
 # Needs: openscad (2021.01+), python3 with trimesh + manifold3d + numpy. The charging-dock insertion check for all three
 # radios lives in charging_dock/scripts/check_dock_fit.py.
 set -e
@@ -35,5 +35,12 @@ openscad $P --camera=0,48,34,0,0,90,190      -D 'part="closed"' -o $R/front_face
 openscad $O --camera=0,2,17,90,0,0,70        -D 'part="section"' -D 'sec_y=2' -o $R/section_feather_y2.png $S 2>/dev/null &
 openscad $O --camera=0,58,17,90,0,0,70       -D 'part="section"' -D 'sec_y=58.7' -o $R/section_wheel_y58.png $S 2>/dev/null &
 openscad $O --camera=0,80,17,90,0,0,70       -D 'part="section"' -D 'sec_y=80' -o $R/section_fm_y80.png $S 2>/dev/null &
+wait
+# t122u close-ups: switch from inside (studs, pocket, backing ribs), FM module pegs/standoffs (section through its
+# right-hand holes), Feather centring pegs (section through its left-hand holes), jack in the end wall (section x = 0)
+openscad $P --camera=-14,56,27,140,0,90,80  -D 'part="switch_detail"' -o $R/closeup_switch_inside.png $S 2>/dev/null &
+openscad $P --camera=10,82,27,65,0,60,95     -D 'part="xsection"' -D 'sec_x=10' -o $R/closeup_fm_module_pegs.png $S 2>/dev/null &
+openscad $P --camera=-8.9,26,27,65,0,60,95   -D 'part="xsection"' -D 'sec_x=-8.89' -o $R/closeup_feather_pins.png $S 2>/dev/null &
+openscad $P --camera=0,88,26,75,0,80,70      -D 'part="xsection"' -D 'sec_x=0' -o $R/section_jack_x0.png $S 2>/dev/null &
 wait
 echo done

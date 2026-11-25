@@ -213,6 +213,9 @@ module deck() {
   }
 }
 
+module sl() { if (part=="xsection") translate([sec_x-100, -10, -10]) cube([100, 120, 60]);   // half: everything at x < sec_x
+ else translate([-50, sec_y, -10]) cube([100, 0.6, 60]); }
+module bxs() { translate([IN_X0-WALL-1, SW_Y-14, Z_SPLIT-1]) cube([12, 28, 20]); }
 if (part=="top") translate([0,0,T]) rotate([180,0,0]) top_half();
 else if (part=="bottom") bottom_half();
 else if (part=="deck") translate([0,0,-DECK_Z0]) deck();
@@ -228,6 +231,15 @@ else if (part=="g_switch_on") g_switch(SW_TRAVEL/2);
 else if (part=="g_switch_off") g_switch(-SW_TRAVEL/2);
 else if (part=="print") { bottom_half(); translate([W_OUT+10,IN_L,T]) rotate([180,0,0]) top_half(); translate([2*W_OUT+20,0,-DECK_Z0]) deck(); }
 else if (part=="closed") { color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("orange") deck(); ghosts(); }
-else if (part=="section") intersection() { union() { color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("orange") deck(); ghosts(); } translate([-50, sec_y, -10]) cube([100, 0.6, 60]); }
-else if (part=="xsection") intersection() { union() { color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("orange") deck(); ghosts(); } translate([sec_x, -10, -10]) cube([0.6, 120, 60]); }
+else if (part=="section") { 
+  color("lightgray") intersection() { bottom_half(); sl(); } color("lightsteelblue") intersection() { top_half(); sl(); }
+  color("orange") intersection() { deck(); sl(); } color("black") intersection() { g_holder(); sl(); } color("darkgreen") intersection() { g_feather(); sl(); }
+  color("royalblue") intersection() { g_fm(); sl(); } color("dimgray") intersection() { g_wheel(); sl(); } color("silver") intersection() { g_switch(); sl(); } }
+else if (part=="switch_detail") {   // front shell around the switch (staked) + the deck's backing ribs, seen from inside
+  color("lightsteelblue") intersection() { top_half(); bxs(); } color("orange") intersection() { deck(); bxs(); translate([-50,-10,DECK_Z1+0.02]) cube([100,120,30]); }
+  color("silver") g_switch(); }
+else if (part=="xsection") { 
+  color("lightgray") intersection() { bottom_half(); sl(); } color("lightsteelblue") intersection() { top_half(); sl(); }
+  color("orange") intersection() { deck(); sl(); } color("black") intersection() { g_holder(); sl(); } color("darkgreen") intersection() { g_feather(); sl(); }
+  color("royalblue") intersection() { g_fm(); sl(); } color("dimgray") intersection() { g_wheel(); sl(); } color("silver") intersection() { g_switch(); sl(); } }
 else { color("lightgray") bottom_half(); color("orange") translate([0,0,8]) deck(); color("lightsteelblue",0.6) translate([0,0,22]) top_half(); ghosts(); }

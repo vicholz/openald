@@ -76,7 +76,7 @@ line([(FX1,R["GND"]),(GBX,R["GND"])],"#111"); txt(1080,R["GND"]-10,"GND (one wir
 
 # ---------------- FM module ----------------
 MX0,MX1=70,380
-box(MX0,140,MX1-MX0,250,"RDA5807M FM module",["27.25 × 27.25 mm, jack + 4-pin header at the top","I2C 0x10 / 0x11, 3.3 V","headphone cable = antenna"],"#eef0ff")
+box(MX0,140,MX1-MX0,250,"RDA5807M FM module",["27.25 × 27.25 mm, flipped: flat side to the front face","I2C 0x10 / 0x11, 3.3 V","headphone cable = antenna"],"#eef0ff")
 FMV,FMG=230,270
 pin(MX1,FMV,"VCC","in_r"); pin(MX1,FMG,"GND","in_r")
 for k,lab,col in [("SDA","SDA","#27c"),("SCL","SCL","#d8b800")]:
@@ -84,7 +84,7 @@ for k,lab,col in [("SDA","SDA","#27c"),("SCL","SCL","#d8b800")]:
 line([(MX1,FMV),(560,FMV),(560,115),(1040,115),(1040,R["3V3"]),(FX1,R["3V3"])],"#d22")
 txt(800,108,"VCC wire over the Feather to its 3V3 pad",12.5,"middle","#444")
 GLX=620; line([(MX1,FMG),(GLX,FMG)],"#111")
-txt((MX1+FX0)/2+20,L["SCL"]+22,"4 wires from the FM header (deck window)",12,"middle","#444")
+txt((MX1+FX0)/2+20,L["SCL"]+22,"4 wires from the FM header (pins cut back on the flat side)",12,"middle","#444")
 txt(MX0+10,376,"No I2C found? add 4.7k SDA→3V3, SCL→3V3",11.5,col="#a40")
 
 # ---------------- switch ----------------
