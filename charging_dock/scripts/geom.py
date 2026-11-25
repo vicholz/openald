@@ -1,6 +1,5 @@
-"""OpenALD Dock v1.0 (t116u 2026-11-24: 2 rows x 3, radios STANDING UPRIGHT on their bottom-end USB-C, back row
-offset by half a pitch so each back-row radio shows through the gap between two front-row radios) - single source of
-truth for the dock geometry (mm).
+"""OpenALD Dock v1.0 (t120u 2026-11-24: aligned 3 x 2 grid, radios STANDING UPRIGHT on their bottom-end USB-C;
+the t116u half-pitch back-row offset was removed at Victor's request) - single source of truth for the dock geometry (mm).
 Dock frame: X right, Y toward the back, Z up; origin = front-left-bottom corner of the case.
 KiCad board frame: kx = X - PCB_X0, ky = PCB_Y1 - Y (Y down, origin = board top-left = rear-left)."""
 # ---- radio envelope (see ../DOCK_INTERFACE.md) ----
@@ -20,8 +19,8 @@ COLS, ROWS = 3, 2
 GAP = 25.4                       # 1.0 in between radios (X and Y)
 SIDE, FRONT, BACK = 6.0, 6.0, 13.5
 PITCH_X, PITCH_Y = RL + GAP, RT + GAP
-STAGGER = PITCH_X / 2            # front row shifted right by half a pitch: back-row radios face the front-row gaps
-OUT_W = 2*SIDE + STAGGER + COLS*RL + (COLS-1)*GAP     # 187.15
+STAGGER = 0.0                    # t120u: aligned grid (t116u had the front row shifted by half a pitch)
+OUT_W = 2*SIDE + STAGGER + COLS*RL + (COLS-1)*GAP     # 158.5
 OUT_D = FRONT + BACK + ROWS*RT + (ROWS-1)*GAP         # 112.62
 WALL = 2.0                       # outer skirt wall
 # ---- pockets (upright tubes; Victor's rule: 2 in deep) ----
@@ -66,7 +65,7 @@ PCB_X0, PCB_Y0 = WALL + 0.9, WALL + 0.9           # 2.9 (0.9 gap to the skirt in
 PCB_X1, PCB_Y1 = OUT_W - PCB_X0, OUT_D - PCB_Y0
 PCB_W, PCB_H = PCB_X1 - PCB_X0, PCB_Y1 - PCB_Y0
 def radio_box(c, r):
-    """radio footprint (x0, y0, x1, y1) in the dock frame; front face at y0 (row 0 = front row, shifted by STAGGER)"""
+    """radio footprint (x0, y0, x1, y1) in the dock frame; front face at y0 (row 0 = front row)"""
     x0 = SIDE + c*PITCH_X + (STAGGER if r == 0 else 0.0); y0 = FRONT + r*PITCH_Y
     return x0, y0, x0 + RL, y0 + RT
 def usb_xy(c, r):
