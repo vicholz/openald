@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read the PCB and write case/case_params.scad with every cutout position derived from the actual footprint
-placement.  Case frame (2026-11-24 unified envelope): X = PCB x (0 = USB-C / dock edge, left in the front view),
-Y = BOARD_H - PCB y (Y = 0 at the jack end, Y = BOARD_H at the top end), Z = 0 at the PCB bottom face."""
+placement.  Case frame (t116u bottom-end USB-C): X = PCB x (0 = left edge in the front view), Y = BOARD_H - PCB y
+(Y = 0 at the BOTTOM / USB-C / dock end, Y = BOARD_H at the top / jack end), Z = 0 at the PCB bottom face."""
 import pcbnew, math, os, sys
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE)
 sys.path.insert(0,HERE); import placement as PL
@@ -52,13 +52,13 @@ p("pcb_w",round(W,3)); p("pcb_h",round(H,3)); p("pcb_r",PL.CORNER_R); p("pcb_t",
 p("screws",screws); p("boss_room",round(boss_room,2))
 p("jack_xy",list(tf('J2',-8.4,0))); p("jack_axis_h",2.5)          # PJ-320D: dia-5 barrel, body 5.0 tall, mouth at the board edge
 p("wheel_xy",list(tf('SW3'))); p("wheel_r",7.25); p("wheel_z0",2.0); p("wheel_z1",4.0)
-p("bar_leds",[list(tf(r)) for r in ('D1','D5','D6')])     # 3 x 0603 level-bar LEDs, D1 (lowest level) nearest the dock edge
+p("bar_leds",[list(tf(r)) for r in ('D1','D5','D6')])     # 3 x 0603 level-bar LEDs in a column, D1 (lowest level) nearest the dock end
 p("chg_leds",[list(tf(r)) for r in ('D3','D4')])
 p("led_rot",[round(fps[r].GetOrientationDegrees()) for r in ('D1','D5','D6','D3','D4')])
 sw_on=tf('SW1',1.25,0); sw_off=tf('SW1',-1.25,0); sw_tip=tf('SW1',0,7.8); sw_face=tf('SW1',0,2.8)   # SK-12E12-G5: knob +-1.25 travel, 2.8..7.8 from the pin line
 p("sw_on_y",sw_on[1]); p("sw_off_y",sw_off[1]); p("sw_tip_x",sw_tip[0]); p("sw_face_x",sw_face[0])
 p("sw_act_w",3.5); p("sw_act_z0",2.25); p("sw_act_z1",4.75); p("sw_body_h",6.0)
-p("usb_y",round(H-PL.USB_Y,3)); p("usb_mouth_x",-PL.USB_OVERHANG); p("usb_w",8.94); p("usb_h",3.26)
+p("usb_x",round(PL.USB_X,3)); p("usb_mouth_y",-PL.USB_OVERHANG); p("usb_w",8.94); p("usb_h",3.26)
 hx0=PL.BT1_PAD1[0]-20.9/2   # Keystone 1043 / BH-18650-PC body 77.7 x 20.9, 21.31 above the board (datasheet)
 p("holder_box",[round(hx0,2),round(hx0+20.9,2),round(H-(PL.HOLDER_Y0+77.7),2),round(H-PL.HOLDER_Y0,2)]); p("holder_h",21.31)
 p("holder_pins",[[PL.BT1_PAD1[0],round(H-PL.BT1_PAD1[1],3)],[PL.BT1_PAD2[0],round(H-PL.BT1_PAD2[1],3)]])

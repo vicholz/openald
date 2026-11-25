@@ -1,13 +1,14 @@
-// OpenALD single-board enclosure, 2026-11-24 unified envelope (still v1.0).
-// Same outside as the MI03 case: 27.5 W x 89.75 L x 34.83 T, plan corner r 5, edge r 2, USB-C on the LEFT long side
-// 30.3 mm from the top outer end, centre 7.55 mm below the front face, mouth 1.0 mm inside the side face, so all
-// three OpenALD radios share one charging-dock pocket (they dock lying on that side).
+// OpenALD single-board enclosure, t116u (2026-11-24) bottom-end USB-C (still v1.0).
+// USB-C in the BOTTOM END face, centred across the width, centre usb_from_front below the front face, mouth 1.0 mm
+// inside the end face -- the same spot as the Feather radio, so both stand upright in the charging dock, plugged
+// straight down onto its USB-C plugs. The jack is in the TOP end face. (The MI03 keeps its side USB-C; not docked.)
 // Two halves split at the PCB bottom face:
 //   top    = front shell: front face, all side openings, LED tunnels, 2 bosses the board+holder screw into
 //   bottom = back cover: snaps on (lip + 4 bumps); nothing is screwed to it, so the cell is swapped by popping it off
 //   spacer = 0.8 mm plate between the PCB and the BH-18650-PC holder (clears the through-hole tails under it)
 // All component positions come from case_params.scad (scripts/gen_case_params.py, from the KiCad board).
-// Frame: X = PCB x (0 = USB-C / dock edge), Y = 0 at the jack end, Y = pcb_h at the top end, Z = 0 at the PCB bottom.
+// Frame: X = PCB x (0 = left edge), Y = 0 at the bottom (USB-C / dock) end, Y = pcb_h at the top (jack) end,
+// Z = 0 at the PCB bottom.
 //
 //   openscad -D 'part="top"'    -o case_top.stl    openald_case.scad
 //   openscad -D 'part="bottom"' -o case_bottom.stl openald_case.scad
@@ -16,10 +17,10 @@ include <case_params.scad>
 
 part = "assembly";  // top | bottom | spacer | print | assembly | closed | cutaway | top_raw | bottom_raw | spacer_raw | tunnels_raw
 
-// ---------------- shared envelope (keep identical to mi03_case.scad / feather case / dock) ----------------
-env_T          = 34.83;  // outside thickness, front face to back face
-usb_from_front = 7.55;   // USB-C centre below the front face
-usb_mouth_in   = 1.0;    // USB-C mouth inside the side face
+// ---------------- dock interface (keep identical to the feather case / charging_dock geom.py) ----------------
+usb_from_front = 7.55;   // USB-C centre below the front face (shared with the Feather radio)
+usb_mouth_in   = 1.0;    // USB-C mouth inside the bottom end face
+min_air        = 0.3;    // holder bottom to the back cover floor
 wall      = 2.0;
 edge_r    = 2.0;    // rounding of the front/back edges
 clr       = 0.5;    // PCB edge to inner wall (all four sides)
@@ -36,14 +37,14 @@ holder_shift = spacer_t;   // the holder sits this far below the PCB
 // LED light tunnels (level bar + TP4056 charge LEDs): one sealed tunnel per 0603 LED
 led_window = "open";  // "open" = filleted through-hole | "skin" = closed thin skin on the outer face
 skin_t     = 0.4;
-tun_in     = [2.0, 3.2]; // tunnel bore (x, y): the LEDs are rotated 90 degrees
+tun_in     = [3.2, 2.0]; // tunnel bore (x, y): 0603 LEDs with their long axis along X
 tun_wall   = 0.7;
 tun_gap    = 0.2;     // air between the tunnel walls and the PCB surface
-bar_win    = [1.4, 2.4, 0.5];  // level-bar window (x, y), corner radius: three across = a bar that is vertical when docked
+bar_win    = [2.4, 1.4, 0.5];  // level-bar window (x, y), corner radius: three in a column = a vertical bar when docked
 chg_win_d  = 1.6;
 win_fillet = 0.4;
 wheel_pocket_d = 1.0; wheel_pocket_h = 6.0;
-usb_recess = [13.0, 7.6]; usb_recess_r = 3.0;   // OpenALD cable-plug recess (Y x Z) on the side face
+usb_recess = [13.0, 7.6]; usb_recess_r = 3.0;   // OpenALD cable-plug recess (X x Z) on the bottom end face
 usb_recess_gap = 0.55;                          // recess floor this far outside the receptacle mouth (MI03 value)
 asm_fit   = 0.2;
 label_depth = 0.4;  label_size = 1.8;
@@ -56,16 +57,18 @@ in_r  = pcb_r + clr;   // 3.0
 out_r = in_r + wall;   // 5.0 (MI03)
 usb_zc = pcb_t + usb_h/2;
 Ht = usb_zc + usb_from_front;   // front outer face
-Hb = env_T - Ht;                // back outer face is at Z = -Hb
+holder_low0 = -(spacer_t + holder_h);
+Hb = -holder_low0 + min_air + floor_t;   // back outer face is at Z = -Hb (as thin as the holder allows)
+env_T = Ht + Hb;
 top_in = Ht - front_t;          // ceiling
 bot_in = Hb - floor_t;          // floor top at Z = -bot_in
 holder_low = -(holder_shift + holder_h);
 assert(top_in >= pcb_t + top_tallest + 0.5, "ceiling too low for the tallest top part");
 assert(-bot_in <= holder_low - 0.3, "back face too close to the holder");
-assert(abs((in_x0-wall) - usb_mouth_x + usb_mouth_in) < 0.01, "USB-C mouth must be 1.0 inside the side face");
+assert(abs((in_y0-wall) - usb_mouth_y + usb_mouth_in) < 0.01, "USB-C mouth must be 1.0 inside the bottom end face");
 echo(str("Case outer: ", in_x1-in_x0+2*wall, " W x ", in_y1-in_y0+2*wall, " L x ", Ht+Hb, " T mm"));
 echo(str("Front face Z ", Ht, ", ceiling ", top_in, ", floor top ", -bot_in, ", back face ", -Hb, ", holder low ", holder_low, " (air ", holder_low+bot_in, ")"));
-echo(str("USB-C centre ", (in_y1+wall)-usb_y, " mm from the top outer end, ", Ht-usb_zc, " below the front face"));
+echo(str("USB-C centre X ", usb_x-(in_x0-wall), " of ", in_x1-in_x0+2*wall, " (centred), ", Ht-usb_zc, " below the front face, mouth ", usb_mouth_y-(in_y0-wall), " inside the bottom end face"));
 echo(str("Switch knob protrudes ", sw_tip_x-(in_x1+wall), " mm beyond the right side; wheel ", wheel_xy[0]+wheel_r-(in_x1+wall)));
 
 module rrect(x0,y0,x1,y1,r,h) { hull() for (x=[x0+r,x1-r]) for (y=[y0+r,y1-r]) translate([x,y,0]) cylinder(r=r,h=h); }
@@ -94,8 +97,8 @@ module filleted_pocket(w,h,cr,depth,n=10) { translate([0,0,-depth]) filleted_hol
 function wheel_ch() = sqrt(pow(wheel_r,2)-pow(in_x1-wheel_xy[0],2));
 sw_slot_l = abs(sw_on_y-sw_off_y)+sw_act_w+0.7;
 module cutouts() {
-  // 3.5 mm jack (jack end): 6.8 mm hole for the plug overmold, outer chamfer
-  translate([jack_xy[0], in_y0+0.1, pcb_t+jack_axis_h]) rotate([90,0,0]) { cylinder(d=6.8,h=wall+1); translate([0,0,wall-0.8]) cylinder(d1=6.8,d2=8.6,h=0.9); }
+  // 3.5 mm jack (top end): 6.8 mm hole for the plug overmold, outer chamfer
+  translate([jack_xy[0], in_y1-0.1, pcb_t+jack_axis_h]) rotate([-90,0,0]) { cylinder(d=6.8,h=wall+1); translate([0,0,wall-0.8]) cylinder(d1=6.8,d2=8.6,h=0.9); }
   // thumbwheel (right side): pocket that thins the wall to 1 mm, slot through its floor
   ch = wheel_ch(); wz = pcb_t+(wheel_z0+wheel_z1)/2;
   translate([in_x1+wall, wheel_xy[1], wz]) rotate([0,90,0]) rotate([0,0,90]) filleted_pocket(2*ch+5.0, wheel_pocket_h, 2.6, wheel_pocket_d);
@@ -103,17 +106,17 @@ module cutouts() {
   // power switch (right side)
   translate([in_x1, (sw_on_y+sw_off_y)/2, pcb_t+(sw_act_z0+sw_act_z1)/2]) rotate([0,90,0]) rotate([0,0,90])
     filleted_hole(sw_slot_l, sw_act_z1-sw_act_z0+0.7, 0.9, wall, 0.8, 0.3);
-  // USB-C (left side = dock face): MI03 geometry: cable-plug recess 13.0 x 7.6 r 3 stopping 0.55 outside the mouth,
+  // USB-C (bottom end face = dock face): cable-plug recess 13.0 x 7.6 r 3 stopping 0.55 outside the mouth,
   // receptacle clearance through the rest of the wall
-  translate([in_x0-wall-1, usb_y, usb_zc]) rotate([0,90,0]) rotate([0,0,90]) linear_extrude(1+(usb_mouth_x-usb_recess_gap)-(in_x0-wall)) rr2d(usb_recess[0], usb_recess[1], usb_recess_r);
-  translate([in_x0+0.5, usb_y, usb_zc]) rotate([0,-90,0]) rotate([0,0,90]) filleted_hole(usb_w+0.5, usb_h+0.5, 1.4, wall+0.5, 0, 0);
+  translate([usb_x, in_y0-wall-1, usb_zc]) rotate([-90,0,0]) linear_extrude(1+(usb_mouth_y-usb_recess_gap)-(in_y0-wall)) rr2d(usb_recess[0], usb_recess[1], usb_recess_r);
+  translate([usb_x, in_y0+0.5, usb_zc]) rotate([90,0,0]) filleted_hole(usb_w+0.5, usb_h+0.5, 1.4, wall+0.5, 0, 0);
 }
 module asm_notches() {   // top half: the wheel dial, switch knob and USB-C shell reach into/through the walls, so the
                          // wall below each is open down to the split; the bottom half fills it back up (asm_tabs)
   ch = wheel_ch(); wz = pcb_t+(wheel_z0+wheel_z1)/2;
   translate([in_x1-0.5, wheel_xy[1]-ch-0.6, -1]) cube([wall+2, 2*ch+1.2, 1+wz]);
   translate([in_x1-0.5, (sw_on_y+sw_off_y)/2-sw_slot_l/2, -1]) cube([wall+2, sw_slot_l, 1+pcb_t+(sw_act_z0+sw_act_z1)/2]);
-  translate([usb_mouth_x-0.15, usb_y-(usb_w+0.5)/2, -1]) cube([in_x0+0.01-(usb_mouth_x-0.15), usb_w+0.5, 1+usb_zc]);
+  translate([usb_x-(usb_w+0.5)/2, usb_mouth_y-0.15, -1]) cube([usb_w+0.5, in_y0+0.01-(usb_mouth_y-0.15), 1+usb_zc]);
 }
 module asm_tabs() {      // bottom half: wheel and switch notches filled to 0.5 under the dial / knob (USB: the lip does it)
   ch = wheel_ch();
@@ -143,8 +146,8 @@ module led_window(p,w,h,cr) {
 module led_tunnels() { tunnel_walls(bar_leds); tunnel_walls(chg_leds); }
 module led_windows() { for (p=bar_leds) led_window(p,bar_win[0],bar_win[1],bar_win[2]); for (p=chg_leds) led_window(p,chg_win_d,chg_win_d,chg_win_d/2); }
 module lip_outline(o,h) { rrect(in_x0-o,in_y0-o,in_x1+o,in_y1+o,in_r+o,h); }
-// no lip/rebate along the straight part of the jack-end wall (the lip would show at the bottom of the 6.8 plug hole)
-module jack_end_no_lip() { translate([in_x0+in_r, in_y0-wall-1, -1]) cube([in_x1-in_x0-2*in_r, wall+1, lip_h+3]); }
+// no lip/rebate along the straight part of the jack-end (top) wall (the lip would show at the bottom of the 6.8 plug hole)
+module jack_end_no_lip() { translate([in_x0+in_r, in_y1, -1]) cube([in_x1-in_x0-2*in_r, wall+1, lip_h+3]); }
 
 // ---------------- FRONT SHELL (Z 0 .. Ht) ----------------
 module top_half() {
@@ -171,7 +174,7 @@ module bottom_half() {
       asm_tabs();
     }
     cutouts();
-    translate([pcb_w/2-3, in_y1+wall-0.8, -0.8]) cube([6, 2, 0.81]);   // pry notch at the top end
+    translate([in_x0-wall-1.2, pcb_h/2-3, -0.8]) cube([2, 6, 0.81]);   // pry notch, middle of the left side
   }
 }
 // ---------------- holder spacer (Z -spacer_t .. 0) ----------------

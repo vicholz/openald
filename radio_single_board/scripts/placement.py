@@ -12,66 +12,71 @@
 #     floor holes (2 x M2 through holder + PCB into front-shell bosses), so the top side keeps those spots clear;
 #   * level bar: three LEDs in a row ACROSS the board near the top-right, so it reads as a vertical bar (D1 lowest)
 #     while the radio lies in the dock, and sits well above the pocket rim.
-BASE_W = 22.5                                    # the coordinates below were laid out on a 22.5 mm board
-# t115u (2026-11-24): back to 2 layers. The board is widened (BOARD_W) so the 2-layer route closes with connected GND
-# pours; parts are spread across the extra width by the stretch at the end of this file (J1 stays on the left edge,
-# the wheel and switch stay on the right edge, the holder and its screw points stay centred).
+BASE_W = 25.5                                    # t116u: the coordinates below are laid out on a 25.5 mm board
+# t116u (2026-11-24): USB-C moved to the BOTTOM END (centred) so the radio stands upright in the dock, plugged
+# straight down onto the dock's USB-C plug. The ends are swapped relative to t115u:
+#   * y = 0 is the TOP end (jack, level bar, FM module), y = BOARD_H the BOTTOM end (USB-C J1, centred, mouth
+#     USB_OVERHANG past the bottom edge = 1.0 mm inside the case's bottom end face);
+#   * 18650 holder BT1 on the bottom side, + end at the BOTTOM (USB) end now, - end at the top (jack) end; the holder
+#     is still screwed to the front shell through its own two 3.2 mm floor holes, so the top side keeps those clear;
+#   * level bar: three LEDs in a COLUMN along the board at the top-right (D6 top, D1 lowest), so it reads as a
+#     vertical bar while the radio stands in the dock, well above the pocket rim.
 import os as _os
-BOARD_W = float(_os.environ.get("OPENALD_BOARD_W", "25.5"))   # smallest width that routed on 2 layers (24.5 and 25.0 left 3 unconnected)
+BOARD_W = float(_os.environ.get("OPENALD_BOARD_W", "26.9"))   # case 31.9 wide = the Feather radio (FM module 27.25 across)
 BOARD_H, CORNER_R = 84.75, 2.5
-HOLDER_Y0 = 6.0                                  # holder body top end (holder body 77.7: y 6.0 .. 83.7)
-BT1_PAD1 = (BOARD_W/2, HOLDER_Y0 + 3.17)             # + pin (holder model: body 3.17 past pad 1, 1.63 past pad 2)
-BT1_PAD2 = (BOARD_W/2, BT1_PAD1[1] + 72.9)           # - pin
-BT1_NPTH = [(BOARD_W/2, BT1_PAD1[1] + 8.45), (BOARD_W/2, BT1_PAD1[1] + 64.06)]   # holder floor holes = case screw points
+USB_OVERHANG = 1.5                               # J1 mouth past the bottom board edge
+J1_Y = BOARD_H + USB_OVERHANG - 3.65             # footprint origin is 3.65 behind the mouth
+BT1_PAD1 = (BOARD_W/2, 75.0)                     # + pin, toward the USB end (clear of J1's pads and shell legs)
+BT1_PAD2 = (BOARD_W/2, BT1_PAD1[1] - 72.9)       # - pin, toward the jack end
+HOLDER_Y0 = BT1_PAD2[1] - 1.63                   # holder body top end (body 77.7 long: 1.63 past pad 2, 3.17 past pad 1)
+BT1_NPTH = [(BOARD_W/2, BT1_PAD1[1] - 64.06), (BOARD_W/2, BT1_PAD1[1] - 8.45)]   # holder floor holes = case screw points
 SCREW_KEEP_R = 2.6                               # top-side keep-out radius around each screw point (front-shell boss r 2.2)
-HOLES = []                                       # no separate mounting holes any more (H1-H4 removed)
-USB_Y = 27.8                                     # J1 centre (from the board top)
-USB_OVERHANG = 1.5                               # J1 mouth past the left board edge
-J1_X = -USB_OVERHANG + 3.65                      # footprint origin is 3.65 behind the mouth
-JACK_X = 4.85                                    # PJ-320D axis (left of the holder's - pin)
+HOLES = []
+USB_X = BOARD_W/2                                # J1 centred across the width
+JACK_X = 5.5                                     # PJ-320D axis (left of the holder's - pin), mouth at the top edge
 PL = {
- # ---- top end: level bar + charge LEDs top-right (rows across the board), reverse-polarity FETs top-left
- "D1":(13.9,3.0,90), "D5":(16.7,3.0,90), "D6":(19.5,3.0,90),             # level bar, vertical in the dock (D1 lowest)
- "D3":(16.7,7.2,90), "D4":(19.5,7.2,90), "R21":(13.9,7.2,90),
- "Q3":(4.6,2.6,0), "Q2":(4.6,7.0,0), "R23":(8.4,2.6,90), "R24":(8.4,6.0,90),
- # ---- right of the top screw boss: wheel-press FET, then two rows of 0603s (LED, UART, I2C series resistors)
- "Q4":(16.4,11.4,0), "R22":(21.0,11.4,90),
- "R11":(14.6,15.3,90), "R12":(16.2,15.3,90), "R13":(17.8,15.3,90), "R25":(19.4,15.3,90), "R19":(21.0,15.3,90),
- "R16":(14.6,18.5,90), "R17":(16.2,18.5,90), "R20":(17.8,18.5,90),
- # ---- USB serial above the USB-C, ESD / CC resistors below it, charger below that (left column)
- "C15":(1.4,11.4,90), "C16":(4.4,11.4,90), "U7":(4.2,17.2,90),
- "J1":(J1_X,USB_Y,-90),
- "U8":(3.0,35.2,0), "R1":(7.6,34.0,0), "R2":(7.6,35.8,0),
- "U1":(5.0,40.8,0), "C1":(1.3,45.6,90), "C2":(5.0,45.4,0), "R3":(8.2,46.2,90), "D7":(10.2,44.4,90),
- # ---- right edge: thumbwheel (dial overhangs the edge), then the power switch
- "SW3":(18.1,26.6,-90),
- "SW1":(20.0,40.6,90),
- # ---- centre: ISP pads under the wheel, then the wheel-press diode / divider beside the switch
- "J3":(11.6,35.0,0),
- "D2":(13.6,44.4,90), "R6":(15.6,44.4,90),
- # ---- MCU (left) with its parts in a 6 x 3 grid to the right of it (U5 takes three cells)
- "U3":(5.8,52.9,0),
- "C7":(12.6,49.1,90), "R10":(14.2,49.1,90), "C19":(15.8,49.1,90), "U5":(19.8,49.6,0),
- "C13":(12.6,52.6,90), "C14":(14.2,52.6,90), "R14":(15.8,52.6,90), "R7":(17.4,53.0,90), "C4":(19.0,53.0,90), "C5":(20.6,53.0,90),
- "R15":(12.6,56.1,90), "C18":(14.2,56.1,90), "R8":(15.8,56.1,90), "R9":(17.4,56.1,90), "C6":(19.0,56.1,90),
- # ---- MCU-only rail + FM supply parts left of the FM module
- "D10":(1.4,60.8,90), "D8":(3.8,60.8,90), "D9":(6.2,60.8,90),
- "U6":(2.6,65.2,0), "C17":(2.6,68.6,0), "R18":(7.6,65.0,90), "C9":(7.6,68.4,90), "C8":(8.4,60.8,90),
- "U4":(16.0,64.1,0),
- # ---- jack (bottom end, left of the holder's - pin) + audio and cell protection right of the - pin
- "J2":(JACK_X,BOARD_H-8.4,90),
- "C10":(16.4,71.6,0), "C11":(16.4,74.2,0), "FB1":(20.8,71.6,0), "FB2":(20.8,74.2,0), "FB3":(14.6,76.6,0), "C12":(17.6,76.6,0), "R5":(20.8,76.6,0),
- "U2":(15.3,79.5,0), "Q1":(19.4,79.6,90), "C3":(14.8,82.8,0), "R4":(18.0,82.8,0),
+ # ---- top end: jack (left), holder - pin (centre), charge LEDs + level bar column + cell protection (right)
+ "J2":(JACK_X,8.4,-90),
+ "D3":(19.6,2.4,0), "D4":(19.6,5.0,0), "R21":(16.0,2.4,0), "R22":(16.0,5.0,0),
+ "D6":(23.4,2.4,0), "D5":(23.4,5.0,0), "D1":(23.4,7.6,0),               # level bar column, D1 lowest
+ "U2":(17.6,9.6,0), "Q1":(22.3,11.0,0), "C3":(17.0,13.2,0), "R4":(20.4,14.0,0), "R5":(23.6,14.0,0),
+ # ---- FM module right, audio coupling / ferrites left (under the jack), FM supply + I2C series below them
+ "U4":(18.6,21.4,0),
+ "C10":(3.0,16.2,0), "FB1":(7.6,16.2,0), "C11":(3.0,18.8,0), "FB2":(7.6,18.8,0),
+ "FB3":(2.2,21.3,0), "C12":(5.4,21.3,0), "C9":(8.7,21.3,90), "C8":(10.7,21.3,90),
+ "R16":(2.0,23.6,0), "R17":(5.1,23.6,0), "R18":(8.2,23.6,0),
+ "R14":(2.2,25.4,0), "R15":(5.4,25.4,0), "R10":(8.6,25.4,0),
+ "R19":(2.2,27.2,0), "C19":(8.6,27.2,0),
+ # ---- MCU (left) under them, thumbwheel (right edge, dial overhangs), then the power switch
+ "U3":(6.4,34.5,0),
+ "SW3":(21.1,33.8,-90),
+ "SW1":(23.0,48.0,90),
+ "J3":(14.9,42.2,0),
+ "C7":(2.0,43.0,0), "C13":(5.2,43.0,0), "C14":(8.4,43.0,0), "C18":(11.6,43.0,0),
+ "R11":(2.0,44.8,0), "R12":(5.2,44.8,0), "R13":(8.4,44.8,0), "R7":(11.6,44.8,0),
+ "R8":(2.0,46.6,0), "R9":(5.2,46.6,0), "C6":(8.4,46.6,0), "R6":(11.6,46.6,0),
+ "C4":(2.0,48.4,0),
+ "U5":(3.0,52.4,0), "C5":(6.6,51.6,90), "D2":(10.0,52.4,90), "Q4":(13.0,53.0,0), "R25":(17.0,53.0,90),
+ # ---- MCU-only rail (diode OR + LDO)
+ "D10":(1.7,59.5,90), "D8":(4.3,59.5,90), "D9":(6.9,59.5,90), "U6":(10.6,58.4,0), "C17":(10.6,61.4,0),
+ "D7":(21.9,62.0,0),
+ # ---- bottom end: USB-C centred, ESD + CC left of it, USB serial left, charger right, reverse-polarity FETs
+ #      between the bottom screw point and the holder + pin
+ "J1":(USB_X,J1_Y,0),
+ "U8":(3.0,80.0,90), "R1":(5.9,79.0,90), "R2":(5.9,82.3,90),
+ "U7":(3.6,73.0,90), "R20":(2.2,65.6,0), "C15":(2.2,67.4,0), "C16":(5.4,67.4,0),
+ "U1":(21.9,73.0,90), "C1":(19.4,79.6,90), "C2":(22.0,79.6,90), "R3":(24.2,79.6,90),
+ "Q2":(9.2,71.4,0), "Q3":(16.3,71.4,0), "R23":(12.75,70.6,0), "R24":(12.75,72.4,0),
 }
 # ---- stretch to BOARD_W: right-edge parts move with the right edge, J1 stays put, everything else scales in x
 _K = BOARD_W / BASE_W; _DW = BOARD_W - BASE_W
 _RIGHT = ("SW3", "SW1")
 for _r, (_x, _y, _a) in list(PL.items()):
-    if _r == "J1": continue
+    if _r == "J1": PL[_r] = (USB_X, _y, _a); continue
     PL[_r] = (round(_x + _DW, 3) if _r in _RIGHT else round(_x * _K, 3), _y, _a)
 JACK_X = PL["J2"][0]
 # level-bar window centres in the case top (board coordinates, straight above each LED)
 BAR_WIN = {r: PL[r][:2] for r in ("D1","D5","D6")}
 # cell-polarity silkscreen marks: (text, x, y, size mm, layer). Bottom marks sit in the strips beyond the holder ends.
-POL_MARKS=[(t, round(x*_K,3), y, sz, l) for (t,x,y,sz,l) in [("+",3.0,2.6,1.6,"B"),("+",19.5,2.6,1.6,"B"),("BAT+",11.25,1.6,0.8,"B"),("−",14.6,84.0,0.8,"B"),
-           ("+",9.0,11.2,1.0,"F"),("−",13.4,84.0,0.8,"F")]]
+POL_MARKS=[(t, round(x*_K,3), y, sz, l) for (t,x,y,sz,l) in [("+",3.0,83.2,1.6,"B"),("+",22.5,83.2,1.6,"B"),
+           ("+",10.2,75.0,1.0,"F"),("−",15.0,0.9,0.8,"F")]]

@@ -41,13 +41,13 @@ for r in [s for s in stock if s not in parts]:
     if r=='BT1':   # 2026-11-24: the holder sits on a 0.8 mm spacer under the PCB
         for q in keep: q.apply_translation([0,0,-0.8])
     parts[r]=keep
-# J1 (HRO TYPE-C-31-M-12): the real shell has fully rounded ends (r 1.63). 2026-11-24: J1 lies on the left edge,
-# mouth toward -X (PLm.USB_OVERHANG past the board edge), long axis along Y -> check a stadium along X.
+# J1 (HRO TYPE-C-31-M-12): the real shell has fully rounded ends (r 1.63). t116u: J1 sits centred on the bottom
+# edge, mouth toward -Y (case frame; PLm.USB_OVERHANG past the board edge), long axis along X -> stadium along Y.
 if 'J1' in parts:
-    _r=3.26/2; _y=H-PLm.USB_Y; _x0=-PLm.USB_OVERHANG
-    _c=[trimesh.creation.cylinder(radius=_r,height=7.3,sections=64,transform=trimesh.transformations.rotation_matrix(math.pi/2,[0,1,0])) for _ in (0,1)]
-    for _k,_sy in enumerate((-1,1)): _c[_k].apply_translation([_x0+3.65,_y+_sy*(8.94/2-_r),1.6+_r])
-    _bx=trimesh.creation.box(extents=[7.3,8.94-2*_r,3.26]); _bx.apply_translation([_x0+3.65,_y,1.6+_r])
+    _r=3.26/2; _x=PLm.USB_X; _y0=-PLm.USB_OVERHANG
+    _c=[trimesh.creation.cylinder(radius=_r,height=7.3,sections=64,transform=trimesh.transformations.rotation_matrix(math.pi/2,[1,0,0])) for _ in (0,1)]
+    for _k,_sx in enumerate((-1,1)): _c[_k].apply_translation([_x+_sx*(8.94/2-_r),_y0+3.65,1.6+_r])
+    _bx=trimesh.creation.box(extents=[8.94-2*_r,7.3,3.26]); _bx.apply_translation([_x,_y0+3.65,1.6+_r])
     parts['J1']=[trimesh.boolean.union(_c+[_bx],engine='manifold')]
 top=trimesh.load(sys.argv[1]); bot=trimesh.load(sys.argv[2]); spc=trimesh.load(sys.argv[4]) if len(sys.argv)>4 else None
 bad=0

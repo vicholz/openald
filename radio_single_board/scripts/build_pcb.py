@@ -93,7 +93,7 @@ silk("ON",PLm.BOARD_W-1.6,_top if _on_up else _bot,0.8,90); silk("OFF",PLm.BOARD
 # silkscreen title
 tx=pcbnew.PCB_TEXT(board); tx.SetText("OpenALD v1.0"); tx.SetPosition(P(PLm.BOARD_W/2,PLm.BOARD_H-0.9)); tx.SetLayer(pcbnew.F_SilkS)
 tx.SetTextSize(pcbnew.VECTOR2I(mm(0.8),mm(0.8))); tx.SetTextThickness(mm(0.15)); board.Add(tx)
-tb=pcbnew.PCB_TEXT(board); tb.SetText("18650  + end -> top"); tb.SetPosition(P(PLm.BOARD_W/2,40)); tb.SetLayer(pcbnew.B_SilkS)
+tb=pcbnew.PCB_TEXT(board); tb.SetText("18650  + end -> USB end"); tb.SetPosition(P(PLm.BOARD_W/2,40)); tb.SetLayer(pcbnew.B_SilkS)
 tb.SetTextSize(pcbnew.VECTOR2I(mm(1.2),mm(1.2))); tb.SetTextThickness(mm(0.18)); tb.SetMirrored(True); tb.SetTextAngleDegrees(90); board.Add(tb)
 # rev 4.2: large cell-polarity marks. Bottom (battery side, mirrored): in the free strips left and right of the holder at
 # both ends, readable with the holder fitted. Top: next to the holder's + (pin 1) and - (pin 2) solder pads.

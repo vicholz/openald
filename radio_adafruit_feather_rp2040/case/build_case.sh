@@ -1,6 +1,6 @@
 #!/bin/bash
 # Regenerate case parameters, export print-ready STLs, run the fit check and render previews.
-# 2026-11-24 unified envelope (32.9 x 89.75 x 34.83 mm, dock port shared with the MI03 and single-board radios).
+# t116u: 31.9 x 98.71 x 33.86 mm, bottom-end USB-C = the Feather's own, same dock pocket as the single-board radio.
 # Needs: openscad (2021.01+), python3 with trimesh + manifold3d + numpy. The charging-dock insertion check for all three
 # radios lives in charging_dock/scripts/check_dock_fit.py.
 set -e
