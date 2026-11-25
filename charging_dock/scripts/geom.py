@@ -1,14 +1,16 @@
-"""OpenALD Dock v1.0 (t121u 2026-11-24: FLAT dock - a closed box with six RECESSED pockets, 25 mm deep, in an aligned
+"""OpenALD Dock v1.0 (t122u 2026-11-24: pockets 35.9 wide for the wider Feather case; t121u: FLAT dock - a closed box with six RECESSED pockets, 25 mm deep, in an aligned
 3 x 2 grid; radios stand upright on their bottom-end USB-C. t120u had 50.8 mm pocket walls on a low deck, t116u a
 half-pitch back-row offset) - single source of truth for the dock geometry (mm).
 Dock frame: X right, Y toward the back, Z up; origin = front-left-bottom corner of the case.
 KiCad board frame: kx = X - PCB_X0, ky = PCB_Y1 - Y (Y down, origin = board top-left = rear-left)."""
 # ---- radio envelope (see ../DOCK_INTERFACE.md) ----
+# t122u: the Feather case is 35.9 wide (room for its battery plug); the single-board case keeps its 31.9 body with a
+# 35.9 wide dock collar over its lowest 27 mm. So both docking ends are 35.9 x 33.86.
 # t116u: the dockable OpenALD radios (single-board, Feather; the MI03 is NOT dock-compatible) are 31.9 wide x 33.86
 # thick, with the USB-C in the BOTTOM END face, centred across the width, 6.62 behind the front face, mouth 1.0 inside
 # the face. They stand upright (USB-C down, front face toward the user), so the pocket footprint is width x thickness.
 # Lengths differ (single-board 89.75, Feather 98.71) and do not matter.
-RL, RT = 31.9, 33.86             # pocket footprint: radio width (dock X) x thickness (dock Y)
+RL, RT = 35.9, 33.86             # pocket footprint: radio width (dock X) x thickness (dock Y)
 EDGE_R = 2.0                     # radio edge radius = pocket footprint corner radius
 USB_FROM_END = RL / 2            # USB-C centre from the pocket's left end (dock X): centred across the radio width
 USB_FROM_FRONT = 6.62            # USB-C centreline behind the radio front face (dock Y)
@@ -21,7 +23,7 @@ GAP = 25.4                       # 1.0 in between radios (X and Y)
 SIDE, FRONT, BACK = 6.0, 6.0, 13.5
 PITCH_X, PITCH_Y = RL + GAP, RT + GAP
 STAGGER = 0.0                    # t120u: aligned grid (t116u had the front row shifted by half a pitch)
-OUT_W = 2*SIDE + STAGGER + COLS*RL + (COLS-1)*GAP     # 158.5
+OUT_W = 2*SIDE + STAGGER + COLS*RL + (COLS-1)*GAP     # 170.5
 OUT_D = FRONT + BACK + ROWS*RT + (ROWS-1)*GAP         # 112.62
 WALL = 2.0                       # outer skirt wall
 # ---- pockets (t121u: recessed into a flat top; Victor: "The dock should be flat with recessed square holes that are
