@@ -3,13 +3,9 @@
 2,"FM module (Victor's): 27.25 x 27.25 mm, 1.6 mm board, 3.8 mm corner holes 20 mm apart, 4-pin 90-degree through-board header and 6.35 x 14 mm headphone jack (1 mm past the board), both centred on the bottom edge",—,1,,,on hand; not priced
 3,"18650 holder, PC pin, MPD BH-18650-PC",DigiKey BH-18650-PC-ND,1,3.35,https://www.digikey.com/en/products/detail/mpd-memory-protection-devices/BH-18650-PC/3029216,"DigiKey qty-1 price via search snapshot, 2026-11-11"
 4,"Protected button-top 18650 cell, e.g. Samsung 35E protected 3500 mAh (~69.3-69.8 mm)",18650 Battery Store,1,11.99,https://www.18650batterystore.com/products/samsung-35e-protected,"product page snapshot, 2026-11-11"
-5,"STEMMA QT / Qwiic JST SH 4-pin cable 100 mm (#4210) - cut one end, solder to the FM module (or #4209 to male headers)",Adafruit,1,0.95,https://www.adafruit.com/product/4210,"adafruit.com product page, 2026-11-11 (showed out of stock; #4209/#4397 same price)"
-6,"JST PH 2-pin cable, female connector 100 mm (#261) - battery lead",Adafruit,1,0.75,https://www.adafruit.com/product/261,"adafruit.com product page, 2026-11-11"
-7,"Thumbwheel encoder with push, Mitsumi SIQ-02FVS3 (bought loose, glued into the deck cradle)",LCSC C2925423,1,3.18,https://www.lcsc.com/product-detail/C2925423.html,"JLC/LCSC parts API, 2026-11-11 (first price tier)"
-8,"Slide switch SS-12F16 SPDT (1P2T) panel mount, G4 (4 mm knob) default; G6 works (set SW_L=6); LCSC stocks only G050 (set SW_L=5)",LCSC C2876006 (G050) or any SS-12F16-G4/G6,1,0.08,https://www.lcsc.com/product-detail/C2876006.html,"JLC/LCSC parts API, 2026-11-11, G050 price; G4/G6 not price-checked"
-9,"USB-C receptacle breakout, power-only, with 5.1 k CC pull-downs (dock charging port; case assumes 12.7 x 10 x 1.0 mm, receptacle overhanging 0.5 mm)",any,1,,,not price-checked (added 2026-11-24)
-10,"Schottky diode SS14 / 1N5817 (breakout VBUS to Feather USB pin) + optional M3 x 8 screws and M3 nuts (3) for the FM module; case snaps shut (no M2 screws/inserts)",any,1 + 3,,,not price-checked (added 2026-11-24)
-11,"Battery divider (needed for the battery gauge): 2x 220 k + 1x 100 nF, through-hole or 0603/0805 on wires, in heat-shrink",any,1 set,,,not price-checked
-12,"Optional dock-visible charge LEDs: 3 mm THT red + 3 mm THT green (diffused), 2x 1.5 k resistors",any,1 set,,,not price-checked
-13,"Hookup wire: 28-30 AWG silicone, ~8 colours, ~1.5 m total (about 12 leads of ~120 mm) + 32-36 AWG enamel/wire-wrap for the optional STAT tap; heat-shrink 1.5-2 mm; medium CA or 5-min epoxy; thin double-sided tape (<=0.2 mm, not foam) or glue dots for the holder",any,—,,,not price-checked
-14,"Filament (PLA/PETG): front shell 8.8 + back shell 13.8 + deck 2.0 cm^3 = ~25 cm^3 (~31 g)",—,—,,,—
+5,Optional M3 x 8 screws and M3 nuts (3) for the FM module; the case snaps shut (no case screws/inserts),any,3,,,not price-checked
+6,"Thumbwheel encoder with push, Mitsumi SIQ-02FVS3 (bought loose, glued into the deck cradle)",LCSC C2925423,1,3.18,https://www.lcsc.com/product-detail/C2925423.html,"JLC/LCSC parts API, 2026-11-11 (first price tier)"
+7,"Slide switch SS-12F16 SPDT (1P2T) panel mount, G4 (4 mm knob) default; G6 works (set SW_L=6); LCSC stocks only G050 (set SW_L=5)",LCSC C2876006 (G050) or any SS-12F16-G4/G6,1,0.08,https://www.lcsc.com/product-detail/C2876006.html,"JLC/LCSC parts API, 2026-11-11, G050 price; G4/G6 not price-checked"
+8,"Battery divider (needed for the battery gauge): 2x 220 k + 1x 100 nF, through-hole or 0603/0805 on wires, in heat-shrink",any,1 set,,,not price-checked
+9,"Hookup wire: 28-30 AWG silicone, ~8 colours, ~1.5 m total (about 13 leads of ~120 mm incl. the battery leads to the BAT/GND pads); heat-shrink 1.5-2 mm; medium CA or 5-min epoxy; thin double-sided tape (<=0.2 mm, not foam) or glue dots for the holder",any,—,,,not price-checked
+10,Filament (PLA/PETG): front shell 9.0 + back shell 14.6 + deck 2.6 cm^3 = ~26 cm^3 (~33 g),—,—,,,—

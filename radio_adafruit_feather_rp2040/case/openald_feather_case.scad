@@ -58,7 +58,7 @@ fu = feather_usb;     // [x, mouth y, z]
 module g_holder() { bx(holder_box); }
 module g_feather() {
   difference() { bx(fb); for (h=f_holes) translate([h[0],h[1],fb[4]-1]) cylinder(d=2.5, h=fb[5]-fb[4]+2); }
-  for (i=[0:len(feather_parts)-2]) bx(feather_parts[i]);
+  for (i=[0:len(feather_parts)-2]) let(q=feather_parts[i]) bx([q[0],q[1],max(q[2],0),q[3],q[4],q[5]]);   // inside the cavity (the receptacle's own outline -> stadium below)
   u=feather_parts[len(feather_parts)-1]; r=(u[5]-u[4])/2;    // USB-C receptacle: stadium (rounded ends), like the real shell
   hull() for (x=[u[0]+r, u[1]-r]) translate([x, u[2], u[4]+r]) rotate([-90,0,0]) cylinder(r=r, h=u[3]-u[2]);
 }

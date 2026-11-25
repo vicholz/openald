@@ -1,26 +1,27 @@
-# OpenALD Feather RP2040 v1.0 — pin map (direct-mount wheel and switch)
+# OpenALD Feather RP2040 v1.0 — pin map (t116u: bottom-end USB-C, header-pad wiring)
 
-Nothing here has been hardware-validated yet. There is no controls PCB: the wheel, the switch and the optional parts are wired straight to the Feather (28–30 AWG silicone wire, ~120 mm per lead).
+Nothing here has been hardware-validated yet. There is no PCB: the wheel, the switch, the FM module, the battery and the divider are wired straight to the Feather's header pads (28–30 AWG silicone wire, ~120 mm per lead). Since t116u (2026-11-24) the Feather lies flat at the bottom end and **its own USB-C is the charge / dock port**: there is no USB-C breakout and no Schottky diode any more. The JST battery socket and the STEMMA QT socket stay **empty** (a plug in either would hit the end wall or the wheel).
 
 ## Feather RP2040 (Adafruit #4884) connections
 
-| Feather pin (silkscreen) | RP2040 GPIO | Goes to | Wire | Notes |
-|---|---|---|---|---|
-| **D24** | GP24 | Wheel **A** | 30 AWG | Use the internal pull-up. Debounce in firmware: no RC filter. |
-| **D25** | GP25 | Wheel **B** | 30 AWG | Use the internal pull-up. |
-| **D4** | GP6 | Wheel **S** (push switch) | 30 AWG | Use the internal pull-up. Active low. |
-| **GND** (JP1.13, the only GND pin) | — | GND splice → wheel **C**, divider bottom, green LED cathode | 28 AWG to the splice | Heat-shrunk splice in the right channel. The switch OFF-end lug is on the same net via the battery black (−) lead (see below). |
-| **EN** | — (enables the AP2112 3.3 V regulator) | Switch **middle lug** (common); wire runs down the left channel and up the battery-wire deck slot to JP3 | 28–30 AWG | Knob at the OFF (USB) end ties EN to GND: the 3.3 V rail, the RP2040 and the FM module turn off. Knob at the ON end leaves EN open (the Feather's own pull-up turns it on). |
-| **BAT** (VBAT) | — | Divider top (220 k) | 28–30 AWG | Optional battery gauge. |
-| **A0** | GP26 / ADC0 | Divider middle (220 k / 220 k junction, 100 nF to GND) | 30 AWG | VBAT/2. |
-| **USB** (VBUS) | — | **Dock charging port** (2026-11-24): USB-C breakout VBUS through a Schottky diode (SS14 / 1N5817, anode at the breakout); breakout GND to the GND splice. Optional: 1.5 k → red 3 mm LED anode | 28 AWG (charge), 30 AWG (LED) | Charges at the Feather's 200 mA. The diode prevents back-feeding between the breakout and the Feather's own USB-C (programming, top end). |
-| **STAT tap** (no pad) | — | Optional: red LED cathode, and 1.5 k → green LED anode | 32–36 AWG enamel or wire-wrap | Solder to the **STAT end of Feather R2** (the 10 k in series with the CHG LED), case position (25.92, 7.77). |
-| **STEMMA QT** (JST SH 4-pin) | GP2 SDA / GP3 SCL, 3V3, GND | RDA5807M module VCC / GND / SDA / SCL | STEMMA QT cable #4210, one end cut | 3V3 is switched by EN, so the radio turns off with the switch. |
-| **JST PH battery** | — | 18650 holder + / − | JST PH cable #261 (cut) | **Check polarity** against the "+" mark on the Feather before plugging in. Red goes to the holder + pin (the USB end). |
+| Feather pad (silkscreen) | Header | RP2040 GPIO | Goes to | Wire | Notes |
+|---|---|---|---|---|---|
+| **D24** | JP1.8 | GP24 | Wheel **A** | 30 AWG | Internal pull-up. Debounced in firmware: no RC filter. |
+| **D25** | JP1.7 | GP25 | Wheel **B** | 30 AWG | Internal pull-up. |
+| **D4** | JP1.1 | GP6 | Wheel **S** (push switch) | 30 AWG | Internal pull-up. Active low. |
+| **3V3** | JP1.14 | — | FM module **VCC** | 28–30 AWG | Switched by EN, so the radio turns off with the switch. |
+| **GND** | JP1.13 (the only GND pad) | — | GND splice (right channel) → wheel **C**, divider bottom, 100 nF, and one wire from the left-channel splice (FM **GND**, switch OFF-end lug, battery **−**) | 28 AWG | Heat-shrunk splices. |
+| **A0** | JP1.12 | GP26 / ADC0 | Divider middle (220 k / 220 k junction, 100 nF to GND) | 30 AWG | VBAT/2. |
+| **SDA** | JP3.12 | GP2 | FM module **SDA** | 30 AWG | I2C1 (`Wire`), 100 kHz. |
+| **SCL** | JP3.11 | GP3 | FM module **SCL** | 30 AWG | |
+| **EN** | JP3.2 | — (enables the AP2112 3.3 V regulator) | Switch **middle lug** (common) | 28–30 AWG | Knob toward the USB end (OFF) ties EN to GND: the 3.3 V rail, the RP2040, the FM module and the NeoPixel turn off. Knob toward the top end (ON) leaves EN open (the Feather's pull-up turns it on). |
+| **BAT** (VBAT) | JP3.1 | — | 18650 holder **+** pin (the USB end) and the divider top (220 k) | 26–28 AWG (battery), 30 AWG (divider) | **Check polarity with a meter** before inserting the cell. Charging: the Feather's MCP73831 from its own USB-C (200 mA). |
 
-Spare pins remain free: A1–A3, D5, D6, D9–D13, SCK, MOSI, MISO, TX and RX. The red LED is D13 / GP13 and the NeoPixel is GP16. Since 2026-11-24 both face the case wall (the Feather stands on its edge) and are **not visible**.
+Spare pins remain free: A1–A3, D5, D6, D9–D13, SCK, MOSI, MISO, TX and RX. The red LED is D13 / GP13 and the NeoPixel is GP16.
 
-Unchanged from the controls-board version: the GPIO assignment (A = D24, B = D25, push = D4, C = GND, switch common = EN, OFF = GND, divider on A0). Only the physical path changed (wires instead of PCB traces).
+**Visible on-board LEDs (t116u):** the Feather lies components-up under the front face, so its **CHG** LED (amber, charging), its **red** LED and its **NeoPixel** (battery level) each sit under a light tunnel to a hole in the front face; the RESET button is under a pin-hole. In the charging dock the CHG hole is about 4 mm and the NeoPixel about 20 mm above the pocket floor, in the pocket's front window. The battery display stays on the NeoPixel (not moved to the front LEDs).
+
+Unchanged GPIO assignment (A = D24, B = D25, push = D4, C = GND, switch common = EN, OFF = GND, divider on A0, I2C on GP2/GP3). Only the physical path changed.
 
 Diagram: [`wiring_diagram.png`](wiring_diagram.png) / `.svg`. KiCad schematic: [`wiring_schematic/openald-feather-wiring.pdf`](wiring_schematic/openald-feather-wiring.pdf).
 
@@ -33,40 +34,30 @@ arduino-pico uses RP2040 GPIO numbers as pin numbers, so the sketch uses the GP 
 | ENC_B | D25 | 25 | `PIN_ENC_B = 25` | `INPUT_PULLUP` | wheel B |
 | ENC_SW (push, low = pressed) | D4 | **6** | `PIN_ENC_SW = 6` | `INPUT_PULLUP` | wheel S |
 | VBAT_SENSE (VBAT / 2) | A0 | 26 (ADC0) | `PIN_VBAT = 26` | analog, 12 bit | 220k/220k divider middle, 100 nF to GND |
-| SDA / SCL | STEMMA QT | 2 / 3 (i2c1, `Wire`) | `Wire.setSDA(2)`, `Wire.setSCL(3)` | I2C 100 kHz | RDA5807M SDA / SCL |
+| SDA / SCL | SDA / SCL (JP3.12 / JP3.11) | 2 / 3 (i2c1, `Wire`) | `Wire.setSDA(2)`, `Wire.setSCL(3)` | I2C 100 kHz | RDA5807M SDA / SCL |
 | NeoPixel | (on board) | 16 | `PIN_PIXEL = 16` | Adafruit_NeoPixel | — |
 | Red LED | D13 (on board) | 13 | `PIN_RED_LED = 13` | output, kept low | — |
 | EN | EN | — | — | hardware | switch middle lug |
-| VBUS, STAT | USB, R2 tap | — | — | hardware | optional charge LEDs |
-| GND | GND (JP1.13) | — | — | — | GND splice: wheel C, divider bottom, 100 nF, green LED K |
+| GND | GND (JP1.13) | — | — | — | GND splices: wheel C, divider bottom, 100 nF, FM GND, switch OFF lug, battery − |
 
 ## Mitsumi SIQ-02FVS3 tabs (as mounted)
-The four solder tabs are on the body edge facing into the case (toward the FM module), in this order from the USB end toward the top end:
+The wheel sits on the right wall between the Feather and the FM module (dial centre case Y 58.7, dial 0.95 mm proud of the right face). Its four solder tabs face into the case; their order along the wall depends on which way the part is turned in the cradle — read them off your part (the datasheet land pattern reads "A PUSH COM B") and wire:
 
-| Order (USB end → top end) | Tab | Case Y (mm) | To |
-|---|---|---|---|
-| 1 | **B** | 58.5 | D25 |
-| 2 | **C** (common) | 61.0 | GND |
-| 3 | **S** (push) | 64.0 | D4 |
-| 4 | **A** | 66.5 | D24 |
+| Tab | To |
+|---|---|
+| **A** | D24 |
+| **B** | D25 |
+| **S** (push) | D4 |
+| **C** (common) | GND (right splice) |
 
-Check the A/B/S/C markings printed on your part's datasheet drawing ("A PUSH COM B" in the land pattern) before soldering. If A and B are swapped, the wheel just counts the other way; swap `PIN_ENC_A` / `PIN_ENC_B` in the firmware.
+If A and B are swapped, the wheel just counts the other way; swap `PIN_ENC_A` / `PIN_ENC_B` in the firmware.
 
-## SS-12F16 switch lugs (left wall, screwless groove; knob toward the top end = ON)
+## SS-12F16 switch lugs (left wall, screwless groove at case Y 56; knob toward the top end = ON)
 | Lug | To |
 |---|---|
-| Outer lug that connects to the middle when the knob is at the **OFF (USB) end** — normally the USB-side lug, **check with a meter** | GND: splice to the battery black (−) lead in the left channel (same net as Feather GND; the switch is on the opposite side from the Feather's only GND pin) |
+| Outer lug that connects to the middle when the knob is toward the **USB end (OFF)** — **check with a meter** | GND: left-channel splice (with the FM GND and the battery − lead), one wire to the Feather's GND pad |
 | Middle lug (common) | EN |
 | Other outer lug | not connected |
 
-## Optional dock-visible charge LEDs (3 mm, in the top-half sockets)
-MCP73831 STAT is push-pull: low while charging, high (VBUS) when charging is done, Hi-Z when the charger is off or no battery is fitted.
-
-| State | Feather CHG (amber) | red "CHG" | green "FULL" |
-|---|---|---|---|
-| USB/dock power, charging | on | **on** (VBUS → 1.5k → red → STAT low, about 2 mA) | off |
-| USB/dock power, charge complete | off | off | **on** (STAT high → 1.5k → green, about 1–2 mA) |
-| No USB power | off | off | off |
-| USB power, no cell or charger fault (STAT Hi-Z) | off | possibly a faint glow (red and green in series across VBUS) | possibly a faint glow |
-
-These LEDs are wired to the charger in hardware, so they work with the power switch OFF.
+## Charge indication
+No extra LEDs. The Feather's own CHG LED (MCP73831 STAT through a resistor) lights while charging and goes out when the cell is full or no USB power is present; it works with the power switch OFF (the charger runs from VBUS). It is visible through its front-face hole, also in the dock.

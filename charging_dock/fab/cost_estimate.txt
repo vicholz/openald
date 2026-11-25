@@ -3,10 +3,10 @@ OpenALD Dock v1.0 - COST ESTIMATE (not a quote; JLCPCB/LCSC prices and stock rea
 Per board, JLC-assembled parts (qty-10 pricing) ........ $4.67   (31 BOM lines, 80 placements, fab/openald-dock-BOM-human.csv)
 Per board, 6 hand-soldered USB-C plugs (C55200592) ...... $3.26   (6 x ~$0.54; LCSC stock 782)
 JLC extended-part setup fees ............................ ~$36    (12 extended part types x ~$3, one-time per order; fewer if any are "preferred")
-PCB, 2-layer 211.1 x 169.0 mm, 1.6 mm, qty 5 ............ ~$25-40 (2026-11-24 guess for the larger 2 x 3 board, not a quote)
+PCB, 2-layer 181.4 x 106.8 mm, 1.6 mm, qty 5 ............ ~$15-30 (t116u guess for the 3 x 2 upright board, not a quote)
 SMT assembly setup + stencil, qty 2 assembled ........... ~$10
 Hardware (6x M3x12, 6x M3 heat-set inserts, 4 feet) ..... ~$1.50
-Filament (shell ~105 g, base ~100 g, pads ~125 g if solid) ~$8
+Filament (solid volumes: shell 104.5 cm3, base 47.5, pads 37.4 = ~235 g PLA if solid, less with infill) ~$6
 USB-C PD charger >= 45 W + cable (if you don't have one)  ~$15-25
 
 Rough total for 2 assembled docks + 3 spare bare PCBs, printed case for one: ~$90-110 before shipping.

@@ -9,7 +9,7 @@ Why Arduino rather than CircuitPython: the same toolchain style as the single bo
 * **CircuitPython**: the "Adafruit Feather RP2040" build. Use `i2c = board.STEMMA_I2C()`, `board.D24`, `board.D25`, `board.D4` and `board.A0`.
 * To get into the bootloader, double-tap RESET through the pin-hole in the top, or use the 1200-baud touch from the Arduino IDE. The right-angle BOOT button (rev D+) is not reachable with the case closed.
 
-## RDA5807M (FM module on the STEMMA QT port)
+## RDA5807M (FM module wired to the SDA / SCL header pads = the STEMMA QT bus)
 * I2C addresses: **0x10** for sequential access (writes start at register 0x02 and reads at 0x0A) and **0x11** for random register access. Both appear on a scan.
 * The module runs from the Feather's 3.3 V rail, which EN switches. Every power-on is a cold start, so firmware must re-initialise the chip: soft reset, enable, band and spacing, volume, then tune.
 * **Pull-ups**: we don't know whether your module has SDA/SCL pull-ups. If an I2C scan finds nothing, add 4.7 k from SDA and from SCL to 3V3 on the module.
@@ -79,9 +79,9 @@ void encoder_poll() {            // call every 1 ms
 * **Off-state drain**: the Feather's EN pull-up (10 k to the battery/USB rail) conducts about 0.4 mA while EN is grounded. That is roughly 9–10 % of a 3500 mAh cell per month.
   Optional mod: replace that pull-up with 100 k to cut the drain to about 40 µA. Total off drain is then about 50 µA including the divider.
 * Charging works with the switch in either position. The MCP73831 is powered from VBUS and charges at **200 mA**, so a 3500 mAh cell takes about **18–20 h** from empty. That is slow, and it is a property of the Feather.
-* STAT (the optional fine-wire tap) can also go to a spare GPIO through a 100 k resistor if firmware should know the charge state. That is not done here.
+* The charge state is shown only by the Feather's own CHG LED (hardware). Firmware cannot read it; a fine wire from the STAT end of Feather R2 to a spare GPIO (through 100 k) would allow that. Not done.
 
 ## LEDs firmware can use
-* Red D13 (GP13) and the NeoPixel (GP16) show through the top windows near the USB end. These are hidden while docked.
+* Red D13 (GP13), the NeoPixel (GP16) and the CHG LED show through light tunnels to holes in the front face near the USB end (t116u). They stay visible while docked (the dock pocket has a front window).
 * The firmware lights the NeoPixel only for the battery level: 5 s at power-on and 3 s after a short press; it is cleared (off) at all other times and D13 stays off. The NeoPixel (WS2812B-3535, LED1) has VDD tied to +3V3 in Adafruit's board file, with **no power-enable pin** (GPIO 20 is MISO here), so it can't be powered down; a dark WS2812B draws ~1 mA typ. while the switch is ON (not measured).
-* The optional 3 mm CHG/FULL LEDs in the top half are hardware-only (driven by VBUS and STAT) and visible while docked.
+* There are no extra charge LEDs any more (t116u); the CHG LED is the Feather's own.

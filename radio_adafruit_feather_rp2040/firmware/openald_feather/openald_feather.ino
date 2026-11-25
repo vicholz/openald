@@ -8,11 +8,11 @@
 //   GP25 (silk D25) wheel B      INPUT_PULLUP
 //   GP6  (silk D4)  wheel S/push INPUT_PULLUP, LOW = pressed
 //   GP26 (silk A0)  VBAT/2 from the 220k/220k divider (100 nF to GND)
-//   GP2 / GP3       STEMMA QT SDA / SCL -> RDA5807M (Wire = i2c1 on this board)
+//   GP2 / GP3       SDA / SCL header pads -> RDA5807M (Wire = i2c1 on this board)
 //   GP16            on-board NeoPixel (battery level only; dark at all other times)
 //   GP13            on-board red LED (unused, kept off)
 //   EN              SS-12F16 middle lug (hardware power switch; firmware never sees it)
-//   STAT tap, VBUS  optional charge LEDs, hardware only (firmware cannot read them)
+//   (charge state: the Feather's own CHG LED, hardware only; firmware cannot read it)
 //
 // Wheel behaviour (mirrors the single-board radio as far as the Feather hardware allows):
 //   turn                      volume (0 = mute .. 15)
@@ -22,7 +22,7 @@
 //   push and turn             tune +/- TUNE_STEP_10K per detent (no battery check, no seek)
 // Differences from the single board: the level is shown as a NeoPixel colour instead of a 3-LED bar, and there is no
 // battery check with the power switch OFF (EN holds the Feather's 3.3 V regulator off, so nothing can run).
-// The NeoPixel and D13 sit by the USB end and are hidden while docked. The NeoPixel is lit ONLY during these two battery
+// t116u: the NeoPixel, D13 and CHG LED show through front-face holes, also while docked. The NeoPixel is lit ONLY during these two battery
 // displays (no seek / error / low-battery blinks), to save battery. Its power can't be switched off: on the Feather RP2040
 // (Adafruit Eagle file, LED1 WS2812B-3535) VDD is tied straight to +3V3 and there is no NEOPIXEL_POWER pin (GPIO 20 is MISO
 // on this board, so it is left alone). A dark WS2812B still draws its quiescent current (~1 mA typ.) while the switch is ON.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Side section (to scale, through the plug centreline along the radio length; radios lie on their USB-C side) of one dock pocket with each radio
+"""Section (to scale, through the plug centreline across the radio width; t116u: radios stand on their bottom-end USB-C) of one dock pocket with each radio
 variant docked: PCB, fixed vertical plug, floor pad, riser shim, radio bottom wall and USB-C receptacle mouth.
 All values from geom.py. Usage: plot_insertion.py out.png"""
 import sys, os
@@ -18,9 +18,10 @@ for ax, (title, r, rise) in zip(axs, cases):
     if rise > 0:
         ax.add_patch(Rectangle((-14, G.FLOOR_Z), 28, rise, color="gold")); ax.add_patch(Rectangle((-4.6, G.FLOOR_Z), 9.2, rise, color="white"))
     # radio bottom wall (opening 9.44 wide) and the receptacle (8.40 cavity) from the mouth up
-    if True:   # both radios: 13.0 x 7.6 x 1.5 cable-plug recess, then the 0.5 wall with the 9.44 opening
-        ax.add_patch(Rectangle((-14, rb + 1.5), 14 - 4.72, m - 1.5, color="orange")); ax.add_patch(Rectangle((4.72, rb + 1.5), 14 - 4.72, m - 1.5, color="orange"))
-        ax.add_patch(Rectangle((-14, rb), 14 - 6.5, 1.5, color="orange")); ax.add_patch(Rectangle((6.5, rb), 14 - 6.5, 1.5, color="orange"))
+    if True:   # both radios: 13.0 x 7.6 cable-plug recess 0.45 deep, then 0.55 of wall with the 9.44 opening up to the mouth
+        rd = m - 0.55
+        ax.add_patch(Rectangle((-14, rb + rd), 14 - 4.72, m - rd, color="orange")); ax.add_patch(Rectangle((4.72, rb + rd), 14 - 4.72, m - rd, color="orange"))
+        ax.add_patch(Rectangle((-14, rb), 14 - 6.5, rd, color="orange")); ax.add_patch(Rectangle((6.5, rb), 14 - 6.5, rd, color="orange"))
     ax.add_patch(Rectangle((-5.4, mouth), 1.0, 7.35, color="slategray")); ax.add_patch(Rectangle((4.4, mouth), 1.0, 7.35, color="slategray"))
     seat_lo, seat_hi = mouth + G.SEAT_NOM - G.SEAT_TOL, mouth + G.SEAT_NOM + G.SEAT_TOL
     ax.axhspan(seat_lo, seat_hi, xmin=0.3, xmax=0.7, color="red", alpha=0.18)
@@ -31,8 +32,8 @@ for ax, (title, r, rise) in zip(axs, cases):
     bad = ins > G.SEAT_NOM + G.SEAT_TOL
     ax.set_title(title + ("\ninsertion %.2f > %.2f: radio rests on the plug" % (ins, seat_hi - mouth) if bad else "\ninsertion %.2f, radio rests on the pad" % ins),
                  fontsize=10, color="firebrick" if bad else "k")
-    ax.set_xlim(-14, 14); ax.set_ylim(G.PCB_Z0 - 0.5, 24); ax.set_aspect("equal"); ax.set_xlabel("mm (along the radio length)")
+    ax.set_xlim(-14, 14); ax.set_ylim(G.PCB_Z0 - 0.5, 24); ax.set_aspect("equal"); ax.set_xlabel("mm (across the radio width)")
 axs[0].set_ylabel("Z above the dock bottom, mm")
-fig.suptitle("OpenALD Dock v1.0 (2026-11-24 side-lying pockets): plug insertion (pad %.2f, plug %.2f tall from the HX drawing)\nred band = USB-C full seat %.2f +/- %.2f past the receptacle mouth"
+fig.suptitle("OpenALD Dock v1.0 (t116u upright pockets): plug insertion (pad %.2f, plug %.2f tall from the HX drawing)\nred band = USB-C full seat %.2f +/- %.2f past the receptacle mouth"
              % (G.PAD_T, G.PLUG_H, G.SEAT_NOM, G.SEAT_TOL), fontsize=11)
 fig.tight_layout(); fig.savefig(out, dpi=110)

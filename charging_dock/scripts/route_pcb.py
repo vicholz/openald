@@ -45,7 +45,7 @@ for nn,spec in PRE.items():
             t.SetNet(nt); t.SetLocked(True); t.SetWidth(mm(w)); board.Add(t)
     for (x,y) in spec["vias"]:
         v=pcbnew.PCB_VIA(board); v.SetPosition(_pt(x,y)); v.SetDrill(mm(0.4)); v.SetWidth(pcbnew.F_Cu,mm(0.8)); v.SetWidth(pcbnew.B_Cu,mm(0.8)); v.SetNet(nt); v.SetLocked(True); board.Add(v)
-dsn="/tmp/dock.dsn"; ses="/tmp/dock.ses"
+_tag=os.environ.get("DOCK_TAG",""); dsn=f"/tmp/dock{_tag}.dsn"; ses=f"/tmp/dock{_tag}.ses"
 if os.path.exists(ses): os.remove(ses)
 pcbnew.ExportSpecctraDSN(board,dsn)
 passes=sys.argv[1] if len(sys.argv)>1 else "40"

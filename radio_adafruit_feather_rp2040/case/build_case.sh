@@ -20,18 +20,20 @@ python3 ../scripts/check_fit.py /tmp/f_top.stl /tmp/f_bottom.stl /tmp/f_deck.stl
 P="--imgsize=1200,900 --colorscheme=Tomorrow --projection=p"
 O="--imgsize=1200,900 --colorscheme=Tomorrow --projection=o"
 R=../previews
-openscad $P --camera=0,44,17,60,0,35,260   -D 'part="assembly"' -o $R/case_exploded.png $S 2>/dev/null &
-openscad $P --camera=0,44,17,55,0,40,200   -D 'part="closed"'   -o $R/case_closed.png $S 2>/dev/null &
-openscad $P --camera=0,44,17,120,0,220,200 -D 'part="closed"'   -o $R/case_closed_back.png $S 2>/dev/null &
-openscad $P --render --camera=40,44,10,45,0,200,260 -D 'part="print"' -o $R/case_print_layout.png $S 2>/dev/null &
+openscad $P --camera=0,48,17,60,0,35,280   -D 'part="assembly"' -o $R/case_exploded.png $S 2>/dev/null &
+openscad $P --camera=0,48,17,55,0,40,210   -D 'part="closed"'   -o $R/case_closed.png $S 2>/dev/null &
+openscad $P --camera=0,48,17,120,0,220,210 -D 'part="closed"'   -o $R/case_closed_back.png $S 2>/dev/null &
+openscad $P --render --camera=40,48,10,45,0,200,280 -D 'part="print"' -o $R/case_print_layout.png $S 2>/dev/null &
 wait
-openscad $P --camera=-16,57,27,80,0,270,60 -D 'part="closed"' -o $R/closeup_dock_usb_c.png $S 2>/dev/null &
-openscad $P --camera=0,0,24,80,0,0,75      -D 'part="closed"' -o $R/closeup_jack_end_fm.png $S 2>/dev/null &
-openscad $P --camera=0,88,12,80,0,180,70   -D 'part="closed"' -o $R/closeup_top_end_feather_usb.png $S 2>/dev/null &
-openscad $P --camera=16,45,24,70,0,80,75   -D 'part="closed"' -o $R/closeup_wheel_switch.png $S 2>/dev/null &
-openscad $P --camera=0,44,34,0,0,0,120     -D 'part="closed"' -o $R/front_face.png $S 2>/dev/null &
-openscad $O --camera=0,14,17,90,0,0,70     -D 'part="section"' -D 'sec_y=14' -o $R/section_fm_y14.png $S 2>/dev/null &
-openscad $O --camera=0,57,17,90,0,0,70     -D 'part="section"' -D 'sec_y=57.45' -o $R/section_dock_usb_y57.png $S 2>/dev/null &
-openscad $O --camera=0,70,17,90,0,0,70     -D 'part="section"' -D 'sec_y=70' -o $R/section_switch_y70.png $S 2>/dev/null &
+# close-ups (frame: X right/wheel side, Y = 0 at the bottom-end inner wall (USB-C), Z = 0 at the back face)
+openscad $P --camera=0,-2,24,80,0,0,75       -D 'part="closed"' -o $R/closeup_dock_usb_c.png $S 2>/dev/null &
+openscad $P --camera=0,96,24,80,0,180,75     -D 'part="closed"' -o $R/closeup_jack_end_fm.png $S 2>/dev/null &
+openscad $P --camera=0,12,34,20,0,0,70       -D 'part="closed"' -o $R/closeup_feather_leds.png $S 2>/dev/null &
+openscad $P --camera=16,58,24,75,0,90,75     -D 'part="closed"' -o $R/closeup_wheel.png $S 2>/dev/null &
+openscad $P --camera=-16,56,24,75,0,270,75   -D 'part="closed"' -o $R/closeup_switch.png $S 2>/dev/null &
+openscad $P --camera=0,48,34,0,0,90,190      -D 'part="closed"' -o $R/front_face.png $S 2>/dev/null &
+openscad $O --camera=0,2,17,90,0,0,70        -D 'part="section"' -D 'sec_y=2' -o $R/section_feather_y2.png $S 2>/dev/null &
+openscad $O --camera=0,58,17,90,0,0,70       -D 'part="section"' -D 'sec_y=58.7' -o $R/section_wheel_y58.png $S 2>/dev/null &
+openscad $O --camera=0,80,17,90,0,0,70       -D 'part="section"' -D 'sec_y=80' -o $R/section_fm_y80.png $S 2>/dev/null &
 wait
 echo done
