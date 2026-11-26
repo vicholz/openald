@@ -24,6 +24,10 @@ constraints, open TODOs, test checklist and exact regeneration commands.
 
 Dock ↔ radio mechanical contract: [`charging_dock/DOCK_INTERFACE.md`](charging_dock/DOCK_INTERFACE.md).
 
+
+**Part colours (t124u):** every case family has its own hue so parts are easy to tell apart: single board **blues**,
+Feather **greens**, MI03 **oranges / reds**, dock **purples** (legend in each README; `tools/palette.py`). Each case
+also has a **coloured 3MF plate** next to its STLs (`*_colored.3mf`, one named, coloured object per part).
 ## Quick links
 * Single-board radio: [Gerbers](radio_single_board/fab/openald-gerbers-jlcpcb.zip) · [JLC BOM](radio_single_board/fab/openald-BOM-jlcpcb.csv) · [JLC CPL](radio_single_board/fab/openald-CPL-jlcpcb.csv) · [human BOM](radio_single_board/fab/openald-BOM-human.csv) · [minimal (4-part) assembly set](radio_single_board/fab/minimal/) · [PCBWay BOM](radio_single_board/fab/openald-BOM-pcbway.xlsx) · [NextPCB BOM](radio_single_board/fab/openald-BOM-nextpcb.xls) · [schematic PDF](radio_single_board/docs/openald-schematic.pdf) · [case STLs](radio_single_board/case/)
 * Dock: [Gerbers](charging_dock/fab/openald-dock-gerbers-jlcpcb.zip) · [JLC BOM](charging_dock/fab/openald-dock-BOM-jlcpcb.csv) · [JLC CPL](charging_dock/fab/openald-dock-CPL-jlcpcb.csv) · [human BOM](charging_dock/fab/openald-dock-BOM-human.csv) · [schematic PDF](charging_dock/docs/openald-dock-schematic.pdf) · [case STLs](charging_dock/case/)

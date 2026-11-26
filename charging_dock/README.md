@@ -56,6 +56,19 @@ errors / 0 unconnected / 72 silk-only, CPL OK). Fit check: 0 interferences, both
 | Filament | solid volumes: top shell 102.5 cm³, base 43.6 cm³, 6 pads 41.7 cm³ (~233 g PLA if solid, less with infill) |
 | Docked radios | single-board 89.75 mm tall, Feather 98.71 mm tall above the pocket floor (tops at Z 102 / 111) |
 
+## Part colours (t124u)
+Victor: "make all 3 cases and their parts different colors so it is easy to tell the parts apart". Each case family has
+its own hue (single board **blues**, Feather **greens**, MI03 **oranges / reds**, dock **purples**); this one uses
+**purples**. The same colours are used in every preview and in the coloured 3MF plate **`case/openald_dock_colored.3mf`** (all printed parts laid
+out on one plate, each a separate named object with its colour; source `../tools/palette.py`, rebuilt by
+`../tools/make_3mf.py`). Colours are only for telling the parts apart; print in any filament.
+
+| Part (STL) | What | Colour | Hex |
+|---|---|---|---|
+| `case/dock_top_shell.stl` | top shell | purple | `#7B4FB8` |
+| `case/dock_base.stl` | base | lavender | `#C9B6E8` |
+| `case/dock_floor_pads_x6.stl` | floor pads (x6) | dark purple | `#3B2360` |
+
 ## Power architecture
 ```
 USB-C IN (J1, HRO TYPE-C-31-M-12, CC1/CC2 -> HUSB238)

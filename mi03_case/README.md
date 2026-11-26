@@ -10,6 +10,23 @@ mouth 1.0 mm inside the left face, 13.0 × 7.6 r 3 recess). The MI03 files thems
 charging dock is designed and checked only for the OpenALD single-board and Feather radios. Charge the MI03 with a
 USB-C cable.
 
+## Part colours (t124u)
+Victor: "make all 3 cases and their parts different colors so it is easy to tell the parts apart". Each case family has
+its own hue (single board **blues**, Feather **greens**, MI03 **oranges / reds**, dock **purples**); this one uses
+**oranges / reds**. The same colours are used in every preview and in the coloured 3MF plate **`stl/mi03_case_colored.3mf`** (all printed parts laid
+out on one plate, both battery-frame options and two plungers, each a separate named object with its colour; source `../tools/palette.py`, rebuilt by
+`../tools/make_3mf.py`). Colours are only for telling the parts apart; print in any filament.
+
+| Part (STL) | What | Colour | Hex |
+|---|---|---|---|
+| `stl/mi03_front_shell.stl` | front shell | orange | `#E8731A` |
+| `stl/mi03_back_shell.stl` | back shell | peach | `#F7C08A` |
+| `stl/mi03_battery_frame_front_mount.stl` | battery frame (front mount) | brown | `#8C3B0C` |
+| `stl/mi03_battery_frame_back_mount.stl` | battery frame (back mount; print one of the two) | brown | `#8C3B0C` |
+| `stl/mi03_button_plunger.stl` | button plunger | red | `#D62828` |
+| `stl/mi03_switch_carrier.stl` | switch carrier | mustard | `#E5B80B` |
+| `stl/mi03_switch_knob.stl` | switch knob | maroon | `#7A0F2E` |
+
 ## Files
 * `mi03_case.scad`: the parametric source. Every measurement Victor gave is a named parameter at the top, and
   every guess is marked `ASSUMED`. `frame_mount = "front" | "back"` picks the battery-frame mounting option.

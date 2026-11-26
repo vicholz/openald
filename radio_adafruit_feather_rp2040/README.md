@@ -49,6 +49,19 @@ its side USB-C and does not dock.
 
 ![exploded](previews/case_exploded.png)
 
+## Part colours (t124u)
+Victor: "make all 3 cases and their parts different colors so it is easy to tell the parts apart". Each case family has
+its own hue (single board **blues**, Feather **greens**, MI03 **oranges / reds**, dock **purples**); this one uses
+**greens**. The same colours are used in every preview and in the coloured 3MF plate **`case/openald_feather_case_colored.3mf`** (all printed parts laid
+out on one plate, each a separate named object with its colour; source `../tools/palette.py`, rebuilt by
+`../tools/make_3mf.py`). Colours are only for telling the parts apart; print in any filament.
+
+| Part (STL) | What | Colour | Hex |
+|---|---|---|---|
+| `case/case_top.stl` | front shell | green | `#2FA84F` |
+| `case/case_bottom.stl` | back shell | light green | `#A8E0A0` |
+| `case/deck.stl` | deck (inner plate) | dark green | `#0F5A2A` |
+
 ## Folder contents
 | Path | What |
 |---|---|

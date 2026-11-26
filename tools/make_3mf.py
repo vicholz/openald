@@ -20,7 +20,7 @@ FAM = {   # family: (stl dir, output 3MF, scad that must carry the palette, part
                 "radio_adafruit_feather_rp2040/case/openald_feather_case.scad", ["case_bottom", "case_top", "deck"]),
     "mi03": ("mi03_case/stl", "mi03_case/stl/mi03_case_colored.3mf", "mi03_case/mi03_case.scad",
              ["mi03_front_shell", "mi03_back_shell", "mi03_battery_frame_front_mount", "mi03_battery_frame_back_mount",
-              "mi03_button_plunger", "mi03_switch_carrier", "mi03_switch_knob"]),
+              ("mi03_button_plunger", 2), "mi03_switch_carrier", "mi03_switch_knob"]),
     "dock": ("charging_dock/case", "charging_dock/case/openald_dock_colored.3mf", "charging_dock/case/openald_dock.scad",
              ["dock_top_shell", "dock_base", "dock_floor_pads_x6"]),
 }
@@ -35,11 +35,17 @@ def build(fam):
     d, out, scad, order = FAM[fam]
     pal = PALETTE[fam]
     src = open(os.path.join(R, scad)).read()
-    missing = sorted({pal[p][0] for p in order} - set(re.findall(r'#[0-9A-Fa-f]{6}', src)))
+    order = [(o, 1) if isinstance(o, str) else o for o in order]   # (part, copies on the plate)
+    missing = sorted({pal[p][0] for p, _ in order} - set(re.findall(r'#[0-9A-Fa-f]{6}', src)))
     if missing: sys.exit("%s: palette colours %s not in %s (keep tools/palette.py and the .scad in sync)" % (fam, missing, scad))
     mats, objs, items = [], [], []
     x = y = rowh = 0.0
-    for i, p in enumerate(order):
+    parts = [(p, k) for p, n in order for k in range(n)]
+    pidx = {p: i for i, (p, _) in enumerate(order)}
+    for p, _ in order:
+        hexc, cname, label = pal[p]
+        mats.append('<base name="%s (%s)" displaycolor="%sFF"/>' % (label, cname, hexc.upper()))
+    for i, (p, k) in enumerate(parts):
         m = trimesh.load(os.path.join(R, d, p + ".stl"), force="mesh")
         m.merge_vertices()
         lo, hi = m.bounds
@@ -47,11 +53,10 @@ def build(fam):
         if x > 0 and x + w > BED_W: x, y, rowh = 0.0, y + rowh + GAP, 0.0
         m.apply_translation([x - lo[0], y - lo[1], -lo[2]])
         x += w + GAP; rowh = max(rowh, h)
-        hexc, cname, label = pal[p]
-        mats.append('<base name="%s (%s)" displaycolor="%sFF"/>' % (label, cname, hexc.upper()))
+        label = pal[p][2]
         oid = i + 2
         objs.append('<object id="%d" type="model" pid="1" pindex="%d" name="%s"><metadatagroup><metadata name="Title">%s</metadata></metadatagroup>%s</object>'
-                    % (oid, i, p, label, xml_mesh(m)))
+                    % (oid, pidx[p], p + ("_%d" % (k + 1) if k else ""), label, xml_mesh(m)))
         items.append('<item objectid="%d"/>' % oid)
     model = ('<?xml version="1.0" encoding="UTF-8"?>\n'
              '<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">'
@@ -66,15 +71,17 @@ def build(fam):
             '<Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
     path = os.path.join(R, out)
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-        z.writestr("[Content_Types].xml", ct); z.writestr("_rels/.rels", rels); z.writestr("3D/3dmodel.model", model)
+        for name, data in (("[Content_Types].xml", ct), ("_rels/.rels", rels), ("3D/3dmodel.model", model)):
+            zi = zipfile.ZipInfo(name, (2026, 1, 1, 0, 0, 0)); zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, data)   # fixed timestamps: rebuilding the same STLs gives the same 3MF
     # read back: every part present, watertight, same volume as its STL
     sc = trimesh.load(path, process=False)
     geoms = sc.geometry if hasattr(sc, "geometry") else {"m": sc}
-    assert len(geoms) == len(order), (fam, len(geoms))
+    assert len(geoms) == len(parts), (fam, len(geoms))
     for k, g in geoms.items():
         t = trimesh.Trimesh(g.vertices, g.faces, process=False)
         assert t.is_watertight, (fam, k, "not watertight in the 3MF")
-    print("%s: %s (%d parts: %s)" % (fam, out, len(order), ", ".join("%s %s" % (p, pal[p][0]) for p in order)))
+    print("%s: %s (%d parts: %s)" % (fam, out, len(parts), ", ".join("%s%s %s" % (p, " x%d" % n if n > 1 else "", pal[p][0]) for p, n in order)))
 
 if __name__ == "__main__":
     for f in (FAM if len(sys.argv) < 2 or sys.argv[1] == "all" else sys.argv[1:]): build(f)

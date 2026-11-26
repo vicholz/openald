@@ -78,6 +78,19 @@ The power switch cuts VSYS. In rev 4 the MCU also runs from USB with the switch 
 
 Rev 4 powers the MCU from USB through its **own** LDO (U6) instead of feeding VBUS into VSYS. That way the FM module and the battery divider stay off. Note that while USB is powering the MCU with the switch off, BAT_ADC reads about 0 V, so the cell voltage isn't measurable then. For the level while charging, hold the wheel in (VSYS then sees the cell through Q4 and D2) or switch on.
 
+## Part colours (t124u)
+Victor: "make all 3 cases and their parts different colors so it is easy to tell the parts apart". Each case family has
+its own hue (single board **blues**, Feather **greens**, MI03 **oranges / reds**, dock **purples**); this one uses
+**blues**. The same colours are used in every preview and in the coloured 3MF plate **`case/openald_single_board_case_colored.3mf`** (all printed parts laid
+out on one plate, each a separate named object with its colour; source `../tools/palette.py`, rebuilt by
+`../tools/make_3mf.py`). Colours are only for telling the parts apart; print in any filament.
+
+| Part (STL) | What | Colour | Hex |
+|---|---|---|---|
+| `case/case_top.stl` | front shell | blue | `#2E6FD8` |
+| `case/case_bottom.stl` | back cover | light blue | `#9CC3F5` |
+| `case/holder_spacer.stl` | holder spacer | navy | `#0B2E6B` |
+
 ## Files
 ```
 kicad/                     KiCad 9 project (open openald.kicad_pro)
