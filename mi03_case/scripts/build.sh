@@ -40,6 +40,7 @@ $O $P --camera=-38,46,3,-13.75,53,-1.47 -D 'part="usb_view"' -o $R/closeup_usb_c
 $O $P --camera=30,-75,10,0,-4,-4 -D 'part="closed"'   -o $R/closeup_jack_end.png $S 2>/dev/null &
 $O $P --render --camera=0,40,-14,35,0,20,185 -D 'part="back_raw"' -o $R/back_shell_inside.png $S 2>/dev/null &
 $O $P --render --camera=0,40,4,215,0,25,175 -D 'part="front_raw"' -o $R/front_shell_inside.png $S 2>/dev/null &
-$O $P --render --camera=10,40,10,45,0,30,200 -D 'part="print"' -o $R/print_layout.png $S 2>/dev/null &
+$O $P --camera=-5,40,10,45,0,30,260 -D 'part="print"' -o $R/print_layout.png $S 2>/dev/null &
 wait
 python3 scripts/sections.py
+python3 ../tools/make_3mf.py mi03 >/dev/null   # t124u: coloured 3MF plate next to the STLs

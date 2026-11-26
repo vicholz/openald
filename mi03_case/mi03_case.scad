@@ -483,7 +483,15 @@ module switch_knob(shift=0) {
 module switch_cap(shift=0) { switch_carrier(shift); switch_knob(shift); }
 
 // ================= output =================
-module ghosts(shift=0) { color("green") ghost_pcb(); color("black") ghost_front_parts(); color("silver") ghost_back_parts(shift); color("royalblue") ghost_holder(); color("gold") screws(); }
+// t124u part colours (MI03 = oranges / reds; same hex in tools/palette.py and the coloured 3MF)
+C_FRONT   = "#E8731A";  // front shell            orange
+C_BACK    = "#F7C08A";  // back shell             peach
+C_FRAME   = "#8C3B0C";  // battery frame          brown
+C_PLUNGER = "#D62828";  // button plungers        red
+C_CARRIER = "#E5B80B";  // switch carrier         mustard
+C_KNOB    = "#7A0F2E";  // switch knob            maroon
+C_SCREWS  = "#4A4A4A";  // ghost: screws (not printed)
+module ghosts(shift=0) { color("green") ghost_pcb(); color("black") ghost_front_parts(); color("silver") ghost_back_parts(shift); color("dimgray") ghost_holder(); color(C_SCREWS) screws(); }
 plunger_ys = [for (i=[0:len(btn_d)-1]) if (btn_press[i]) Y(btn_d[i])];
 module carrier_print() rotate([0,-90,0]) translate([-(sw_x+0.15),-Y(sw_d),-sw_head_z]) switch_carrier();       // flange inner face on the bed
 module knob_print() rotate([0,90,0]) translate([-(in_x1+wall+0.2+cap_knob[2]),-Y(sw_d),-sw_head_z]) switch_knob(); // knob face on the bed
@@ -496,12 +504,12 @@ else if (part=="plunger") translate([0,0,-(z_btn_top+plunger_gap)]) plunger();  
 else if (part=="switch_carrier") carrier_print();
 else if (part=="switch_knob") knob_print();
 else if (part=="print") {
-  translate([0,0,-Zb]) back_shell();
-  translate([in_x1-in_x0+2*wall+6, 0, Zf]) rotate([180,0,0]) translate([0,-in_y1-in_y0,0]) front_shell();
-  for (k=[0,1]) translate([-24, 20+k*9, -(z_btn_top+plunger_gap)]) plunger();
-  translate([-2*(in_x1-in_x0)-14, 0, -z_frame_bot]) battery_frame();
-  translate([-24, 45, 0]) carrier_print();
-  translate([-24, 56, 0]) knob_print();
+  color(C_BACK) translate([0,0,-Zb]) back_shell();
+  color(C_FRONT) translate([in_x1-in_x0+2*wall+6, 0, Zf]) rotate([180,0,0]) translate([0,-in_y1-in_y0,0]) front_shell();
+  for (k=[0,1]) color(C_PLUNGER) translate([-24, 20+k*9, -(z_btn_top+plunger_gap)]) plunger();
+  color(C_FRAME) translate([-2*(in_x1-in_x0)-14, 0, -z_frame_bot]) battery_frame();
+  color(C_CARRIER) translate([-24, 45, 0]) carrier_print();
+  color(C_KNOB) translate([-24, 56, 0]) knob_print();
 }
 else if (part=="front_raw") front_shell();
 else if (part=="back_raw")  back_shell();
@@ -516,17 +524,17 @@ else if (part=="ghost_screws") screws();
 else if (part=="ghost_board_screws") board_screws();
 else if (part=="ghost_frame_screws") frame_screws();
 else if (part=="board_unit") { ghost_pcb(); ghost_front_parts(); ghost_back_parts(0); }
-else if (part=="usb_view") { color("lightsteelblue") front_shell(); color("silver") ghost_back_parts(0); color("green") ghost_pcb(); }
+else if (part=="usb_view") { color(C_FRONT) front_shell(); color("silver") ghost_back_parts(0); color("green") ghost_pcb(); }
 else if (part=="closed") {
-  color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("mediumseagreen") battery_frame();
-  color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap();
+  color(C_FRONT) front_shell(); color(C_BACK) back_shell(); color(C_FRAME) battery_frame();
+  color(C_PLUNGER) for (y=plunger_ys) translate([0,y,0]) plunger(); color(C_CARRIER) switch_carrier(); color(C_KNOB) switch_knob();
 }
 else if (part=="exploded") {   // front unit (front + board [+ frame in option "front"]) above, back cover below
-  color("lightgray") translate([0,0,-34]) back_shell();
-  translate([0,0,frame_mount=="front" ? -10 : -24]) { color("mediumseagreen") battery_frame(); color("royalblue") ghost_holder(); color("gold") frame_screws(); }
-  color("green") ghost_pcb(); color("black") ghost_front_parts(); color("silver") ghost_back_parts(0); color("gold") board_screws();
-  color("tomato") translate([6,0,0]) switch_knob(); color("tomato") switch_carrier();
-  color("orange") for (y=plunger_ys) translate([0,y,14]) plunger();
-  color("lightsteelblue",0.85) translate([0,0,22]) front_shell();
+  color(C_BACK) translate([0,0,-34]) back_shell();
+  translate([0,0,frame_mount=="front" ? -10 : -24]) { color(C_FRAME) battery_frame(); color("dimgray") ghost_holder(); color(C_SCREWS) frame_screws(); }
+  color("green") ghost_pcb(); color("black") ghost_front_parts(); color("silver") ghost_back_parts(0); color(C_SCREWS) board_screws();
+  color(C_KNOB) translate([6,0,0]) switch_knob(); color(C_CARRIER) switch_carrier();
+  color(C_PLUNGER) for (y=plunger_ys) translate([0,y,14]) plunger();
+  color(C_FRONT,0.85) translate([0,0,22]) front_shell();
 }
-else { color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("mediumseagreen") battery_frame(); color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap(); ghosts(); }
+else { color(C_FRONT) front_shell(); color(C_BACK) back_shell(); color(C_FRAME) battery_frame(); color(C_PLUNGER) for (y=plunger_ys) translate([0,y,0]) plunger(); color(C_CARRIER) switch_carrier(); color(C_KNOB) switch_knob(); ghosts(); }

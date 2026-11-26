@@ -7,10 +7,10 @@ from matplotlib.patches import PathPatch
 from matplotlib.path import Path
 F='/tmp/mi03fit/'
 def parts(m='front'):
-    return [('front_raw','#9db7d6','front shell'),('back_raw','#c8c8c8','back shell'),(f'frame_raw_{m}','mediumseagreen',f'battery frame ({m} mount)'),
-            ('plungers_raw','orange','plungers'),('carrier_0','tomato','switch carrier'),('knob_0','#ff9f80','switch knob'),
+    return [('front_raw','#E8731A','front shell'),('back_raw','#F7C08A','back shell'),(f'frame_raw_{m}','#8C3B0C',f'battery frame ({m} mount)'),
+            ('plungers_raw','#D62828','plungers'),('carrier_0','#E5B80B','switch carrier'),('knob_0','#7A0F2E','switch knob'),
             ('ghost_pcb','darkgreen','PCB'),('ghost_front','black','LCD / buttons'),('ghost_back_0','#7a7a7a','jack / USB-C / switch'),
-            ('ghost_holder','royalblue','18650 + holder'),('ghost_board_screws','gold','board screws (M2)'),(f'frame_screws_{m}','darkgoldenrod',f'frame screws ({m})')]
+            ('ghost_holder','#696969','18650 + holder'),('ghost_board_screws','#4A4A4A','board screws (M2)'),(f'frame_screws_{m}','#222222',f'frame screws ({m})')]
 _cache={}
 def draw(ax, origin, normal, to2d, m='front'):
     for n,c,lab in parts(m):
