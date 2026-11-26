@@ -36,6 +36,7 @@ $O $P --camera=0,40,0,60,0,35,260   -D 'part="exploded"' -o $R/exploded.png $S 2
 $O $P --camera=0,40,0,60,0,35,260   -D 'part="exploded"' -D 'frame_mount="back"' -o $R/exploded_frame_back_mount.png $S 2>/dev/null &
 $O $P --camera=55,40,8,13,53,-2 -D 'part="closed"'   -o $R/closeup_switch_cap.png $S 2>/dev/null &
 $O $P --camera=-55,60,8,-13,53,-2 -D 'part="closed"'  -o $R/closeup_usb_c.png $S 2>/dev/null &
+$O $P --camera=-38,46,3,-13.75,53,-1.47 -D 'part="usb_view"' -o $R/closeup_usb_c_opening.png $S 2>/dev/null &
 $O $P --camera=30,-75,10,0,-4,-4 -D 'part="closed"'   -o $R/closeup_jack_end.png $S 2>/dev/null &
 $O $P --render --camera=0,40,-14,35,0,20,185 -D 'part="back_raw"' -o $R/back_shell_inside.png $S 2>/dev/null &
 $O $P --render --camera=0,40,4,215,0,25,175 -D 'part="front_raw"' -o $R/front_shell_inside.png $S 2>/dev/null &

@@ -131,8 +131,13 @@ board dropping in.
   * **Knob:** the same ribbed 7 × 5 mm knob as before, sticking out 2.45 mm, with a 1.5 mm deep socket that is
     0.05 mm per side over the stem: press fit plus a drop of CA glue.
   * Travel ±1.0 mm (`sw_travel` = 2.0); the check confirms carrier and knob move freely at −1, 0 and +1 mm.
-* **USB-C.** Same 9.4 × 3.8 mm opening and 13 × 7.6 mm OpenALD-style plug recess as before, now entirely in the
-  front shell. The recess is 0.45 mm shallower (it stops 0.55 mm outside the receptacle face) so the drop-in channel
+* **USB-C.** The opening is now **stadium-shaped like the USB-C receptacle** (2026-11-25): **9.44 × 3.76 mm with
+  fully rounded ends, radius 1.88 mm** (half the opening height). It keeps the same 0.25 mm clearance per side
+  around the 8.94 × 3.26 mm shell (`usb_open_clr`) and the same position (centre 27 mm from the top, 1.47 mm below
+  the board's back face). Before, it was a rectangle with 0.4 mm corners. The drop-in channel behind it uses the same
+  rounded profile swept down to the split, and the stand-in receptacle in the fit check is stadium-shaped too.
+  Close-up: `previews/closeup_usb_c_opening.png`; shape section: `previews/section_usb_opening_x-13.1.png`.
+  The 13 × 7.6 mm OpenALD-style plug recess outside is unchanged. Everything is in the front shell. The recess is 0.45 mm shallower (it stops 0.55 mm outside the receptacle face) so the drop-in channel
   behind it keeps a skin.
 * **Headphone jack.** 6.8 mm plug hole + 7.8 mm × 1.0 mm counterbore (45° chamfer) in the end wall; the 5 mm barrel
   ends 1.2 mm inside the wall. The plug's overmold has to fit a 6.8 mm hole for the first 1.0 mm and the plug

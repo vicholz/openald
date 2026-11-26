@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Cross-section previews from the assembly-pose meshes in /tmp/mi03fit (built by build.sh)."""
-import trimesh, matplotlib
+import trimesh, matplotlib, numpy as np
+import shapely.geometry as sg
 matplotlib.use('Agg'); import matplotlib.pyplot as plt
 from matplotlib.patches import PathPatch
 from matplotlib.path import Path
@@ -16,9 +17,18 @@ def draw(ax, origin, normal, to2d, m='front'):
         if n not in _cache: _cache[n]=trimesh.load(F+n+'.stl')
         s=_cache[n].section(plane_origin=origin, plane_normal=normal)
         if s is None: continue
-        first=True
+        # even-odd combine the loops so holes (openings) show as holes
+        geo=None
         for poly in s.discrete:
-            ax.add_patch(PathPatch(Path(to2d(poly)), fc=c, ec='k', lw=0.3, alpha=0.9, label=lab if first else None)); first=False
+            g=sg.Polygon(to2d(poly)).buffer(0)
+            geo=g if geo is None else geo.symmetric_difference(g)
+        first=True
+        for pg in getattr(geo,'geoms',[geo]):
+            if pg.is_empty or pg.geom_type!='Polygon': continue
+            verts=[]; codes=[]
+            for ring in [pg.exterior]+list(pg.interiors):
+                xy=np.asarray(ring.coords); verts+=list(xy); codes+=[Path.MOVETO]+[Path.LINETO]*(len(xy)-2)+[Path.CLOSEPOLY]
+            ax.add_patch(PathPatch(Path(verts,codes), fc=c, ec='k', lw=0.3, alpha=0.9, label=lab if first else None)); first=False
     ax.set_aspect('equal'); ax.autoscale_view(); ax.grid(alpha=0.3)
 def split_line(ax, horiz=True):
     (ax.axhline if horiz else ax.axvline)(-8.15, color='r', lw=0.6, ls='--', label='front/back split z=-8.15')
@@ -66,3 +76,6 @@ fig,ax=plt.subplots(figsize=(8,9)); draw(ax,[0,40,0],[0,1,0],XZ); split_line(ax)
 save(fig,ax,'section_frame_holder_across.png','Section Y=40: PCB on the frame ribs, frame on the back-shell side ledges, lip + snap, holder, cell')
 fig,ax=plt.subplots(figsize=(11,6)); draw(ax,[0,62,0],[0,1,0],XZ); split_line(ax); ax.set_xlim(-15,15); ax.set_ylim(-11,3)
 save(fig,ax,'section_snap_y62.png','Section Y=62: snap bump on the back-shell lip in the front-shell rebate groove')
+# USB-C opening shape: plane through the 0.4 mm skin between the plug recess and the drop-in channel (X = -13.1)
+fig,ax=plt.subplots(figsize=(8,5)); draw(ax,[-13.1,0,0],[1,0,0],YZ); ax.set_xlim(44,62); ax.set_ylim(-9,6)
+save(fig,ax,'section_usb_opening_x-13.1.png','Section X=-13.1 (wall skin): stadium USB-C opening 9.44 x 3.76, end radius 1.88, around the receptacle')

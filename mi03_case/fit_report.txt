@@ -1,5 +1,5 @@
 == Printable STLs ==
-mi03_front_shell                 watertight=True bodies=1 volume=  8763.7 mm3  extents 27.50 x 89.75 x 14.23  min z 0.00
+mi03_front_shell                 watertight=True bodies=1 volume=  8766.6 mm3  extents 27.50 x 89.75 x 14.23  min z 0.00
 mi03_back_shell                  watertight=True bodies=1 volume= 13787.4 mm3  extents 27.50 x 89.75 x 22.40  min z 0.00
 mi03_battery_frame_front_mount   watertight=True bodies=1 volume=  3441.6 mm3  extents 23.10 x 85.35 x 7.10  min z 0.00
 mi03_battery_frame_back_mount    watertight=True bodies=1 volume=  3441.6 mm3  extents 23.10 x 85.35 x 7.10  min z 0.00
@@ -24,7 +24,7 @@ back_shell             x plungers             0.0
 back_shell             x switch_carrier       0.0
 back_shell             x switch_knob          0.0
 pcb                    x lcd+buttons          0.0
-pcb                    x jack/usb/switch      8.0102  (expected: USB-C shell top (z +0.16) sits in the board-edge notch (mid-mount): modelling artefact)
+pcb                    x jack/usb/switch      5.9108  (expected: USB-C shell top (z +0.16) sits in the board-edge notch (mid-mount): modelling artefact)
 pcb                    x 18650+holder         0.0
 pcb                    x plungers             0.0
 pcb                    x switch_carrier       0.0

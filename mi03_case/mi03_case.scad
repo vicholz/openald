@@ -99,6 +99,7 @@ frame_screw_back  = [9.0, 0.3];    // option "back":  [+-X, Y] of the back-shell
 frame_screw_len   = [5, 8];        // M2 countersunk length: option "front", option "back"
 frame_boss_top = -2.0;             // front bosses stop 2 mm below the PCB back face (clear of back-side parts <= 1.8 mm)
 frame_rib = [10.1, 10.9];           // PCB edge support ribs on the frame (X range, both sides), d = ledge_d
+usb_open_clr = 0.25;                // USB-C opening clearance per side around the receptacle shell
 usb_recess_gap = 0.55;              // plug recess stops this far outside the USB-C tip (keeps a skin over the drop-in channel)
 knob_fit = 0.05;                    // per side, knob socket on the carrier stem (press fit + a drop of CA glue)
 knob_socket_l = 1.5;
@@ -223,7 +224,8 @@ module ghost_back_parts(shift=0) {
   translate([-jack_body_w/2, Y(pcb_l+jack_body_out), -jack_h]) cube([jack_body_w, jack_body_len, jack_h]);
   translate([0, Y(pcb_l+jack_body_out)+0.01, jack_axis_z]) rotate([90,0,0]) cylinder(d=jack_barrel_d, h=jack_barrel_out);
   // USB-C receptacle (edge-mounted, -X side), shell from -usb_hb up to usb_h
-  translate([usb_tip, Y(usb_d)-usb_w/2, -usb_hb]) cube([usb_len, usb_w, usb_h]);
+  // stadium-section shell (ends radius usb_h/2), like a real USB-C receptacle
+  translate([usb_tip, Y(usb_d), -usb_hb+usb_h/2]) rotate([0,90,0]) linear_extrude(usb_len) rr2d(usb_h, usb_w, usb_h/2);
   // slide switch (+X side): body under the board edge, head sticking out
   translate([sw_x-sw_body_depth, Y(sw_d)-sw_body_w/2, -sw_h]) cube([sw_body_depth, sw_body_w, sw_h]);
   translate([sw_x-0.01, Y(sw_d)+shift-sw_head[0]/2, sw_head_z-sw_head[1]/2]) cube([sw_head_out+0.01, sw_head[0], sw_head[1]]);
@@ -253,12 +255,15 @@ module screws() { board_screws(); frame_screws(); }
 // ================= openings (all in the FRONT shell) =================
 module usb_cuts() {
   zc = -usb_hb + usb_h/2;  yc = Y(usb_d);
-  // shell clearance through the wall
-  translate([in_x0+0.5, yc, zc]) rotate([0,-90,0]) chamfered_hole(usb_h+0.5, usb_w+0.5, 0.4, wall+1, 0);
+  // shell clearance through the wall: stadium (USB-C receptacle shape), ends radius = half the opening height
+  // (2026-11-25; was a rectangle with 0.4 mm corners).  usb_open_clr = 0.25 per side, unchanged.
+  translate([in_x0+0.5, yc, zc]) rotate([0,-90,0]) chamfered_hole(usb_h+2*usb_open_clr, usb_w+2*usb_open_clr, (usb_h+2*usb_open_clr)/2, wall+1, 0);
   // plug recess on the outside (OpenALD 13.0 x 7.6, r 3); stops usb_recess_gap outside the receptacle tip
   translate([in_x0-wall-1, yc, zc]) rotate([0,90,0]) linear_extrude(1 + (usb_tip-usb_recess_gap)-(in_x0-wall)) rr2d(7.6, 13.0, 3.0);
   // drop-in channel: the receptacle sticks 1 mm into the wall, so the wall is relieved from the split up to it
-  translate([usb_tip-0.15, yc-(usb_w+0.5)/2, z_split-1]) cube([in_x0+0.01-(usb_tip-0.15), usb_w+0.5, zc+(usb_h+0.5)/2-(z_split-1)]);
+  // (stadium profile swept straight down to the split, so its top also follows the rounded opening)
+  translate([usb_tip-0.15, yc, 0]) rotate([0,90,0]) linear_extrude(in_x0+0.01-(usb_tip-0.15))
+    hull() for (z=[zc, z_split-1+(usb_h+2*usb_open_clr)/2]) translate([-z,0]) rr2d(usb_h+2*usb_open_clr, usb_w+2*usb_open_clr, (usb_h+2*usb_open_clr)/2);
 }
 module jack_cuts() {   // plug hole + outside counterbore with a 45-degree chamfer (barrel ends jack_tip_clr inside the wall)
   translate([0, in_y0+0.01, jack_axis_z]) rotate([90,0,0]) cylinder(d=jack_plug_d, h=wall+1);
@@ -511,6 +516,7 @@ else if (part=="ghost_screws") screws();
 else if (part=="ghost_board_screws") board_screws();
 else if (part=="ghost_frame_screws") frame_screws();
 else if (part=="board_unit") { ghost_pcb(); ghost_front_parts(); ghost_back_parts(0); }
+else if (part=="usb_view") { color("lightsteelblue") front_shell(); color("silver") ghost_back_parts(0); color("green") ghost_pcb(); }
 else if (part=="closed") {
   color("lightsteelblue") front_shell(); color("lightgray") back_shell(); color("mediumseagreen") battery_frame();
   color("orange") for (y=plunger_ys) translate([0,y,0]) plunger(); color("tomato") switch_cap();
