@@ -9,6 +9,11 @@
 // All dimensions come from case_params.scad (scripts/gen_case_params.py <- scripts/layout.py).
 // Frame: X across (0 = centre, +X = right / wheel side), Y = 0 at the inner face of the bottom (USB-C) end wall,
 // Z = 0 at the back face.
+// t124u part colours (Feather = greens; same hex in tools/palette.py and the coloured 3MF)
+C_TOP    = "#2FA84F";   // front shell (case_top)       green
+C_BOTTOM = "#A8E0A0";   // back shell (case_bottom)     light green
+C_DECK   = "#0F5A2A";   // deck                         dark green
+C_G_FEATHER = "#283C50"; // ghost: the Feather board (not printed)
 include <case_params.scad>
 
 part = "assembly";   // top | bottom | deck | print | assembly | closed | top_raw | bottom_raw | deck_raw | section | g_<ghost>
@@ -68,7 +73,7 @@ module g_fm() { difference() { bx(fm_b); for (h=fm_holes) translate([h[0],h[1],f
 module g_wheel() { bx(wbody_b); translate([wx,wy,WHEEL_SEAT_Z+wheel_z0]) cylinder(r=WHEEL_R, h=wheel_z1-wheel_z0); }
 module g_switch(shift=0) { sw_side() { difference() { bx(sw_plate_b); for (s=[-1,1]) translate([sw_plate_b[0]-1, SW_Y+s*SW_HOLE_P/2, SW_Z]) rotate([0,90,0]) cylinder(d=1.57, h=3, $fn=20); }
   bx(sw_body_b); bx(sw_lug_b); translate([0,shift,0]) bx(sw_knob_b); } }
-module ghosts() { color("black") g_holder(); color("darkgreen") g_feather(); color("royalblue") g_fm(); color("dimgray") g_wheel(); color("silver") g_switch(); }
+module ghosts() { color("black") g_holder(); color(C_G_FEATHER) g_feather(); color("royalblue") g_fm(); color("dimgray") g_wheel(); color("silver") g_switch(); }
 
 // ---------------- openings ----------------
 module jack_cuts() {   // top end wall: barrel + 0.3 per side (t122u), 0.3 mm edge break
@@ -229,17 +234,17 @@ else if (part=="g_wheel") g_wheel();
 else if (part=="g_switch") g_switch();
 else if (part=="g_switch_on") g_switch(SW_TRAVEL/2);
 else if (part=="g_switch_off") g_switch(-SW_TRAVEL/2);
-else if (part=="print") { bottom_half(); translate([W_OUT+10,IN_L,T]) rotate([180,0,0]) top_half(); translate([2*W_OUT+20,0,-DECK_Z0]) deck(); }
-else if (part=="closed") { color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("orange") deck(); ghosts(); }
+else if (part=="print") { color(C_BOTTOM) bottom_half(); color(C_TOP) translate([W_OUT+10,IN_L,T]) rotate([180,0,0]) top_half(); color(C_DECK) translate([2*W_OUT+20,0,-DECK_Z0]) deck(); }
+else if (part=="closed") { color(C_BOTTOM) bottom_half(); color(C_TOP) top_half(); color(C_DECK) deck(); ghosts(); }
 else if (part=="section") { 
-  color("lightgray") intersection() { bottom_half(); sl(); } color("lightsteelblue") intersection() { top_half(); sl(); }
-  color("orange") intersection() { deck(); sl(); } color("black") intersection() { g_holder(); sl(); } color("darkgreen") intersection() { g_feather(); sl(); }
+  color(C_BOTTOM) intersection() { bottom_half(); sl(); } color(C_TOP) intersection() { top_half(); sl(); }
+  color(C_DECK) intersection() { deck(); sl(); } color("black") intersection() { g_holder(); sl(); } color(C_G_FEATHER) intersection() { g_feather(); sl(); }
   color("royalblue") intersection() { g_fm(); sl(); } color("dimgray") intersection() { g_wheel(); sl(); } color("silver") intersection() { g_switch(); sl(); } }
 else if (part=="switch_detail") {   // front shell around the switch (staked) + the deck's backing ribs, seen from inside
-  color("lightsteelblue") intersection() { top_half(); bxs(); } color("orange") intersection() { deck(); bxs(); translate([-50,-10,DECK_Z1+0.02]) cube([100,120,30]); }
+  color(C_TOP) intersection() { top_half(); bxs(); } color(C_DECK) intersection() { deck(); bxs(); translate([-50,-10,DECK_Z1+0.02]) cube([100,120,30]); }
   color("silver") g_switch(); }
 else if (part=="xsection") { 
-  color("lightgray") intersection() { bottom_half(); sl(); } color("lightsteelblue") intersection() { top_half(); sl(); }
-  color("orange") intersection() { deck(); sl(); } color("black") intersection() { g_holder(); sl(); } color("darkgreen") intersection() { g_feather(); sl(); }
+  color(C_BOTTOM) intersection() { bottom_half(); sl(); } color(C_TOP) intersection() { top_half(); sl(); }
+  color(C_DECK) intersection() { deck(); sl(); } color("black") intersection() { g_holder(); sl(); } color(C_G_FEATHER) intersection() { g_feather(); sl(); }
   color("royalblue") intersection() { g_fm(); sl(); } color("dimgray") intersection() { g_wheel(); sl(); } color("silver") intersection() { g_switch(); sl(); } }
-else { color("lightgray") bottom_half(); color("orange") translate([0,0,8]) deck(); color("lightsteelblue",0.6) translate([0,0,22]) top_half(); ghosts(); }
+else { color(C_BOTTOM) bottom_half(); color(C_DECK) translate([0,0,8]) deck(); color(C_TOP,0.7) translate([0,0,22]) top_half(); ghosts(); }

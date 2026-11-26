@@ -10,6 +10,12 @@
 // Dock frame: X right, Y toward the back, Z up, origin = front-left-bottom corner. All mm.
 // Parts: part="base" | "shell" (print upside down, flat top on the bed) | "pad" (6x, one per pocket; pad_index 0-5) | "pads" (all 6)
 //        "assembly" | "exploded" | "print" | "section" | raw parts for the fit check: shell_raw, base_raw, pads_raw, radios, plugs
+// t124u part colours (dock = purples; same hex in tools/palette.py and the coloured 3MF)
+C_SHELL = "#7B4FB8";    // top shell                    purple
+C_BASE  = "#C9B6E8";    // base                         lavender
+C_PADS  = "#3B2360";    // floor pads                   dark purple
+C_RADIO_SB = "#2E6FD8"; // docked single-board radio (its front-shell blue)
+C_RADIO_FE = "#2FA84F"; // docked Feather radio (its front-shell green)
 include <dock_params.scad>
 part = "assembly";
 pad_index = 0;
@@ -157,23 +163,23 @@ if (part == "radios")    for (i = [0:5]) radio_env(i);
 if (part == "plugs")     for (i = [0:5]) plug(i);
 // previews use the STLs exported by build_case.sh / check_dock_fit.py (OpenCSG cannot preview the full CSG tree)
 module assembly_parts() {
-    color("gainsboro") import("/tmp/dock_base_raw.stl"); pcb();
+    color(C_BASE) import("/tmp/dock_base_raw.stl"); pcb();
     color("silver") import("/tmp/dock_plugs.stl");
-    color("dimgray") import("/tmp/dock_pads_raw.stl");
-    color("lightsteelblue") import("/tmp/dock_shell_raw.stl");
-    color("salmon") import("/tmp/dock_docked_single_board.stl");  // slot 1 (front row, left)
-    color("gold") import("/tmp/dock_docked_feather.stl");         // slot 4 (back row, left)
+    color(C_PADS) import("/tmp/dock_pads_raw.stl");
+    color(C_SHELL) import("/tmp/dock_shell_raw.stl");
+    color(C_RADIO_SB) import("/tmp/dock_docked_single_board.stl");  // slot 1 (front row, left)
+    color(C_RADIO_FE) import("/tmp/dock_docked_feather.stl");         // slot 4 (back row, left)
 }
 if (part == "assembly") assembly_parts();
 if (part == "section") intersection() { assembly_parts(); translate([-1, -1, -1]) cube([plugs[0][0], OUT_D + 2, 200]); }   // render with --render
 if (part == "exploded") {
-    color("gainsboro") import("/tmp/dock_base_raw.stl"); pcb();
+    color(C_BASE) import("/tmp/dock_base_raw.stl"); pcb();
     color("silver") import("/tmp/dock_plugs.stl");
-    color("dimgray") translate([0, 0, 15]) import("/tmp/dock_pads_raw.stl");
-    color("lightsteelblue") translate([0, 0, 30]) import("/tmp/dock_shell_raw.stl");
+    color(C_PADS) translate([0, 0, 15]) import("/tmp/dock_pads_raw.stl");
+    color(C_SHELL) translate([0, 0, 30]) import("/tmp/dock_shell_raw.stl");
 }
-if (part == "print") {
-    translate([0, OUT_D, TOP_Z]) rotate([180, 0, 0]) shell_raw();
-    translate([0, OUT_D + 15, 0]) base_raw();
-    for (i = [0:5]) translate([OUT_W + 15 + (i % 3) * 45 - radios[i][0], floor(i / 3) * 45 + radios[i][1] + RT + PAD_OFF, PCB_Z1 + PAD_T]) rotate([180, 0, 0]) pad_raw(i);
+if (part == "print") {   // t124u: coloured preview from the exported STLs (build_case.sh renders it without --render)
+    color(C_SHELL) translate([0, OUT_D, TOP_Z]) rotate([180, 0, 0]) import("/tmp/dock_shell_raw.stl");
+    color(C_BASE) translate([0, OUT_D + 15, 0]) import("/tmp/dock_base_raw.stl");
+    color(C_PADS) translate([OUT_W + 15, 0, 0]) import("dock_floor_pads_x6.stl");
 }

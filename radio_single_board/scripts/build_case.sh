@@ -25,7 +25,7 @@ print(W,H,(so+sf)/2,wh[1],bl[1][0],bl[1][1],jx[0])")
 C=$(python3 -c "print($W/2)")
 openscad $P --camera=$C,42,-5,60,0,35,200  -D 'part="assembly"' -o $R/case_assembly_exploded.png $S 2>/dev/null &
 openscad $P --camera=$C,42,-5,70,0,235,200 -D 'part="assembly"' -o $R/case_assembly_back.png $S 2>/dev/null &
-openscad $P --render --camera=$(python3 -c "print(1.5*$W+12)"),42,10,45,0,200,220 -D 'part="print"' -o $R/case_print_layout.png $S 2>/dev/null &
+openscad $P --camera=$(python3 -c "print(1.5*$W+12)"),42,10,45,0,200,220 -D 'part="print"' -o $R/case_print_layout.png $S 2>/dev/null &
 openscad $P --camera=$C,42,-5,55,0,50,175 -D 'part="closed"' -o $R/case_closed.png $S 2>/dev/null &
 wait
 # close-ups of the openings (closed case with the assembled PCB inside)
@@ -41,4 +41,5 @@ openscad $P --camera=$BARX,$BARY,3,80,0,270,60 -D 'part="cutaway"' -o $R/cutaway
 openscad $P --camera=$JX,$(python3 -c "print($H+3)"),4,80,0,180,55   -D 'part="closed"' -o $R/closeup_jack_end.png $S 2>/dev/null &
 wait
 rm -f $R/closeup_front_usb_leds.png
+python3 ../../tools/make_3mf.py single_board >/dev/null   # t124u: coloured 3MF plate next to the STLs
 tail -4 case_fit_report.txt

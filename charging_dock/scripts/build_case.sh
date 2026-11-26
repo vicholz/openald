@@ -25,7 +25,8 @@ openscad $P --camera=85,56,40,60,0,200,550 -D 'part="assembly"' -o $R/dock_assem
 openscad $P --camera=85,56,40,55,0,20,590  -D 'part="exploded"' -o $R/dock_exploded.png $S 2>/dev/null &
 openscad $P --camera=54,40,55,75,0,0,320   -D 'part="assembly"' -o $R/dock_front_view.png $S 2>/dev/null &
 openscad $O --camera=85,56,30,0,0,0,330    -D 'part="assembly"' -o $R/dock_top_view.png $S 2>/dev/null &
-openscad $P --render --camera=160,110,0,50,0,20,640 -D 'part="print"' -o $R/dock_print_layout.png $S 2>/dev/null &
+openscad $P --camera=160,110,0,50,0,20,640 -D 'part="print"' -o $R/dock_print_layout.png $S 2>/dev/null &
 python3 ../scripts/plot_insertion.py $R/dock_plug_insertion_per_radio.png &
 wait
+python3 ../../tools/make_3mf.py dock >/dev/null   # t124u: coloured 3MF plate next to the STLs
 tail -1 dock_fit_report.txt

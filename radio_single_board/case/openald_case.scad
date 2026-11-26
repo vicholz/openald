@@ -13,6 +13,10 @@
 //   openscad -D 'part="top"'    -o case_top.stl    openald_case.scad
 //   openscad -D 'part="bottom"' -o case_bottom.stl openald_case.scad
 //   openscad -D 'part="spacer"' -o holder_spacer.stl openald_case.scad
+// t124u part colours (single board = blues; same hex in tools/palette.py and the coloured 3MF)
+C_TOP    = "#2E6FD8";   // front shell (case_top)       blue
+C_BOTTOM = "#9CC3F5";   // back cover (case_bottom)     light blue
+C_SPACER = "#0B2E6B";   // holder spacer                navy
 include <case_params.scad>
 
 part = "assembly";  // top | bottom | spacer | print | assembly | closed | cutaway | top_raw | bottom_raw | spacer_raw | tunnels_raw
@@ -224,13 +228,13 @@ else if (part=="top_raw") top_half();
 else if (part=="bottom_raw") bottom_half();
 else if (part=="spacer_raw") spacer();
 else if (part=="closed") {   // needs /tmp/pcb_assembly.stl from check_case_fit.py
-  color("lightgray") bottom_half(); color("lightsteelblue") top_half(); color("white") import("/tmp/pcb_assembly.stl"); color("orange") spacer();
+  color(C_BOTTOM) bottom_half(); color(C_TOP) top_half(); color("white") import("/tmp/pcb_assembly.stl"); color(C_SPACER) spacer();
 }
 else if (part=="cutaway") {
   K=[bar_leds[1][0],-20,-40];
-  color("lightgray")      intersection() { bottom_half(); translate(K) cube([100,200,80]); }
-  color("lightsteelblue") intersection() { top_half();    translate(K) cube([100,200,80]); }
+  color(C_BOTTOM)         intersection() { bottom_half(); translate(K) cube([100,200,80]); }
+  color(C_TOP)            intersection() { top_half();    translate(K) cube([100,200,80]); }
   color("white") import("/tmp/pcb_assembly_cut.stl");
 }
-else if (part=="print")  { translate([0,0,Hb]) bottom_half(); translate([pcb_w+12,pcb_h,Ht]) rotate([180,0,0]) top_half(); translate([2*pcb_w+24,0,spacer_t]) spacer(); }
-else { color("lightgray") bottom_half(); color("lightblue",0.55) translate([0,0,14]) top_half(); color("orange") translate([0,0,-3]) spacer(); pcb_ghost(); }
+else if (part=="print")  { color(C_BOTTOM) translate([0,0,Hb]) bottom_half(); color(C_TOP) translate([pcb_w+12,pcb_h,Ht]) rotate([180,0,0]) top_half(); color(C_SPACER) translate([2*pcb_w+24,0,spacer_t]) spacer(); }
+else { color(C_BOTTOM) bottom_half(); color(C_TOP,0.7) translate([0,0,14]) top_half(); color(C_SPACER) translate([0,0,-3]) spacer(); pcb_ghost(); }

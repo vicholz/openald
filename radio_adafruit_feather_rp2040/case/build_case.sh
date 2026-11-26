@@ -23,7 +23,7 @@ R=../previews
 openscad $P --camera=0,48,17,60,0,35,280   -D 'part="assembly"' -o $R/case_exploded.png $S 2>/dev/null &
 openscad $P --camera=0,48,17,55,0,40,210   -D 'part="closed"'   -o $R/case_closed.png $S 2>/dev/null &
 openscad $P --camera=0,48,17,120,0,220,210 -D 'part="closed"'   -o $R/case_closed_back.png $S 2>/dev/null &
-openscad $P --render --camera=40,48,10,45,0,200,280 -D 'part="print"' -o $R/case_print_layout.png $S 2>/dev/null &
+openscad $P --camera=40,48,10,45,0,200,280 -D 'part="print"' -o $R/case_print_layout.png $S 2>/dev/null &
 wait
 # close-ups (frame: X right/wheel side, Y = 0 at the bottom-end inner wall (USB-C), Z = 0 at the back face)
 openscad $P --camera=0,-2,24,80,0,0,75       -D 'part="closed"' -o $R/closeup_dock_usb_c.png $S 2>/dev/null &
@@ -43,4 +43,5 @@ openscad $P --camera=10,82,27,65,0,60,95     -D 'part="xsection"' -D 'sec_x=10' 
 openscad $P --camera=-8.9,26,27,65,0,60,95   -D 'part="xsection"' -D 'sec_x=-8.89' -o $R/closeup_feather_pins.png $S 2>/dev/null &
 openscad $P --camera=0,88,26,75,0,80,70      -D 'part="xsection"' -D 'sec_x=0' -o $R/section_jack_x0.png $S 2>/dev/null &
 wait
+python3 ../../tools/make_3mf.py feather >/dev/null   # t124u: coloured 3MF plate next to the STLs
 echo done
